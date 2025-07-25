@@ -28,4 +28,4 @@ You are welcome to contribute to this project, it is still in development. If yo
 
 ## License
 
-This project is released under the [MIT License](LICENSE).
+This project is released under the [GPL v3 license](COPYING).
