@@ -1,0 +1,16 @@
+# Gradle files
+.gradle/
+build/
+bin/
+
+# VS Code files
+.vscode/
+settings.json
+launch.json
+
+# Cache files
+.cache/
+
+# Java files
+*.class
+*.LCKMain.*
