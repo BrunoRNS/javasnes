@@ -1,5 +1,5 @@
 package util.loops;
 
-public class For {
+public class SnesFor {
     
 }

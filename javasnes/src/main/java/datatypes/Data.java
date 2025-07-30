@@ -1,5 +1,5 @@
 package datatypes;
 
-public class Pal {
+public class Data {
     
 }

@@ -1,5 +1,5 @@
 package util.loops;
 
-public class While {
+public class SnesDoWhile {
     
 }

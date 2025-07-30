@@ -1,5 +1,5 @@
 package util.macros;
 
-public class Define {
+public class SnesDefine {
     
 }

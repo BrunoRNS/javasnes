@@ -1,5 +1,5 @@
 package util.types.vars;
 
-public class BrrSample {
+public class SnesU32 {
     
 }

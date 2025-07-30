@@ -1,5 +1,5 @@
 package util.operators;
 
-public class Or {
+public class OperatorNot {
     
 }

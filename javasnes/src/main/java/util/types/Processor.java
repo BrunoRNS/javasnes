@@ -1,5 +1,5 @@
 package util.types;
 
-public class Function {
+public class Processor {
     
 }
