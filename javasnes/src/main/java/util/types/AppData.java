@@ -1,4 +1,4 @@
 package util.types;
-public class SnesData {
+public class AppData {
     
 }
