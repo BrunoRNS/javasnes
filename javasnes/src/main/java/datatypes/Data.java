@@ -12,7 +12,7 @@ package datatypes;
  * 
  *      Data myITData = new DataIT(args);
  */
-public class Data {
+public abstract class Data {
 
     /**
      * The Path to the data file, that can be Brr, IT, Map, Pic or Pal.
