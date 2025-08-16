@@ -57,7 +57,15 @@ public class DataIT extends Data {
      * @throws IOException If an error occurs during the conversion process or if the smconv process fails.
      * @throws IllegalArgumentException If any of the provided paths are null or empty.
     */
-    public static void toBnk(final String PVSNESLIB_HOME, String itPath, String ouputPath) throws IOException, IllegalArgumentException {
+    public static void toBnk(
+
+        final String PVSNESLIB_HOME, 
+
+        String itPath, 
+        String ouputPath
+
+    ) throws IOException, IllegalArgumentException {
+
         /**
          * Check if the provided paths are valid
          * If the paths are null or empty, an IllegalArgumentException is thrown
@@ -91,8 +99,10 @@ public class DataIT extends Data {
         // Start the process to convert IT data to SNES bank format
         Process process = processBuilder.start();
 
-        // By default, the exit code is set to -1
-        // This will be updated once the process completes
+        /** 
+         * By default, the exit code is set to -1
+         * This will be updated once the process completes
+         */
         int exitCode = -1;
         
         /** 
@@ -101,7 +111,7 @@ public class DataIT extends Data {
          * If the process is interrupted, an IOException will be thrown
          * This is important to ensure that the conversion is completed before proceeding
          * with any further operations, such as reading the output or checking for errors.
-        **/
+         */
          try {
 
             exitCode = process.waitFor();
