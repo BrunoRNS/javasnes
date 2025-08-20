@@ -190,7 +190,21 @@ public class AppData {
          * If all checks pass, the Data object is registered in the specified bank at the specified position.
          * This allows the Data object to be stored and accessed later using the bank and position.
          */
-        this.banks.get(bank)[position] = data;
+
+        if (!(data instanceof DataIT)) {
+
+            this.banks.get(bank)[position] = data;
+            
+        }
+
+        /*
+         * TODO:
+         *  Need to implement a logic to handle DataIT objects, since they are converted to SNES bank format,
+         * they should not be directly registered in the banks map. Instead, their converted SNES
+         * bank files should be registered. This requires additional logic to manage the conversion
+         * and registration process for DataIT objects.
+         */
+        
 
     }
     
