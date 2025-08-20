@@ -1,11 +1,15 @@
 package util.types;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import appconifg.PvsneslibHome;
 import datatypes.Data;
+import datatypes.DataIT;
 
 public class AppData {
 
@@ -71,7 +75,56 @@ public class AppData {
             
             throw new IllegalArgumentException("Bank " + bank + " is not available.");
             
-        } else if (data.size > 32768) {
+        }
+
+        /**
+         * If the data is an instance of DataIT, it is converted to SNES bank format.
+         * This is done to ensure that the data can be registered in the SNES bank correctly.
+         * The conversion uses the smconv command from pvsneslib, which must be set in the PVSNESLIB_HOME variable.
+         */
+        if (data instanceof DataIT) {
+
+            /**
+             * If the data is an instance of DataIT, it is converted to SNES bank format.
+             * This is done to ensure that the data can be registered in the SNES bank correctly.
+             *
+             */
+            try {
+
+                DataIT.toBnk(
+
+                    PvsneslibHome.path,
+
+                    data.folder.getPath() + data.path,
+                    Path.of(data.folder.getPath() + data.path).getParent().toString()
+
+                );
+                
+            } catch (IOException | IllegalArgumentException e) {
+
+                throw new IllegalArgumentException("Error converting IT data to SNES bank format: " + e.getMessage());
+            
+            }
+
+        }
+
+        /**
+         * If the data size is zero, it is calculated based on the file size of the data.
+         * This ensures that the data size is set correctly before registering it in the bank.
+         * If the size is not set, it will be determined by checking the file size of the data.
+         */
+        if (data.size == 0) {
+
+            data.size = Path.of(data.folder.getPath() + data.path).toFile().length();
+
+        }
+        
+        /**
+         * Check if the data size exceeds 32KiB (32768 bytes).
+         * If it does, an IllegalArgumentException is thrown to prevent registering oversized data.
+         * This ensures that the data can fit within the bank's capacity.
+         */
+        if (data.size > 32768) {
             
             throw new IllegalArgumentException("Data size exceeds 32KiB, cannot register in bank " + bank + ".");
             
@@ -84,7 +137,7 @@ public class AppData {
          */
         short bank_size = 0;
 
-        for (Data d: this.banks.get(bank)) {
+        for (Data d : this.banks.get(bank)) {
 
             /**
              * Check if the Data object is null before accessing its size.
@@ -117,6 +170,13 @@ public class AppData {
          * to prevent overwriting existing data or accessing invalid positions.
          */
         if (bank_size + data.size > 32768) {
+
+            /**
+             * If the bank is full, remove it from the possible banks set to prevent further registrations.
+             * This ensures that no more data can be registered in a full bank.
+             * An IllegalArgumentException is thrown to indicate that the bank is full and cannot accept more data.
+             */
+            this.possibleBanks.remove(bank);
             
             throw new IllegalArgumentException("Bank " + bank + " is full, cannot register more data.");
             

@@ -1,5 +1,7 @@
 package datatypes;
 
+import java.nio.file.Path;
+
 /**
  * A class representing a Picture data file in the javasnes project.
  * It extends the Data class and provides specific functionality for handling Picture data files.
@@ -26,6 +28,8 @@ public class DataPic extends Data {
         this.folder = folder;
 
         this.validate();
+
+        this.size = Path.of(this.folder.getPath() + this.path).toFile().length();
 
     }
 
