@@ -1,6 +1,6 @@
 package datatypes;
 
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * A class representing a Brr data file in the javasnes project.
@@ -36,7 +36,7 @@ public class DataBrr extends Data {
         this.checkIfBrr();
 
         // Get the size of the brr data file.
-        this.size = Path.of(this.folder.getPath() + this.path).toFile().length();
+        this.size = Paths.get(this.folder.getPath() + this.path).toFile().length();
 
     }
 

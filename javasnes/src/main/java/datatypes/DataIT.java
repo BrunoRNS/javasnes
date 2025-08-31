@@ -1,7 +1,7 @@
 package datatypes;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * A class representing an IT (Impulse Tracker) data file in the javasnes project.
@@ -41,10 +41,65 @@ public class DataIT extends Data {
     public void calculateSize(String bnkPath) {
         
         // Calculate the size of the IT data file specified by the given bank path
-        this.size = (long) Path.of(bnkPath).toFile().length();
+        this.size = (long) Paths.get(bnkPath).toFile().length();
 
         // Check if the size is greater than 32KiB (32768 bytes)
         this.isHigherThan32K = this.size > 32768;
+
+    }
+
+    /**
+     * Verifies that the provided arguments are valid.
+     * 
+     * This method checks if the provided paths are not null or empty.
+     * If any of the paths are invalid, an IllegalArgumentException is thrown
+     * with a message indicating which argument is invalid.
+     * 
+     * @param PVSNESLIB_HOME The home directory of the pvsneslib, which must not be null or empty.
+     * @param itPath The path to the IT data file to be converted, which must not be null or empty.
+     * @param ouputPath The path where the converted SNES bank file will be saved, which must not be null or empty.
+     * @throws IllegalArgumentException If any of the provided paths are null or empty.
+    */
+    public static void verifyArgs(
+
+        final String PVSNESLIB_HOME, 
+
+        String itPath, 
+        String ouputPath
+
+    ) throws IllegalArgumentException {
+        
+        /*
+         * Check if the provided paths are valid
+         * If the paths are null or empty, an IllegalArgumentException is thrown
+         * This is important to ensure that the conversion process has valid input paths
+         * and output paths, preventing potential errors during the conversion process.
+         */
+        if (itPath == null) {
+
+            throw new IllegalArgumentException("IT path cannot be null or empty.");
+
+        } else if (itPath.isEmpty()) {
+
+            throw new IllegalArgumentException("IT path cannot be null or empty.");
+            
+        } else if (ouputPath == null) {
+            
+            throw new IllegalArgumentException("Output path cannot be null or empty.");
+        
+        } else if (ouputPath.isEmpty()) {
+
+            throw new IllegalArgumentException("Output path cannot be null or empty.");
+
+        } else if (PVSNESLIB_HOME == null) {
+
+            throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
+
+        } else if (PVSNESLIB_HOME.isEmpty()) {
+            
+            throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
+
+        }
 
     }
 
@@ -72,19 +127,8 @@ public class DataIT extends Data {
          * This is important to ensure that the conversion process has valid input paths
          * and output paths, preventing potential errors during the conversion process.
          */
-        if (itPath == null || itPath.isEmpty()) {
-
-            throw new IllegalArgumentException("IT path cannot be null or empty.");
-
-        } else if (ouputPath == null || ouputPath.isEmpty()) {
-            
-            throw new IllegalArgumentException("Output path cannot be null or empty.");
         
-        } else if (PVSNESLIB_HOME == null || PVSNESLIB_HOME.isEmpty()) {
-
-            throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
-
-        }
+        verifyArgs(PVSNESLIB_HOME, itPath, ouputPath);
 
         // Create a ProcessBuilder to run the smconv command from pvsneslib
 

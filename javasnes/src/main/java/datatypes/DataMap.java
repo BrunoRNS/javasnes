@@ -1,6 +1,6 @@
 package datatypes;
 
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * A class representing a Map data file in the javasnes project.
@@ -29,7 +29,7 @@ public class DataMap extends Data {
 
         this.validate();
 
-        this.size = Path.of(this.folder.getPath() + this.path).toFile().length();
+        this.size = Paths.get(this.folder.getPath() + this.path).toFile().length();
 
     }
 

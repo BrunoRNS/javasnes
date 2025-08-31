@@ -1,7 +1,7 @@
 package util.types;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +96,7 @@ public class AppData {
                     PvsneslibHome.path,
 
                     data.folder.getPath() + data.path,
-                    Path.of(data.folder.getPath() + data.path).getParent().toString()
+                    Paths.get(data.folder.getPath() + data.path).getParent().toString()
 
                 );
                 
@@ -115,7 +115,7 @@ public class AppData {
          */
         if (data.size == 0) {
 
-            data.size = Path.of(data.folder.getPath() + data.path).toFile().length();
+            data.size = Paths.get(data.folder.getPath() + data.path).toFile().length();
 
         }
         
