@@ -65,11 +65,19 @@ public class DataMap extends Data {
     private void validate() throws IllegalArgumentException {
 
         // Validate the DataMap object to ensure that the path and folder are set correctly.
-        if (this.path == null || this.path.isEmpty()) {
+        if (this.path == null) {
 
             throw new IllegalArgumentException("Path cannot be null or empty.");
 
-        } else if (this.folder == null) {
+        }
+
+        if (this.path.isEmpty()) {
+
+            throw new IllegalArgumentException("Path cannot be empty.");
+
+        }
+        
+        if (this.folder == null) {
 
             throw new IllegalArgumentException("Folder cannot be null.");
 

@@ -79,23 +79,33 @@ public class DataIT extends Data {
 
             throw new IllegalArgumentException("IT path cannot be null or empty.");
 
-        } else if (itPath.isEmpty()) {
+        }
+        
+        if (itPath.isEmpty()) {
 
             throw new IllegalArgumentException("IT path cannot be null or empty.");
             
-        } else if (ouputPath == null) {
+        }
+        
+        if (ouputPath == null) {
             
             throw new IllegalArgumentException("Output path cannot be null or empty.");
         
-        } else if (ouputPath.isEmpty()) {
+        }
+        
+        if (ouputPath.isEmpty()) {
 
             throw new IllegalArgumentException("Output path cannot be null or empty.");
 
-        } else if (PVSNESLIB_HOME == null) {
+        }
+        
+        if (PVSNESLIB_HOME == null) {
 
             throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
 
-        } else if (PVSNESLIB_HOME.isEmpty()) {
+        }
+        
+        if (PVSNESLIB_HOME.isEmpty()) {
             
             throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
 

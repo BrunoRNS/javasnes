@@ -1,5 +1,5 @@
 package util.loops;
 
-public class SnesFor {
+public class SnesFor extends SnesLoop {
     
 }

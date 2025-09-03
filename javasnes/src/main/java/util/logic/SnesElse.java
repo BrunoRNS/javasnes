@@ -1,5 +1,5 @@
 package util.logic;
 
-public class SnesElse {
+public class SnesElse extends SnesLogic {
     
 }

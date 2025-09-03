@@ -79,9 +79,15 @@ public class DataBrr extends Data {
 
         // Validate the DataBrr object to ensure that the path, folder, and size are set correctly.
         // If any of these conditions are not met, an IllegalArgumentException is thrown.
-        if (this.path == null || this.path.isEmpty()) {
+        if (this.path == null) {
 
-            throw new IllegalArgumentException("Path cannot be null or empty.");
+            throw new IllegalArgumentException("Path cannot be null.");
+
+        }
+
+        if (this.path.isEmpty()) {
+
+            throw new IllegalArgumentException("Path cannot be empty.");
 
         }
 

@@ -1,5 +1,5 @@
 package util.macros;
 
-public class SnesDefine {
+public class SnesDefine extends SnesMacro {
     
 }

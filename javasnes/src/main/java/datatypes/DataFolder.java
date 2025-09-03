@@ -40,16 +40,26 @@ public class DataFolder {
 
         // Validate the path to ensure it is not null, not empty, is absolute, and is a directory.
         // If any of these conditions are not met, an IllegalArgumentException is thrown.
-        if (path == null || path.isEmpty()) {
+        if (path == null) {
 
-            throw new IllegalArgumentException("Path cannot be null or empty.");
+            throw new IllegalArgumentException("Path cannot be null.");
 
-        } else if ( !(Paths.get(path).isAbsolute()) ) {
+        }
+
+        if (path.isEmpty()) {
+
+            throw new IllegalArgumentException("Path cannot be empty.");
+
+        }
+        
+        if ( !(Paths.get(path).isAbsolute()) ) {
 
             throw new IllegalArgumentException("Path must be absolute."
                     + "\n\n For example: /home/user/myproject/data or C:\\Users\\User\\myproject\\data");
 
-        } else if ( !(Paths.get(path).toFile().isDirectory()) ) {
+        } 
+        
+        if ( !(Paths.get(path).toFile().isDirectory()) ) {
 
             throw new IllegalArgumentException("Path must be a directory."
                     + "\n\n For example: /home/user/myproject/data or C:\\Users\\User\\myproject\\data");
@@ -75,16 +85,22 @@ public class DataFolder {
 
             throw new IllegalArgumentException("Path cannot be null or empty.");
 
-        } else if (path.toString().isEmpty()) {
+        } 
+        
+        if (path.toString().isEmpty()) {
 
             throw new IllegalArgumentException("Path cannot be null or empty.");
             
-        } else if ( !(path.isAbsolute()) ) {
+        } 
+        
+        if ( !(path.isAbsolute()) ) {
 
             throw new IllegalArgumentException("Path must be absolute."
                     + "\n\n For example: /home/user/myproject/data or C:\\Users\\User\\myproject\\data");
 
-        } else if ( !(path.toFile().isDirectory()) ) {
+        }
+
+        if ( !(path.toFile().isDirectory()) ) {
 
             throw new IllegalArgumentException("Path must be a directory."
                     + "\n\n For example: /home/user/myproject/data or C:\\Users\\User\\myproject\\data");

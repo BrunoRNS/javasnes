@@ -1,4 +1,4 @@
-package util.global;
+package util.structs;
 
 public class SnesLoadExtern {
     

@@ -1,5 +1,5 @@
 package util.loops;
 
-public class SnesWhile {
+public class SnesWhile extends SnesLoop {
     
 }
