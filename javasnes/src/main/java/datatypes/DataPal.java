@@ -64,7 +64,9 @@ public class DataPal extends Data {
      */
     private void validate() throws IllegalArgumentException {
 
-        // Validate the DataPal object to ensure that the path and folder are set correctly.
+        /* 
+         * Validate the DataPal object to ensure that the path and folder are set correctly.
+        */
         if (this.path == null) {
 
             throw new IllegalArgumentException("Path cannot be null.");
@@ -83,7 +85,9 @@ public class DataPal extends Data {
 
         }
 
-        // Ensure that the path ends with ".pal".
+        /* 
+         * Ensure that the path ends with ".pal".
+        */
         if (!this.path.endsWith(".pal")) {
 
             throw new IllegalArgumentException("Path must be for a palette in .pal format.");

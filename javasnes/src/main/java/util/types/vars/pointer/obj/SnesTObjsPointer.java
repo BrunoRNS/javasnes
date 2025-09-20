@@ -1,5 +1,7 @@
 package util.types.vars.pointer.obj;
 
-public class SnesTObjsPointer {
+import util.types.vars.abstracts.pointer.obj.SnesPointerObj;
+
+public class SnesTObjsPointer extends SnesPointerObj {
     
 }

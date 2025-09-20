@@ -1,5 +1,7 @@
 package util.types.vars.pointer.data;
 
-public class SnesVoidPointer {
+import util.types.vars.abstracts.pointer.data.SnesPointerVoid;
+
+public class SnesVoidPointer extends SnesPointerVoid {
     
 }

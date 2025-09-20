@@ -1,5 +1,7 @@
 package util.types.vars.array.data;
 
-public class SnesCharArray {
+import util.types.vars.abstracts.array.data.SnesArrayData;
+
+public class SnesCharArray extends SnesArrayData {
     
 }

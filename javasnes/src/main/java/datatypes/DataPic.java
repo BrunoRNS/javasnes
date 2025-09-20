@@ -64,7 +64,9 @@ public class DataPic extends Data {
      */
     private void validate() throws IllegalArgumentException {
 
-        // Validate the DataPic object to ensure that the path and folder are set correctly.
+        /*
+         * Validate the DataPic object to ensure that the path and folder are set correctly.
+        */
         if (this.path == null) {
 
             throw new IllegalArgumentException("Path cannot be null.");
@@ -83,7 +85,9 @@ public class DataPic extends Data {
 
         }
 
-        // Ensure that the path ends with ".pic".
+        /*
+         * Ensure that the path ends with ".pic".
+        */
         if (!this.path.endsWith(".pic")) {
 
             throw new IllegalArgumentException("Path must be for a picture in snes pic format.");

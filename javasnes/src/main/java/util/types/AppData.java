@@ -25,12 +25,14 @@ public class AppData {
      * from 5 to 32 to null.
      */
     {
-        /* 
-         * -1 refers to rodata free bank, which is where the code is stored by default, only use it
-         * if the Data object is very lightweight and doesn't need a dedicated bank.
-         * This Data Bank kinda mix banks from 0-4, I'm not sure what exactily happens, but you can search
-         * for it in some snes documentations that explain the SNES memory map especially the LOROM.
-        */
+        /*
+         * In the context of WLA (WLA-DX assembler) for SNES development, "superfree" refers to 
+         * a special memory area that allows allocation of data across free banks, typically used 
+         * for small or lightweight data objects that do not require a dedicated bank. In this 
+         * implementation, access to the superfree area is represented by bank -1. Use this for 
+         * lightweight data objects that don't need their own bank, as the superfree area
+         * is shared and managed automatically by the assembler.
+         */
         this.banks.put((byte) -1, new Data[32768]);
 
         this.possibleBanks.add((byte) -1);

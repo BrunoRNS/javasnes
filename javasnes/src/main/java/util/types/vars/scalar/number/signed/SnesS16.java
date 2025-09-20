@@ -1,7 +1,7 @@
 package util.types.vars.scalar.number.signed;
 
-import util.types.vars.abstracts.array.number.SnesArrayNumber;
+import util.types.vars.abstracts.scalar.number.signed.SnesScalarSignedNumber;
 
-public class SnesS16 extends SnesArrayNumber {
+public class SnesS16 extends SnesScalarSignedNumber {
     
 }

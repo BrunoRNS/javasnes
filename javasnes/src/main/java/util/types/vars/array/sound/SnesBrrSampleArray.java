@@ -1,5 +1,7 @@
 package util.types.vars.array.sound;
 
-public class SnesBrrSampleArray {
+import util.types.vars.abstracts.array.sound.SnesArraySound;;
+
+public class SnesBrrSampleArray extends SnesArraySound {
     
 }

@@ -1,7 +1,7 @@
 package util.types.vars.scalar.sound;
 
-import util.types.vars.abstracts.SnesType;
+import util.types.vars.abstracts.scalar.sound.SnesScalarSound;
 
-public class SnesBrrSample extends SnesType {
+public class SnesBrrSample extends SnesScalarSound {
     
 }

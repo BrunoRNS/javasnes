@@ -1,5 +1,7 @@
 package util.types.vars.scalar.data;
 
-public class SnesVoid {
+import util.types.vars.abstracts.scalar.data.SnesScalarVoid;
+
+public class SnesVoid extends SnesScalarVoid {
     
 }

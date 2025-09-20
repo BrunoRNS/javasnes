@@ -2,6 +2,6 @@ package sneslib;
 
 public final class PvsneslibConstants {
     
-    // public static final...
+    // public static final String...
 
 }

@@ -38,8 +38,10 @@ public class DataFolder {
      */
     public DataFolder(String path) throws IllegalArgumentException {
 
-        // Validate the path to ensure it is not null, not empty, is absolute, and is a directory.
-        // If any of these conditions are not met, an IllegalArgumentException is thrown.
+        /*
+         * Validate the path to ensure it is not null, not empty, is absolute, and is a directory.
+         * If any of these conditions are not met, an IllegalArgumentException is thrown.
+        */
         if (path == null) {
 
             throw new IllegalArgumentException("Path cannot be null.");
@@ -66,7 +68,9 @@ public class DataFolder {
 
         }
 
-        // If the path is valid, assign it to the path field.
+        /*
+         * If the path is valid, assign it to the path field.
+        */
         this.path = path;
     
     }
@@ -79,8 +83,10 @@ public class DataFolder {
      */
     public DataFolder(Path path) throws IllegalArgumentException {
 
-        // Validate the path to ensure it is not null, not empty, is absolute, and is a directory.
-        // If any of these conditions are not met, an IllegalArgumentException is thrown.
+        /*
+         * Validate the path to ensure it is not null, not empty, is absolute, and is a directory.
+         * If any of these conditions are not met, an IllegalArgumentException is thrown.
+        */
         if (path == null) {
 
             throw new IllegalArgumentException("Path cannot be null or empty.");
@@ -107,8 +113,10 @@ public class DataFolder {
 
         }
 
-        // If the path is valid, assign it to the path field.
-        // Convert the Path to a String for consistency with the String constructor.
+        /*
+         * If the path is valid, assign it to the path field.
+         * Convert the Path to a String for consistency with the String constructor.
+        */ 
         this.path = path.toString();
 
     }

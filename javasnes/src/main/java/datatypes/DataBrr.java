@@ -25,17 +25,23 @@ public class DataBrr extends Data {
      */
     public DataBrr(DataFolder folder, String path) throws IllegalArgumentException {
 
-        // Initialize the DataBrr object with the specified folder and path.
-        // The size is set to 0 by default, indicating that the size is not known.
+        /*
+         * Initialize the DataBrr object with the specified folder and path.
+         * The size is set to 0 by default, indicating that the size is not known.
+         */
         this.path = path;
         this.folder = folder;
 
-        // Make validation of the DataBrr object.
-        // This will ensure that the path, folder, and size are set correctly.
+        /*
+         * Make validation of the DataBrr object.
+         * This will ensure that the path, folder, and size are set correctly.
+         */
         this.validate();
         this.checkIfBrr();
 
-        // Get the size of the brr data file.
+        /*
+         * Get the size of the brr data file.
+         */
         this.size = Paths.get(this.folder.getPath() + this.path).toFile().length();
 
     }
@@ -51,15 +57,18 @@ public class DataBrr extends Data {
      * 
      */
     public DataBrr(DataFolder folder, String path, long size) throws IllegalArgumentException {
-
-        // Initialize the DataBrr object with the specified folder, path, and size.
-        // The size is set to the specified value, which must be a non-negative long.
+        /*
+         * Initialize the DataBrr object with the specified folder, path, and size.
+         * The size is set to the specified value, which must be a non-negative long.
+         */
         this.path = path;
         this.size = (long) size;
         this.folder = folder;
 
-        // Make validation of the DataBrr object.
-        // This will ensure that the path, folder, and size are set correctly.
+        /*
+         * Make validation of the DataBrr object.
+         * This will ensure that the path, folder, and size are set correctly.
+         */
         this.validate();
         this.checkIfBrr();
 
@@ -77,8 +86,10 @@ public class DataBrr extends Data {
      */
     private void validate() throws IllegalArgumentException {
 
-        // Validate the DataBrr object to ensure that the path, folder, and size are set correctly.
-        // If any of these conditions are not met, an IllegalArgumentException is thrown.
+        /*
+         * Validate the DataBrr object to ensure that the path, folder, and size are set correctly.
+         * If any of these conditions are not met, an IllegalArgumentException is thrown.
+         */
         if (this.path == null) {
 
             throw new IllegalArgumentException("Path cannot be null.");
@@ -91,16 +102,20 @@ public class DataBrr extends Data {
 
         }
 
-        // Ensure that the folder is not null and is a valid DataFolder.
-        // The folder must be an instance of DataFolder and must not be null.
+        /*
+         * Ensure that the folder is not null and is a valid DataFolder.
+         * The folder must be an instance of DataFolder and must not be null.
+         */
         if (this.folder == null) {
 
             throw new IllegalArgumentException("Folder cannot be null.");
 
         }
 
-        // Ensure that the size is not negative.
-        // The size must be a non-negative long value.
+        /*
+         * Ensure that the size is not negative.
+         * The size must be a non-negative long value.
+        */
         if (this.size < 0) {
 
             throw new IllegalArgumentException("Size cannot be negative.");
@@ -119,9 +134,11 @@ public class DataBrr extends Data {
      */
     private void checkIfBrr() throws IllegalArgumentException {
 
-        // Check if the path ends with ".brr" (case-insensitive).
-        // If it does not, throw an IllegalArgumentException.
-        // This ensures that the path is for a Brr file.
+        /*
+         * Check if the path ends with ".brr" (case-insensitive).
+         * If it does not, throw an IllegalArgumentException.
+         * This ensures that the path is for a Brr file.
+        */
         if (!this.path.toLowerCase().endsWith(".brr")) {
 
             throw new IllegalArgumentException("Path must be for a Brr file."

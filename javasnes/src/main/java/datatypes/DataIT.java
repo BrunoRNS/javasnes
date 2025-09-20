@@ -40,10 +40,14 @@ public class DataIT extends Data {
      */
     public void calculateSize(String bnkPath) {
         
-        // Calculate the size of the IT data file specified by the given bank path
+        /*
+         * Calculate the size of the IT data file specified by the given bank path
+        */
         this.size = (long) Paths.get(bnkPath).toFile().length();
 
-        // Check if the size is greater than 32KiB (32768 bytes)
+        /* 
+         * Check if the size is greater than 32KiB (32768 bytes)
+        */
         this.isHigherThan32K = this.size > 32768;
 
     }
@@ -60,7 +64,7 @@ public class DataIT extends Data {
      * @param ouputPath The path where the converted SNES bank file will be saved, which must not be null or empty.
      * @throws IllegalArgumentException If any of the provided paths are null or empty.
     */
-    public static void verifyArgs(
+    private static void verifyArgs(
 
         final String PVSNESLIB_HOME, 
 
@@ -140,7 +144,9 @@ public class DataIT extends Data {
         
         verifyArgs(PVSNESLIB_HOME, itPath, ouputPath);
 
-        // Create a ProcessBuilder to run the smconv command from pvsneslib
+        /*
+         * Create a ProcessBuilder to run the smconv command from pvsneslib
+        */
 
         ProcessBuilder processBuilder = new ProcessBuilder();
 
@@ -150,7 +156,9 @@ public class DataIT extends Data {
             "smconv"
             );
 
-        // Start the process to convert IT data to SNES bank format
+        /*
+         * Start the process to convert IT data to SNES bank format
+        */
         Process process = processBuilder.start();
 
         /** 

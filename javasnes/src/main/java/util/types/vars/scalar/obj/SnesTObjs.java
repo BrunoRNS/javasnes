@@ -1,5 +1,7 @@
 package util.types.vars.scalar.obj;
 
-public class SnesTObjs {
+import util.types.vars.abstracts.scalar.obj.SnesScalarObj;
+
+public class SnesTObjs extends SnesScalarObj {
     
 }

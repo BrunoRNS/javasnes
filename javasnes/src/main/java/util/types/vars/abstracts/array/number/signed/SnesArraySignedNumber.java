@@ -1,5 +1,7 @@
 package util.types.vars.abstracts.array.number.signed;
 
-public class SnesArraySignedNumber {
+import util.types.vars.abstracts.array.number.SnesArrayNumber;
+
+public abstract class SnesArraySignedNumber extends SnesArrayNumber {
     
 }

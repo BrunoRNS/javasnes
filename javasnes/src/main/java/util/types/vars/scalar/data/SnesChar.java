@@ -1,7 +1,7 @@
 package util.types.vars.scalar.data;
 
-import util.types.vars.abstracts.SnesType;
+import util.types.vars.abstracts.scalar.data.SnesScalarData;
 
-public class SnesChar extends SnesType {
+public class SnesChar extends SnesScalarData {
     
 }

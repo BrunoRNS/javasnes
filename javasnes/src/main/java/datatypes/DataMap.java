@@ -64,7 +64,9 @@ public class DataMap extends Data {
      */
     private void validate() throws IllegalArgumentException {
 
-        // Validate the DataMap object to ensure that the path and folder are set correctly.
+        /*
+         * Validate the DataMap object to ensure that the path and folder are set correctly.
+        */
         if (this.path == null) {
 
             throw new IllegalArgumentException("Path cannot be null or empty.");
@@ -83,7 +85,9 @@ public class DataMap extends Data {
 
         }
 
-        // Ensure that the path ends with ".map".
+        /* 
+         * Ensure that the path ends with ".map".
+        */ 
         if (!this.path.endsWith(".map")) {
 
             throw new IllegalArgumentException("Path must be for a map in snes format.");

@@ -1,5 +1,7 @@
 package util.types.vars.pointer.number.signed;
 
-public class SnesS32Pointer {
+import util.types.vars.abstracts.pointer.number.signed.SnesPointerSignedNumber;
+
+public class SnesS32Pointer extends SnesPointerSignedNumber {
     
 }

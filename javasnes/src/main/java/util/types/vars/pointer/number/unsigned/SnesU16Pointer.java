@@ -1,5 +1,7 @@
 package util.types.vars.pointer.number.unsigned;
 
-public class SnesU16Pointer {
+import util.types.vars.abstracts.pointer.number.unsigned.SnesPointerUnsignedNumber;
+
+public class SnesU16Pointer extends SnesPointerUnsignedNumber {
     
 }

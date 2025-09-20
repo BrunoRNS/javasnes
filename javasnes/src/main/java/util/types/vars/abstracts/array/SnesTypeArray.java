@@ -1,7 +1,7 @@
 package util.types.vars.abstracts.array;
 
-import instruction.SnesInstruction;
+import util.types.vars.abstracts.SnesType;
 
-public abstract class SnesTypeArray extends SnesInstruction {
+public abstract class SnesTypeArray extends SnesType {
     
 }

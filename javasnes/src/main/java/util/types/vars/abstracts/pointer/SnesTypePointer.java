@@ -1,7 +1,7 @@
 package util.types.vars.abstracts.pointer;
 
-import instruction.SnesInstruction;
+import util.types.vars.abstracts.SnesType;
 
-public abstract class SnesTypePointer extends SnesInstruction {
+public abstract class SnesTypePointer extends SnesType {
     
 }

@@ -1,5 +1,7 @@
 package util.types.vars.abstracts.array.number.unsigned;
 
-public class SnesArrayUnsignedNumber {
+import util.types.vars.abstracts.array.number.SnesArrayNumber;
+
+public abstract class SnesArrayUnsignedNumber extends SnesArrayNumber {
     
 }
