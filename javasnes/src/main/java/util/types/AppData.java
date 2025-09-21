@@ -21,7 +21,7 @@ public class AppData {
      * Constructs an AppData object with a default bank configuration.
      * 
      * This constructor initializes the banks map with a special entry for the
-     * -1 bank, which is used for rodata free bank(0-4 banks), and initializes all other banks
+     * -1 bank, which is used for rodata "superfree" bank, and initializes all other banks
      * from 5 to 32 to null.
      */
     {

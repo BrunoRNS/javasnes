@@ -1,13 +1,13 @@
 package appconifg;
 
-/*
+/**
  * Class to set the pvsneslib home directory path.
  * This class contains a static field to hold the path to the pvsneslib home directory.
  * The path should be set before using any functionality that depends on pvsneslib.
  */
 public class PvsneslibHome {
     
-    /*
+    /**
      * Path to the pvsneslib home directory.
      * This path is used to locate the pvsneslib resources and tools.
      * It should be set before using any functionality that depends on pvsneslib.

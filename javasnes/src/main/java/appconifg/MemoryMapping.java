@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/*
+/**
  * Memory mapping configuration for the game.
  * 
  * Below there's the default assembly hdr mapping from pvsneslib
@@ -117,7 +117,7 @@ import java.io.PrintWriter;
 public class MemoryMapping {
 
 
-    /*
+    /**
      * This field holds the assembly memory mapping configuration as a string, which will be written
      * in the hdr.asm file. This attribute can be used if you want to use a custom assembly memory 
      * mapping configuration. If you want to use the static configuration from the App class, do not
@@ -135,7 +135,7 @@ public class MemoryMapping {
      */
 
 
-    /*
+    /**
      * If false, the memory mapping will use the LoROM structure. If true, it will use the HiROM structure.
      * The default is false (LoROM), which is the most common memory mapping for SNES games, and is the
      * most used by the pvsneslib library examples, I highly recommend you to use LoROM unless you have a
@@ -143,7 +143,7 @@ public class MemoryMapping {
      */
     public static boolean HiROM = false;
 
-    /*
+    /**
      * If false, the memory mapping will use the SlowROM structure. If true, it will use the FastROM structure.
      * The default is false (SlowROM), which is the most common memory mapping for SNES games, and is the
      * most used by the pvsneslib library examples, I highly recommend you to use SlowROM unless you have a
@@ -151,7 +151,7 @@ public class MemoryMapping {
      */
     public static boolean FastROM = false;
 
-    /*
+    /**
      * The number of ROM banks to be used in the game. The default in pvsneslib is 8, which is 2 Megabits.
      * You can set this value to any number between 4 and 32, but keep in mind that the maximum
      * size of a SNES ROM is 32 Megabits (4 MB), which is 32 banks of 32 KiB each.
@@ -177,14 +177,14 @@ public class MemoryMapping {
     */
 
 
-    /*
+    /**
      * The ID field in the SNES ROM header. This field is a 4 character string that identifies the ROM.
      * The default value is "SNES", which is the standard ID for SNES ROMs. You can just leave it as is.
      * If you want to change it, make sure to use a 4 character string, otherwise an exception will be thrown.
      */
     public static String ID = "SNES";
 
-    /*
+    /**
      * The Name field in SNES ROM header. This field is a 21 character string that represents 
      * the name of the game. Make sure to use spaces for unused bytes of the name. The default value is 
      * "                     " (21 spaces). You should change it to the name of your game, but make sure
@@ -192,7 +192,7 @@ public class MemoryMapping {
      */
     public static String name = "                     ";
 
-    /*
+    /**
      * The Cartridge Type field in the SNES ROM header. This field is a value that indicates the type of
      * cartridge used by the game. The default value is "$00", which indicates a standard ROM cartridge.
      * Other common values include:
@@ -207,7 +207,7 @@ public class MemoryMapping {
      */
     public static String cartridgeType = "$00";
 
-    /*
+    /**
      * The ROM Size field in the SNES ROM header. This field indicates the size of the ROM in megabits.
      * The value is represented as a hexadecimal value, where each increment represents a doubling of the
      * size. The default value is "$0C", which corresponds to 32 megabits (4 MiB).
@@ -228,7 +228,7 @@ public class MemoryMapping {
      */
     public static String romsize = "$0C";
 
-    /*
+    /**
      * The SRAM Size field in the SNES ROM header. This field indicates the size of the SRAM in kilobits.
      * The value is represented as a hexadecimal value, where each increment represents a doubling of the
      * size. The default value is "$00", which corresponds to 0 kilobits (no SRAM).
@@ -247,7 +247,7 @@ public class MemoryMapping {
      */
     public static String sramsize = "$00";
 
-    /*
+    /**
      * The Country field in the SNES ROM header. This field indicates the country for which the game
      * was released. The value is represented as a hexadecimal value. The default value is "$01",
      * which corresponds to the United States. Other common values include:
@@ -280,7 +280,7 @@ public class MemoryMapping {
      */
     public static String country = "$01";
 
-    /*
+    /**
      * The Licensee Code field in the SNES ROM header. This field indicates the licensee of the game.
      * The value is represented as a hexadecimal value. The default value is "$00", which corresponds
      * to no specific licensee. Other common values include:
@@ -314,7 +314,7 @@ public class MemoryMapping {
      */
     public static String licenseeCode = "$00";
 
-    /*
+    /**
      * The Version field in the SNES ROM header. This field indicates the version of the game.
      * The value is represented as a hexadecimal value, where "$00" corresponds to version 1.0,
      * "$01" to version 1.1, and so on. The default value is "$00".
@@ -337,7 +337,7 @@ public class MemoryMapping {
      * ======================================================================
      */
 
-    /*
+    /**
      * Generates the assembly memory mapping configuration based on the static configuration fields
      * defined in this class and writes it to the hdr.asm file. If the assemblyMapping field is not
      * null, it will use that value instead of generating a new one.
@@ -371,7 +371,7 @@ public class MemoryMapping {
         
     }
 
-    /*
+    /**
      * Checks if the current configuration is valid. If not, throws an IllegalArgumentException 
      * with a descriptive message.
      * 
@@ -546,7 +546,7 @@ public class MemoryMapping {
 
     }
 
-    /*
+    /**
      * Generates a String containing the assembly memory mapping configuration
      * based on the static configuration fields defined in this class. This method constructs
      * the assembly code as a StringBuilder and assigns it to the assemblyMapping field.
@@ -644,7 +644,7 @@ public class MemoryMapping {
 
     }
 
-    /*
+    /**
      * Writes the assembly memory mapping configuration to the specified file.
      * This method takes the file path and the content as parameters and writes
      * the content to the file. If the file already exists, it will be overwritten.
