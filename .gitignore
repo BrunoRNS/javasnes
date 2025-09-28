@@ -16,3 +16,5 @@ launch.json
 *.LCKMain.*
 
 test/
+
+changes.txt
