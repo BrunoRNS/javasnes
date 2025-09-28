@@ -14,8 +14,8 @@ The goal of this project is to provide an easy-to-use library for developing SNE
 
 ## Prerequisites
 
-- **Java 8+**: Ensure you have Java version 8 or higher installed on your system (recommended 17 or higher).
-- **Gradle**: This project uses Gradle for building and managing dependencies.
+- **Java 8+**: Ensure you have Java version 8 or higher installed on your system.
+- **Gradle 4+**: This project uses Gradle for building and managing dependencies.
 - **SNES-IDE**: You must have SNES-IDE installed and configured on your system to use this library effectively.
 
 ## Setup

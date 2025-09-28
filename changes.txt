@@ -1,0 +1,842 @@
+diff --git a/README.md b/README.md
+index 768bdc4..327ac8a 100644
+--- a/README.md
++++ b/README.md
+@@ -14,8 +14,8 @@ The goal of this project is to provide an easy-to-use library for developing SNE
+ 
+ ## Prerequisites
+ 
+-- **Java 8+**: Ensure you have Java version 8 or higher installed on your system (recommended 17 or higher).
+-- **Gradle**: This project uses Gradle for building and managing dependencies.
++- **Java 8+**: Ensure you have Java version 8 or higher installed on your system.
++- **Gradle 4+**: This project uses Gradle for building and managing dependencies.
+ - **SNES-IDE**: You must have SNES-IDE installed and configured on your system to use this library effectively.
+ 
+ ## Setup
+diff --git a/javasnes/build.gradle b/javasnes/build.gradle
+index 0be9926..19c4da8 100644
+--- a/javasnes/build.gradle
++++ b/javasnes/build.gradle
+@@ -5,10 +5,13 @@ plugins {
+ group = 'org.javasnes'
+ version = '1.0.0'
+ 
+-java {
+-    sourceCompatibility = JavaVersion.VERSION_1_8
+-    targetCompatibility = JavaVersion.VERSION_1_8
+-}
+-
+ sourceCompatibility = '1.8'
+ targetCompatibility = '1.8'
++
++task copyJarToExamples(type: Copy) {
++    dependsOn jar
++    from jar.archivePath
++    into "$rootDir/snes-examples/lib"
++}
++
++build.finalizedBy(copyJarToExamples)
+diff --git a/javasnes/src/main/java/sneslib/PvsneslibConstants.java b/javasnes/src/main/java/sneslib/PvsneslibConstants.java
+index e5a8066..7743b61 100644
+--- a/javasnes/src/main/java/sneslib/PvsneslibConstants.java
++++ b/javasnes/src/main/java/sneslib/PvsneslibConstants.java
+@@ -1,7 +1,11 @@
+ package sneslib;
+ 
++import instruction.SnesInstruction;
++import instruction.SnesRawInstruction;
++
+ public final class PvsneslibConstants {
+     
+-    // public static final String...
++    // Just an example...
++    public static final SnesInstruction MODE_1 = new SnesRawInstruction("MODE_1", false);
+ 
+ }
+diff --git a/javasnes/src/main/java/util/types/Process.java b/javasnes/src/main/java/util/types/Process.java
+index f76ac77..833aa31 100644
+--- a/javasnes/src/main/java/util/types/Process.java
++++ b/javasnes/src/main/java/util/types/Process.java
+@@ -39,8 +39,7 @@ public class Process {
+      * 5 if it returns a signed 16-bit integer.
+      * 6 if it returns a signed 32-bit integer.
+      * 7 if it returns a BrrSample.
+-     * 8 if it returns a t_objs.
+-     * 9 if it returns a char.
++     * 8 if it returns a char.
+      * 
+      * 11 if it returns an unsigned 8-bit pointer.
+      * 12 if it returns an unsigned 16-bit pointer.
+@@ -49,8 +48,7 @@ public class Process {
+      * 15 if it returns a signed 16-bit pointer.
+      * 16 if it returns a signed 32-bit pointer.
+      * 17 if it returns a BrrSample pointer.
+-     * 18 if it returns a t_objs pointer.
+-     * 19 if it returns a char pointer.
++     * 18 if it returns a char pointer.
+      * 
+      */
+     public Byte returnType = null;
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/SnesTypeArray.java b/javasnes/src/main/java/util/types/vars/abstracts/array/SnesTypeArray.java
+index d3e2afc..63bea53 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/SnesTypeArray.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/array/SnesTypeArray.java
+@@ -2,6 +2,69 @@ package util.types.vars.abstracts.array;
+ 
+ import util.types.vars.abstracts.SnesType;
+ 
++/**
++ * Abstract base class for all SNES array types.
++ * This class provides a common foundation for various array implementations.
++ */
+ public abstract class SnesTypeArray extends SnesType {
++
++    /**
++     * The C type of the array variable.
++     * 
++     * It must be a valid C type.
++     * 
++     * Examples:
++     * 
++     * "u8" for an array of unsigned 8-bit integer
++     * "s16" for an array of signed 16-bit integer
++     * "char" for an array of data byte values
++     * [...]
++     * 
++     * This field must be set by the specific array type subclass.
++     */
++    public String type = null;
++
++    /**
++     * The size of the array.
++     * 
++     * It is fixed, because malloc is not fully implemented in tcc-816 compiler,
++     * but you still can try to use malloc(or calloc) using a RawInstruction but is not recommended.
++     * 
++     * It cannot exceed the SNES random access memory limit, otherwise it will cause malfunction.
++     */
++    public Short length = null; 
++
++    /**
++     * Returns a constant identifier for the subclasses of SnesTypeArray.
++     * 
++     * This method is an override of the IDENTIFIER method in the SnesType class.
++     * It returns the string "array" to indicate that this type is an array type.
++     * 
++     * All array types will return this identifier.
++     */
++    @Override
++    public String IDENTIFIER() {
++
++        return "array";
++
++    }
++
++    /**
++     * Generates the source code representation for the array variable.
++     * The generated code is assigned to the {@code sourceCode} field in the format:
++     * "{type} {name}[{length}];"
++     * where {@code type} is the data type, {@code name} is the variable name,
++     * and {@code length} is the size of the array.
++     *
++     * Examples of generated C source code:
++     * - "u8 myArray[10];"
++     * - "s16 values[256];"
++     * - "char buffer[128];"
++     */
++    public void generateSourceCode() {
++
++        this.sourceCode = String.format("%s %s[%d];", this.type, this.name, this.length);
++
++    }
+     
+ }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/data/SnesArrayData.java b/javasnes/src/main/java/util/types/vars/abstracts/array/data/SnesArrayData.java
+index 647eda4..8dfbd9b 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/data/SnesArrayData.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/array/data/SnesArrayData.java
+@@ -2,6 +2,8 @@ package util.types.vars.abstracts.array.data;
+ 
+ import util.types.vars.abstracts.array.SnesTypeArray;
+ 
+-public abstract class SnesArrayData extends SnesTypeArray {
+-    
+-}
++/**
++ * Abstract base class for SNES array data types.
++ * This class serves as a foundation for specific data array implementations.
++ */
++public abstract class SnesArrayData extends SnesTypeArray { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/number/SnesArrayNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/array/number/SnesArrayNumber.java
+index 2c1e72b..3cc75b5 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/number/SnesArrayNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/array/number/SnesArrayNumber.java
+@@ -2,6 +2,8 @@ package util.types.vars.abstracts.array.number;
+ 
+ import util.types.vars.abstracts.array.SnesTypeArray;
+ 
+-public abstract class SnesArrayNumber extends SnesTypeArray {
+-    
+-}
+\ No newline at end of file
++/**
++ * Abstract base class for SNES array number types.
++ * This class provides a common foundation for various numeric array implementations.
++ */
++public abstract class SnesArrayNumber extends SnesTypeArray { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/number/signed/SnesArraySignedNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/array/number/signed/SnesArraySignedNumber.java
+index 880de48..80ddd30 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/number/signed/SnesArraySignedNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/array/number/signed/SnesArraySignedNumber.java
+@@ -2,6 +2,8 @@ package util.types.vars.abstracts.array.number.signed;
+ 
+ import util.types.vars.abstracts.array.number.SnesArrayNumber;
+ 
+-public abstract class SnesArraySignedNumber extends SnesArrayNumber {
+-    
+-}
++/**
++ * Abstract base class for SNES signed number array types.
++ * This class provides a common foundation for various signed numeric array implementations.
++ */
++public abstract class SnesArraySignedNumber extends SnesArrayNumber { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/number/unsigned/SnesArrayUnsignedNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/array/number/unsigned/SnesArrayUnsignedNumber.java
+index 7a1a6f3..cc3416f 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/number/unsigned/SnesArrayUnsignedNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/array/number/unsigned/SnesArrayUnsignedNumber.java
+@@ -2,6 +2,8 @@ package util.types.vars.abstracts.array.number.unsigned;
+ 
+ import util.types.vars.abstracts.array.number.SnesArrayNumber;
+ 
+-public abstract class SnesArrayUnsignedNumber extends SnesArrayNumber {
+-    
+-}
++/**
++ * Abstract base class for SNES unsigned number array types.
++ * This class provides a common foundation for various unsigned numeric array implementations.
++ */
++public abstract class SnesArrayUnsignedNumber extends SnesArrayNumber { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/obj/SnesArrayObj.java b/javasnes/src/main/java/util/types/vars/abstracts/array/obj/SnesArrayObj.java
+deleted file mode 100644
+index 2973100..0000000
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/obj/SnesArrayObj.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package util.types.vars.abstracts.array.obj;
+-
+-import util.types.vars.abstracts.array.SnesTypeArray;
+-
+-public abstract class SnesArrayObj extends SnesTypeArray {
+-    
+-}
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/array/sound/SnesArraySound.java b/javasnes/src/main/java/util/types/vars/abstracts/array/sound/SnesArraySound.java
+index b731bd1..c1909ae 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/array/sound/SnesArraySound.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/array/sound/SnesArraySound.java
+@@ -2,6 +2,8 @@ package util.types.vars.abstracts.array.sound;
+ 
+ import util.types.vars.abstracts.array.SnesTypeArray;
+ 
+-public abstract class SnesArraySound extends SnesTypeArray {
+-    
+-}
++/**
++ * Abstract base class for SNES sound array types.
++ * This class provides a common foundation for various sound array implementations.
++ */
++public abstract class SnesArraySound extends SnesTypeArray { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/SnesTypePointer.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/SnesTypePointer.java
+index 779713a..e2bd15f 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/SnesTypePointer.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/SnesTypePointer.java
+@@ -2,6 +2,86 @@ package util.types.vars.abstracts.pointer;
+ 
+ import util.types.vars.abstracts.SnesType;
+ 
++/**
++ * Abstract base class for all SNES pointer types. This class provides a common
++ * foundation for various pointer implementations.
++ */
+ public abstract class SnesTypePointer extends SnesType {
+-    
++
++    /**
++     * The type of the SNES pointer, represented as a String.
++     * This field can be used to specify the data type or category associated with the pointer.
++     * It may be null if the type is not specified.
++     */
++    public String type = null;
++
++    /**
++     * The default value assigned to the pointer.
++     * This value is used when no explicit value is provided.
++     * It can be null if no default is specified.
++     */
++    public String defaultValue = null;
++
++    /**
++     * Returns a constant identifier for the subclasses of SnesTypePointer.
++     *
++     * This method is an override of the IDENTIFIER method in the SnesType
++     * class. It returns the string "pointer" to indicate that this type is a
++     * pointer type.
++     *
++     * All pointer types will return this identifier.
++     */
++    @Override
++    public String IDENTIFIER() {
++
++        return "pointer";
++
++    }
++
++    /**
++     * Generates the C source code representation for this SNES pointer
++     * variable. This method constructs a C declaration statement for a pointer
++     * variable, using the type and defaultValue fields. If defaultValue is not
++     * null, it initializes the pointer; otherwise, it only declares the
++     * pointer.
++     *
++     * Example output: int* ptr = NULL; char* buffer;
++     */
++    public void generateSourceCode() throws IllegalArgumentException {
++
++        /**
++         * Ensure type and name are set.
++         * An exception is thrown if one of them are null or empty.
++         */
++
++        if (type == null || name == null ) {
++
++            throw new IllegalArgumentException("Pointer's type and name must not be null");
++
++        }
++
++        if (type.isEmpty() || name.isEmpty()) {
++
++            throw new IllegalArgumentException("Pointer's type and name must not be empty");
++
++        }
++
++        StringBuilder sb = new StringBuilder();
++        sb.append(type).append("* ");
++
++
++        sb.append(this.name);
++
++        if (defaultValue != null && !defaultValue.isEmpty()) {
++
++            sb.append(" = ").append(defaultValue);
++
++        }
++
++        sb.append(";");
++
++        this.sourceCode = sb.toString();
++
++    }
++
+ }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerData.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerData.java
+index 01b5ff9..7a25a99 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerData.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerData.java
+@@ -2,6 +2,8 @@ package util.types.vars.abstracts.pointer.data;
+ 
+ import util.types.vars.abstracts.pointer.SnesTypePointer;
+ 
+-public abstract class SnesPointerData extends SnesTypePointer {
+-    
+-}
+\ No newline at end of file
++/**
++ * Abstract base class for SNES data pointer types.
++ * This class serves as a foundation for specific data pointer implementations.
++ */
++public abstract class SnesPointerData extends SnesTypePointer { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerVoid.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerVoid.java
+index 354b99f..45ee690 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerVoid.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/data/SnesPointerVoid.java
+@@ -2,6 +2,13 @@ package util.types.vars.abstracts.pointer.data;
+ 
+ import util.types.vars.abstracts.pointer.SnesTypePointer;
+ 
+-public abstract class SnesPointerVoid extends SnesTypePointer {
+-    
+-}
++/**
++ * Represents an abstract SNES pointer type with no specific data type.
++ * 
++ * This class serves as a base for pointer types that do not point to a concrete value,
++ * providing a foundation for more specialized pointer implementations within the SNES
++ * memory model.
++ * 
++ * @see SnesTypePointer
++ */
++public abstract class SnesPointerVoid extends SnesTypePointer { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/SnesPointerNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/SnesPointerNumber.java
+index 0a87700..e688e21 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/SnesPointerNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/SnesPointerNumber.java
+@@ -2,6 +2,12 @@ package util.types.vars.abstracts.pointer.number;
+ 
+ import util.types.vars.abstracts.pointer.SnesTypePointer;
+ 
+-public abstract class SnesPointerNumber extends SnesTypePointer {
+-    
+-}
+\ No newline at end of file
++/**
++ * Abstract base class representing a pointer to a numeric value in the SNES memory model.
++ * 
++ * This class extends {@link SnesTypePointer} and serves as a foundation for
++ * specific pointer types that reference numeric data within the SNES architecture.
++ * Subclasses should implement the details for handling different numeric pointer types.
++ * 
++ */
++public abstract class SnesPointerNumber extends SnesTypePointer { }
+\ No newline at end of file
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/signed/SnesPointerSignedNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/signed/SnesPointerSignedNumber.java
+index 27b6e93..ebf4fc5 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/signed/SnesPointerSignedNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/signed/SnesPointerSignedNumber.java
+@@ -2,6 +2,12 @@ package util.types.vars.abstracts.pointer.number.signed;
+ 
+ import util.types.vars.abstracts.pointer.number.SnesPointerNumber;
+ 
+-public abstract class SnesPointerSignedNumber extends SnesPointerNumber {
+-    
+-}
++/**
++ * Represents an abstract class for signed number pointer types in the SNES context.
++ * 
++ * This class extends {@link SnesPointerNumber} and serves as a base for all signed
++ * pointer number implementations. It does not define any additional methods or fields,
++ * but provides a common type for signed pointer numbers.
++ * 
++ */
++public abstract class SnesPointerSignedNumber extends SnesPointerNumber { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/unsigned/SnesPointerUnsignedNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/unsigned/SnesPointerUnsignedNumber.java
+index de023bd..5e0ec9f 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/unsigned/SnesPointerUnsignedNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/number/unsigned/SnesPointerUnsignedNumber.java
+@@ -2,6 +2,11 @@ package util.types.vars.abstracts.pointer.number.unsigned;
+ 
+ import util.types.vars.abstracts.pointer.number.SnesPointerNumber;
+ 
+-public abstract class SnesPointerUnsignedNumber extends SnesPointerNumber {
+-    
+-}
++/**
++ * Represents an abstract class for SNES pointer numbers that are unsigned.
++ * 
++ * This class extends {@link SnesPointerNumber} and serves as a base for all
++ * unsigned number pointer types in the SNES context.
++ * 
++ */
++public abstract class SnesPointerUnsignedNumber extends SnesPointerNumber { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/obj/SnesPointerObj.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/obj/SnesPointerObj.java
+deleted file mode 100644
+index a05742a..0000000
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/obj/SnesPointerObj.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package util.types.vars.abstracts.pointer.obj;
+-
+-import util.types.vars.abstracts.pointer.SnesTypePointer;
+-
+-public abstract class SnesPointerObj extends SnesTypePointer {
+-    
+-}
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/pointer/sound/SnesPointerSound.java b/javasnes/src/main/java/util/types/vars/abstracts/pointer/sound/SnesPointerSound.java
+index 8985ddb..2825b39 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/pointer/sound/SnesPointerSound.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/pointer/sound/SnesPointerSound.java
+@@ -2,6 +2,13 @@ package util.types.vars.abstracts.pointer.sound;
+ 
+ import util.types.vars.abstracts.pointer.SnesTypePointer;
+ 
+-public abstract class SnesPointerSound extends SnesTypePointer {
+-    
+-}
++
++/**
++ * Represents an abstract pointer type specifically for SNES sound data.
++ * 
++ * This class serves as a base for all pointer types that reference sound-related
++ * data structures or resources in the SNES context. It extends {@link SnesTypePointer}
++ * to inherit pointer behavior and should be subclassed to provide concrete implementations.
++ * 
++ */
++public abstract class SnesPointerSound extends SnesTypePointer { }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/scalar/SnesTypeScalar.java b/javasnes/src/main/java/util/types/vars/abstracts/scalar/SnesTypeScalar.java
+index 482c74d..9c144c5 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/scalar/SnesTypeScalar.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/scalar/SnesTypeScalar.java
+@@ -26,7 +26,6 @@ public abstract class SnesTypeScalar extends SnesType {
+      * "s16" for signed 16-bit integer
+      * "char" for data byte values
+      * "void" for void type
+-     * "t_objs" for object type
+      * [...]
+      * 
+      * This field must be set by the specific scalar type subclass.
+@@ -72,7 +71,7 @@ public abstract class SnesTypeScalar extends SnesType {
+      */
+     public void generateSourceCode() {
+ 
+-        if (type.equals("void")) {
++        if (this.type.equals("void")) {
+ 
+             /**
+              * Void type cannot be used as a variable.
+@@ -81,21 +80,21 @@ public abstract class SnesTypeScalar extends SnesType {
+              * If the variable type is void, the sourceCode field is set to an empty string.
+              * So it will be ignored when generating the final C source code for the ROM.
+              */
+-            sourceCode = "";
++            this.sourceCode = "";
+ 
+             return;
+ 
+         }
+ 
+-        sourceCode = 
++        this.sourceCode = 
+ 
+-            defaultValue == null ?
++            this.defaultValue == null ?
+ 
+-                type + " " + name + ";" // for e.g. u8 myVar;
++                this.type + " " + this.name + ";" // for e.g. u8 myVar;
+ 
+                 :
+ 
+-                type + " " + name + " = " + defaultValue + ";"; // for e.g. u8 myVar = 0;
++                this.type + " " + this.name + " = " + this.defaultValue + ";"; // for e.g. u8 myVar = 0;
+ 
+     }
+     
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/SnesScalarNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/SnesScalarNumber.java
+index af232bd..6f839ce 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/SnesScalarNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/SnesScalarNumber.java
+@@ -2,6 +2,105 @@ package util.types.vars.abstracts.scalar.number;
+ 
+ import util.types.vars.abstracts.scalar.SnesTypeScalar;
+ 
++
++/**
++ * Abstract base class representing a scalar numeric type in the SNES type system.
++ * 
++ * This class provides common fields for SNES scalar numbers, such as the number of bits,
++ * minimum value, and maximum value. Subclasses should define the specific numeric behavior.
++ *
++ * - {@code BITS_COUNT}: The number of bits used to represent the value.
++ * - {@code MIN_VALUE}: The minimum value that can be represented.
++ * - {@code MAX_VALUE}: The maximum value that can be represented.
++ *
++ * All fields are nullable and should be initialized by subclasses.
++ */
+ public abstract class SnesScalarNumber extends SnesTypeScalar {
+-    
++
++    /**
++     * Byte BITS_COUNT - number of bits used to represent the value.
++     */
++    protected Byte BITS_COUNT = null;
++
++    /**
++     * Integer MIN_VALUE - minimum value that can be represented by the variable.
++     */
++    protected Integer MIN_VALUE = null;
++
++    /**
++     * Integer MAX_VALUE - maximum value that can be represented by the variable.
++     */
++    protected Integer MAX_VALUE = null;
++
++    /**
++     * Gets the number of bits used to represent the value.
++     * @return the bits count
++     */
++    public Byte getBitsCount() {
++        return BITS_COUNT;
++    }
++
++    /**
++     * Gets the minimum value that can be represented by the variable.
++     * @return the minimum value
++     */
++    public Integer getMinValue() {
++        return MIN_VALUE;
++    }
++
++    /**
++     * Gets the maximum value that can be represented by the variable.
++     * @return the maximum value
++     */
++    public Integer getMaxValue() {
++        return MAX_VALUE;
++    }
++
++    /**
++     * Validates the BITS_COUNT, MIN_VALUE, and MAX_VALUE fields.
++     * 
++     * - BITS_COUNT must be a power of two, greater than or equal to 8.
++     * - MIN_VALUE must be a power of two.
++     * - MAX_VALUE + 1 must be a power of two.
++     *
++     * @throws IllegalArgumentException if any of the constraints are violated or if any field is null.
++     */
++    public void validateMinMaxBitCount() throws IllegalArgumentException {
++
++        /**
++         * Check if any of the values are null
++         */
++        if (this.BITS_COUNT == null || this.MIN_VALUE == null || this.MAX_VALUE == null) {
++            throw new IllegalArgumentException("BITS_COUNT, MIN_VALUE, and MAX_VALUE must not be null.");
++        }
++
++        /** 
++         * Check if BITS_COUNT is a power of two and at least 8
++         */
++        if (!(this.BITS_COUNT > 0 && ((this.BITS_COUNT & (this.BITS_COUNT - 1)) == 0) && (this.BITS_COUNT >= 8))) {
++
++            throw new IllegalArgumentException("BITS_COUNT must be a power of two and at least 8.");
++
++        }
++
++        /**
++         * Check if MIN_VALUE is a power of two
++         */
++        if (!((this.MIN_VALUE & (this.MIN_VALUE - 1)) == 0)) {
++
++            throw new IllegalArgumentException("MIN_VALUE must be a power of two.");
++
++        }
++
++        /**
++         * Check if MAX_VALUE + 1 is a power of two
++         */
++        if (!(((this.MAX_VALUE + 1) & this.MAX_VALUE) == 0)) {
++
++            throw new IllegalArgumentException("MAX_VALUE + 1 must be a power of two.");
++
++        }
++
++    }
++
+ }
+\ No newline at end of file
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/signed/SnesScalarSignedNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/signed/SnesScalarSignedNumber.java
+index 87531fe..c29f7b7 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/signed/SnesScalarSignedNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/signed/SnesScalarSignedNumber.java
+@@ -2,6 +2,24 @@ package util.types.vars.abstracts.scalar.number.signed;
+ 
+ import util.types.vars.abstracts.scalar.number.SnesScalarNumber;
+ 
++/**
++ * Abstract base class representing a signed scalar number in the SNES context.
++ *
++ * This class extends {@link SnesScalarNumber} to provide a foundation for all signed numeric scalar types.
++ * Subclasses should implement specific signed number representations and behaviors as needed.
++ *
++ */
+ public abstract class SnesScalarSignedNumber extends SnesScalarNumber {
++
++    /**
++     * Represents the signal (sign) of the number.
++     * 
++     * - '+' for positive values.
++     * - '-' for negative values.
++     * - ' ' (space) for positive decimal values or for binary/hexadecimal numbers that do not use a sign.
++     * 
++     * May be {@code null} if the signal is not set.
++     */
++    public Character signal = null;
+     
+ }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/unsigned/SnesScalarUnsignedNumber.java b/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/unsigned/SnesScalarUnsignedNumber.java
+index 3733711..dc4dcd5 100644
+--- a/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/unsigned/SnesScalarUnsignedNumber.java
++++ b/javasnes/src/main/java/util/types/vars/abstracts/scalar/number/unsigned/SnesScalarUnsignedNumber.java
+@@ -2,6 +2,27 @@ package util.types.vars.abstracts.scalar.number.unsigned;
+ 
+ import util.types.vars.abstracts.scalar.number.SnesScalarNumber;
+ 
++/**
++ * Abstract base class representing an unsigned scalar number type for the SNES system.
++ * 
++ * This class extends {@link SnesScalarNumber} and provides a minimum value implementation
++ * suitable for unsigned numbers (i.e., zero).
++ * 
++ */
+ public abstract class SnesScalarUnsignedNumber extends SnesScalarNumber {
++
++    /**
++     * Returns the minimum value for this unsigned scalar number type.
++     * 
++     * For unsigned numbers, this is always zero.
++     *
++     * @return the minimum value (0) for this unsigned number type
++     */
++    @Override
++    public Integer getMinValue() {
++
++        return 0;
++
++    }
+     
+ }
+diff --git a/javasnes/src/main/java/util/types/vars/abstracts/scalar/obj/SnesScalarObj.java b/javasnes/src/main/java/util/types/vars/abstracts/scalar/obj/SnesScalarObj.java
+deleted file mode 100644
+index 810e9a4..0000000
+--- a/javasnes/src/main/java/util/types/vars/abstracts/scalar/obj/SnesScalarObj.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package util.types.vars.abstracts.scalar.obj;
+-
+-import util.types.vars.abstracts.scalar.SnesTypeScalar;
+-
+-/**
+- * Snes
+- */
+-public abstract class SnesScalarObj extends SnesTypeScalar { }
+diff --git a/javasnes/src/main/java/util/types/vars/array/obj/SnesTObjsArray.java b/javasnes/src/main/java/util/types/vars/array/obj/SnesTObjsArray.java
+deleted file mode 100644
+index cfe275f..0000000
+--- a/javasnes/src/main/java/util/types/vars/array/obj/SnesTObjsArray.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package util.types.vars.array.obj;
+-
+-import util.types.vars.abstracts.array.obj.SnesArrayObj;
+-
+-public class SnesTObjsArray extends SnesArrayObj {
+-    
+-}
+diff --git a/javasnes/src/main/java/util/types/vars/pointer/obj/SnesTObjsPointer.java b/javasnes/src/main/java/util/types/vars/pointer/obj/SnesTObjsPointer.java
+deleted file mode 100644
+index cac979a..0000000
+--- a/javasnes/src/main/java/util/types/vars/pointer/obj/SnesTObjsPointer.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package util.types.vars.pointer.obj;
+-
+-import util.types.vars.abstracts.pointer.obj.SnesPointerObj;
+-
+-public class SnesTObjsPointer extends SnesPointerObj {
+-    
+-}
+diff --git a/javasnes/src/main/java/util/types/vars/scalar/obj/SnesTObjs.java b/javasnes/src/main/java/util/types/vars/scalar/obj/SnesTObjs.java
+deleted file mode 100644
+index 9453dbb..0000000
+--- a/javasnes/src/main/java/util/types/vars/scalar/obj/SnesTObjs.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package util.types.vars.scalar.obj;
+-
+-import util.types.vars.abstracts.scalar.obj.SnesScalarObj;
+-
+-public class SnesTObjs extends SnesScalarObj {
+-    
+-}
+\ No newline at end of file
+diff --git a/settings.gradle b/settings.gradle
+index 645b485..7c252d5 100644
+--- a/settings.gradle
++++ b/settings.gradle
+@@ -1,3 +1,3 @@
+ rootProject.name = 'javasnes'
+ 
+-include 'javasnes', 'tests'
+\ No newline at end of file
++include 'javasnes', 'snes-examples'
+\ No newline at end of file
+diff --git a/snes-examples/build.gradle b/snes-examples/build.gradle
+index 377c5ad..f0e154a 100644
+--- a/snes-examples/build.gradle
++++ b/snes-examples/build.gradle
+@@ -10,9 +10,7 @@ repositories {
+ }
+ 
+ dependencies {
+-    implementation name: 'javasnes'
++    implementation name: 'javasnes-1.0.0'
+ }
+ 
+-application {
+-    mainClass = 'Main'
+-}
++mainClassName = 'Main'
+diff --git a/snes-examples/lib/javasnes-1.0.0.jar b/snes-examples/lib/javasnes-1.0.0.jar
+new file mode 100644
+index 0000000..77fd669
+Binary files /dev/null and b/snes-examples/lib/javasnes-1.0.0.jar differ
+diff --git a/snes-examples/src/main/java/Main.java b/snes-examples/src/main/java/Main.java
+index c1b4223..8807498 100644
+--- a/snes-examples/src/main/java/Main.java
++++ b/snes-examples/src/main/java/Main.java
+@@ -1,3 +1,9 @@
+ public class Main {
++
++    public static void main(String[] args) {
++
++        System.out.println("Hello Javasnes!");
++        
++    }
+     
+ }
+diff --git a/tests/build.gradle b/tests/build.gradle
+deleted file mode 100644
+index 94c8fc6..0000000
+--- a/tests/build.gradle
++++ /dev/null
+@@ -1,35 +0,0 @@
+-plugins {
+-    id 'java'
+-    id 'application'
+-}
+-
+-dependencies {
+-    implementation project(':javasnes')
+-}
+-
+-application {
+-    mainClass = 'Main'
+-}
+-
+-java {
+-    sourceCompatibility = JavaVersion.VERSION_1_8
+-    targetCompatibility = JavaVersion.VERSION_1_8
+-}
+-
+-sourceCompatibility = '1.8'
+-targetCompatibility = '1.8'
+-
+-
+-jar {
+-    manifest {
+-        attributes(
+-            'Main-Class': application.mainClass
+-        )
+-    }
+-
+-    from {
+-
+-        configurations.runtimeClasspath.collect { it.isDirectory()? it : zipTree(it) }
+-
+-    }
+-}
+diff --git a/tests/src/main/java/Main.java b/tests/src/main/java/Main.java
+deleted file mode 100644
+index c1b4223..0000000
+--- a/tests/src/main/java/Main.java
++++ /dev/null
+@@ -1,3 +0,0 @@
+-public class Main {
+-    
+-}

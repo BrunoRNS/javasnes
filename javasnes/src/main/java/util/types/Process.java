@@ -39,8 +39,7 @@ public class Process {
      * 5 if it returns a signed 16-bit integer.
      * 6 if it returns a signed 32-bit integer.
      * 7 if it returns a BrrSample.
-     * 8 if it returns a t_objs.
-     * 9 if it returns a char.
+     * 8 if it returns a char.
      * 
      * 11 if it returns an unsigned 8-bit pointer.
      * 12 if it returns an unsigned 16-bit pointer.
@@ -49,8 +48,7 @@ public class Process {
      * 15 if it returns a signed 16-bit pointer.
      * 16 if it returns a signed 32-bit pointer.
      * 17 if it returns a BrrSample pointer.
-     * 18 if it returns a t_objs pointer.
-     * 19 if it returns a char pointer.
+     * 18 if it returns a char pointer.
      * 
      */
     public Byte returnType = null;

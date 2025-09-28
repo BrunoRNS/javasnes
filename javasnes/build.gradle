@@ -5,10 +5,13 @@ plugins {
 group = 'org.javasnes'
 version = '1.0.0'
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
+
+task copyJarToExamples(type: Copy) {
+    dependsOn jar
+    from jar.archivePath
+    into "$rootDir/snes-examples/lib"
+}
+
+build.finalizedBy(copyJarToExamples)

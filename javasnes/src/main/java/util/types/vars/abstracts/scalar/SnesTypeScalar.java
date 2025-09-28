@@ -26,7 +26,6 @@ public abstract class SnesTypeScalar extends SnesType {
      * "s16" for signed 16-bit integer
      * "char" for data byte values
      * "void" for void type
-     * "t_objs" for object type
      * [...]
      * 
      * This field must be set by the specific scalar type subclass.
@@ -72,7 +71,7 @@ public abstract class SnesTypeScalar extends SnesType {
      */
     public void generateSourceCode() {
 
-        if (type.equals("void")) {
+        if (this.type.equals("void")) {
 
             /**
              * Void type cannot be used as a variable.
@@ -81,21 +80,21 @@ public abstract class SnesTypeScalar extends SnesType {
              * If the variable type is void, the sourceCode field is set to an empty string.
              * So it will be ignored when generating the final C source code for the ROM.
              */
-            sourceCode = "";
+            this.sourceCode = "";
 
             return;
 
         }
 
-        sourceCode = 
+        this.sourceCode = 
 
-            defaultValue == null ?
+            this.defaultValue == null ?
 
-                type + " " + name + ";" // for e.g. u8 myVar;
+                this.type + " " + this.name + ";" // for e.g. u8 myVar;
 
                 :
 
-                type + " " + name + " = " + defaultValue + ";"; // for e.g. u8 myVar = 0;
+                this.type + " " + this.name + " = " + this.defaultValue + ";"; // for e.g. u8 myVar = 0;
 
     }
     

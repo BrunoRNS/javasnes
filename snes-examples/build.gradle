@@ -10,9 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation name: 'javasnes'
+    implementation name: 'javasnes-1.0.0'
 }
 
-application {
-    mainClass = 'Main'
-}
+mainClassName = 'Main'
