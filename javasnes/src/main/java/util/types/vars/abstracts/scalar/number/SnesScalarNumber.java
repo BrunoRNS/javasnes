@@ -20,41 +20,17 @@ public abstract class SnesScalarNumber extends SnesTypeScalar {
     /**
      * Byte BITS_COUNT - number of bits used to represent the value.
      */
-    protected Byte BITS_COUNT = null;
+    public Byte BITS_COUNT = null;
 
     /**
-     * Integer MIN_VALUE - minimum value that can be represented by the variable.
+     * Long MIN_VALUE - minimum value that can be represented by the variable.
      */
-    protected Integer MIN_VALUE = null;
+    public Long MIN_VALUE = null;
 
     /**
-     * Integer MAX_VALUE - maximum value that can be represented by the variable.
+     * Long MAX_VALUE - maximum value that can be represented by the variable.
      */
-    protected Integer MAX_VALUE = null;
-
-    /**
-     * Gets the number of bits used to represent the value.
-     * @return the bits count
-     */
-    public Byte getBitsCount() {
-        return BITS_COUNT;
-    }
-
-    /**
-     * Gets the minimum value that can be represented by the variable.
-     * @return the minimum value
-     */
-    public Integer getMinValue() {
-        return MIN_VALUE;
-    }
-
-    /**
-     * Gets the maximum value that can be represented by the variable.
-     * @return the maximum value
-     */
-    public Integer getMaxValue() {
-        return MAX_VALUE;
-    }
+    public Long MAX_VALUE = null;
 
     /**
      * Validates the BITS_COUNT, MIN_VALUE, and MAX_VALUE fields.
@@ -98,6 +74,35 @@ public abstract class SnesScalarNumber extends SnesTypeScalar {
         if (!(((this.MAX_VALUE + 1) & this.MAX_VALUE) == 0)) {
 
             throw new IllegalArgumentException("MAX_VALUE + 1 must be a power of two.");
+
+        }
+
+    }
+
+
+    /**
+     * Validate defaultValue attribute, checking if its inside MIN and MAX limits defined by its subclasses.
+     * @param MIN MIN_VALUE constant reference.
+     * @param MAX MAX_VALUE constant reference.
+     * @throws IllegalArgumentException If defaultValue is not inside the pre-defined limits.
+     */
+    public void validateDefaultValue(final long MIN, final long MAX) throws IllegalArgumentException {
+
+        if (this.defaultValue == null) {  return;  } // avoid checking
+
+        try {
+
+            long num = Long.parseLong(this.defaultValue);
+
+            if (num > MAX || num < MIN) {
+
+                throw new NumberFormatException("defaultValue cannot be out MIN_VALUE and MAX_VALUE limits");
+
+            }
+
+        } catch (NumberFormatException e) {
+
+            throw new IllegalArgumentException("Invalid defaultValue for your instance: " + e.getMessage());
 
         }
 

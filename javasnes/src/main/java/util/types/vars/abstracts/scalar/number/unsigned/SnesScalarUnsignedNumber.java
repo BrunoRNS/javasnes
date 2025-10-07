@@ -12,17 +12,10 @@ import util.types.vars.abstracts.scalar.number.SnesScalarNumber;
 public abstract class SnesScalarUnsignedNumber extends SnesScalarNumber {
 
     /**
-     * Returns the minimum value for this unsigned scalar number type.
-     * 
-     * For unsigned numbers, this is always zero.
-     *
-     * @return the minimum value (0) for this unsigned number type
+     * The minimum value for unsigned scalar numbers (always zero).
      */
-    @Override
-    public Integer getMinValue() {
-
-        return 0;
-
+    {
+        this.MIN_VALUE = (long) 0;
     }
     
 }

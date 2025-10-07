@@ -1,15 +1,12 @@
 package util.types;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import appconifg.PvsneslibHome;
 import datatypes.Data;
-import datatypes.DataIT;
 
 public class AppData {
 
@@ -45,6 +42,9 @@ public class AppData {
          */
         for (byte i = 5; i <= 32; i++) {
 
+            /**
+             * Hopefully putting 32768 objects in your RAM, N times.
+             */
             this.banks.put(i, new Data[32768]);
 
             this.possibleBanks.add(i);
@@ -60,7 +60,8 @@ public class AppData {
      * @param bank The bank in which the Data object will be registered.
      * @param position The position in the bank where the Data object will be registered.
      * 
-     * @throws IllegalArgumentException If the bank is not available, the data size exceeds 32KiB, the bank is full, or the position is out of bounds.
+     * @throws IllegalArgumentException If the bank is not available, the data size exceeds 32KiB, 
+     * the bank is full, or the position is out of bounds.
      */
     public void registerData(Data data, byte bank, int position) throws IllegalArgumentException {
         
@@ -77,37 +78,6 @@ public class AppData {
             
             throw new IllegalArgumentException("Bank " + bank + " is not available.");
             
-        }
-
-        /**
-         * If the data is an instance of DataIT, it is converted to SNES bank format.
-         * This is done to ensure that the data can be registered in the SNES bank correctly.
-         * The conversion uses the smconv command from pvsneslib, which must be set in the PVSNESLIB_HOME variable.
-         */
-        if (data instanceof DataIT) {
-
-            /**
-             * If the data is an instance of DataIT, it is converted to SNES bank format.
-             * This is done to ensure that the data can be registered in the SNES bank correctly.
-             *
-             */
-            try {
-
-                DataIT.toBnk(
-
-                    PvsneslibHome.path,
-
-                    data.folder.getPath() + data.path,
-                    Paths.get(data.folder.getPath() + data.path).getParent().toString()
-
-                );
-                
-            } catch (IOException | IllegalArgumentException e) {
-
-                throw new IllegalArgumentException("Error converting IT data to SNES bank format: " + e.getMessage());
-            
-            }
-
         }
 
         /**
@@ -134,8 +104,8 @@ public class AppData {
 
         /**
          * Check if the bank is full by calculating the total size of all Data objects in the bank.
-         * If the total size plus the size of the new data exceeds 32KiB, an IllegalArgumentException is thrown.
-         * This ensures that the bank does not exceed its maximum capacity.
+         * If the total size plus the size of the new data exceeds 32KiB, an IllegalArgumentException 
+         * is thrown. This ensures that the bank does not exceed its maximum capacity.
          */
         short bank_size = 0;
 
@@ -144,8 +114,8 @@ public class AppData {
             /**
              * Check if the Data object is null before accessing its size.
              * If it is null, continue to the next Data object in the bank.
-             * This prevents a NullPointerException from being thrown when trying to access the size of a
-             * null Data object.
+             * This prevents a NullPointerException from being thrown when 
+             * trying to access the size of a null Data object.
              */
             if (d == null) {  continue;  }
 
@@ -166,8 +136,8 @@ public class AppData {
          * with the maximum allowed size of 32KiB (32768 bytes).
          * If the bank is full or the position is out of bounds, an IllegalArgumentException
          * is thrown.
-         * This ensures that the data can be registered in the specified position without exceeding the bank's
-         * capacity.
+         * This ensures that the data can be registered in the specified position without exceeding 
+         * the bank's capacity.
          * If the position is out of bounds or already occupied, an IllegalArgumentException is thrown
          * to prevent overwriting existing data or accessing invalid positions.
          */
@@ -189,24 +159,19 @@ public class AppData {
         }
 
         /**
-         * If all checks pass, the Data object is registered in the specified bank at the specified position.
-         * This allows the Data object to be stored and accessed later using the bank and position.
+         * If all checks pass, the Data object is registered in the specified bank at the specified 
+         * position. This allows the Data object to be stored and accessed later using the bank 
+         * and position.
          */
-
-        if (!(data instanceof DataIT)) {
-
-            this.banks.get(bank)[position] = data;
-            
-        }
-
-        /*
-         * TODO:
-         *  Need to implement a logic to handle DataIT objects, since they are converted to SNES bank format,
-         * they should not be directly registered in the banks map. Instead, their converted SNES
-         * bank files should be registered. This requires additional logic to manage the conversion
-         * and registration process for DataIT objects.
-         */
+        this.banks.get(bank)[position] = data;
         
+        /**
+         * Note: even if the Data object is instance of DataIT, I'm just putting in the banks HashMap.
+         * There's nothing much to do about it, you will have to compile it manually and check it 
+         * manually. The software will generate a C code you can compile with pvsneslib or SNES-IDE,
+         * and somethings, like the Impulse Tracker sound convertion with smconv, is very hardcoded,
+         * as this converter wasnt made for pvsneslib like other ones.
+         */
 
     }
     

@@ -43,21 +43,30 @@ public abstract class SnesType extends SnesInstruction {
     public String name = null;
 
     /**
+     * The default value of the variable.
+     * This is used when generating the final C source code for the ROM.
+     * 
+     * It is null by default and must be set by the specific variable type subclass.
+     * If it is not set, an exception will be thrown when generating the C source code.
+     */
+    public String defaultValue = null;
+
+    /**
      * Returns a constant identifier for the subclasses of SnesType.
      *
      * This method must be overridden by each subclass to provide a unique identifier.
-     * It is used to identify if the SnesType is a scalar type, pointer type, array type,
-     * or an abstract type which isn't any of the above.
-     *
-     * If not overridden, it will default to "abstract".
+     * It is used to identify if the SnesType is a scalar type, pointer type or array type.
      *
      * This identifier is not used for generating the C source code, but is used for type checking
      * before the C source code generation. If type checking fails, the generation might fail as well.
      */
-    public String IDENTIFIER() {
+    public abstract String IDENTIFIER();
 
-        return "abstract";
-
-    }
+    /**
+     * Generates the C source code representation of this SNES variable type.
+     * This method must be implemented by each subclass to output the correct
+     * C code for the specific variable type.
+     */
+    public abstract void generateSourceCode();
     
 }

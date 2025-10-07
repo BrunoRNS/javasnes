@@ -32,8 +32,6 @@ public abstract class SnesTypeScalar extends SnesType {
      */
     public String type = null;
 
-    public String defaultValue = null;
-
     /**
      * Returns a constant identifier for the subclasses of SnesTypeScalar.
      * 
@@ -69,6 +67,7 @@ public abstract class SnesTypeScalar extends SnesType {
      *   System.out.println(myVar.sourceCode); // Outputs: u8 myVar = 0;
      * 
      */
+    @Override
     public void generateSourceCode() {
 
         if (this.type.equals("void")) {

@@ -7,6 +7,8 @@ import util.types.vars.abstracts.SnesType;
 import util.types.vars.abstracts.pointer.SnesTypePointer;
 import util.types.vars.abstracts.scalar.SnesTypeScalar;
 
+import util.types.vars.scalar.data.SnesVoid;
+
 public class Process {
 
     /*
@@ -54,6 +56,89 @@ public class Process {
     public Byte returnType = null;
 
     /**
+     * Returns a string representation of the return type of the process.
+     * 
+     * The return type is represented by a string that is a valid C identifier.
+     * 
+     * The return type is determined by the value of the returnType field.
+     * 
+     * If the returnType field is null, this method throws a NullPointerException.
+     * 
+     * If the returnType field is not one of the valid return types, this method throws an
+     * IllegalArgumentException with a descriptive message.
+     * 
+     * @return a string representation of the return type of the process.
+     * @throws IllegalArgumentException if the returnType field is not one of the valid return types.
+     * @throws NullPointerException if the returnType field is null.
+     */
+    private String getReturnTypeString() throws IllegalArgumentException, NullPointerException {
+
+        if (this.returnType == null) {
+
+            throw new NullPointerException("Return type is null");
+
+        }
+
+        switch (this.returnType) {
+
+            case 0:
+                return "void";
+            
+            case 1:
+                return "u8";
+            
+            case 2:
+                return "u16";
+            
+            case 3:
+                return "u32";
+            
+            case 4:
+                return "s8";
+            
+            case 5:
+                return "s16";
+            
+            case 6:
+                return "s32";
+            
+            case 7:
+                return "brrsamples";
+            
+            case 8:
+                return "char";
+            
+            case 11:
+                return "u8*";
+            
+            case 12:
+                return "u16*";
+            
+            case 13:
+                return "u32*";
+            
+            case 14:
+                return "s8*";
+            
+            case 15:
+                return "s16*";
+            
+            case 16:
+                return "s32*";
+            
+            case 17:
+                return "brrsamples*";
+            
+            case 18:
+                return "char*";
+        
+            default:
+                throw new IllegalArgumentException("Invalid return type");
+        }
+
+    }
+
+    /**
      * List of scalar arguments (by value)
      * List of pointer arguments (by reference)
      * 
@@ -66,6 +151,64 @@ public class Process {
     public List<SnesTypeScalar> args = null;
     public List<SnesTypePointer> pointerArgs = null;
     
+    /**
+     * Generates a string representation of the arguments of the process.
+     * 
+     * The string is formatted as a C argument list, with each argument separated by a comma.
+     * 
+     * If the process has no arguments, the method returns "void".
+     * 
+     * If the process has arguments, the method returns a string in the format of 
+     * "type1 name1, type2 name2, ...".
+     * 
+     * The order of the arguments in the string is the same as the order of the arguments in the lists.
+     * 
+     * @return a string representation of the arguments of the process.
+     */
+    private String getArgsString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        if (this.args == null && this.pointerArgs == null) {
+
+            return "void";
+
+        }
+
+        if (this.args != null) {
+
+            for (int i = 0; i < this.args.size(); i++) {
+
+                sb.append(
+
+                    this.args.get(i).type + " " + this.args.get(i).name + 
+                    (i == this.args.size() - 1 ? "" : ", ")
+
+                );
+
+            }
+
+        }
+
+        if (this.pointerArgs != null) {
+
+            for (int i = 0; i < this.pointerArgs.size(); i++) {
+
+                sb.append(
+
+                    this.pointerArgs.get(i).type + " " + this.pointerArgs.get(i).name + 
+                    (i == this.args.size() - 1 ? "" : ", ")
+                    
+                );
+
+            }
+
+        }
+
+        return sb.toString();
+        
+    }
+
     /**
      * List of instructions that make up the process body.
      * 
@@ -142,6 +285,20 @@ public class Process {
         String sourceCode
     ) {
 
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException(
+                "The name field of the Process class cannot be \"main\" or \"processor\"."
+            );
+        
+        }
+
         this.name = name;
 
         this.returnType = returnType;
@@ -175,6 +332,18 @@ public class Process {
         List<SnesInstruction> instructions, SnesType returnVar
     ) {
 
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
         this.name = name;
 
         this.returnType = returnType;
@@ -187,9 +356,59 @@ public class Process {
 
     }
 
+    /**
+     * Generates the C source code representation of this process.
+     * 
+     * This method constructs the C source code for the process from the instructions and returnVar fields.
+     * It throws a RuntimeException if any instruction has a null sourceCode field.
+     * 
+     * The generated source code is a string in the format of 
+     * "returnType name(args) {\n\tinstruction1;\n\tinstruction2;\n\t...\n\treturn returnVar;\n}"
+     * 
+     * @return the C source code representation of this process.
+     */
     private String generateSourceCode() {
-        // TODO: implement this method to generate the C source code for the process.
-        return null;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.getReturnTypeString() + " " + this.name + "(" + this.getArgsString() + ") {\n");
+
+        for (SnesInstruction instruction : this.instructions) {
+
+            if (instruction.sourceCode == null) {
+                
+                throw new RuntimeException(
+                    "There's a null instruction source code in the process " + this.name + 
+                    " at index " + instructions.indexOf(instruction) +
+                    " of the instructions list."
+                );
+
+            }
+
+            sb.append("\t" + instruction.sourceCode);
+            sb.append("\n");
+        
+        }
+
+        if (this.returnVar instanceof SnesVoid) {
+
+            sb.append("\treturn;");
+        
+        } else if (this.returnVar.global && this.returnVar.defaultValue != null) {
+
+            sb.append("\treturn " + this.returnVar.defaultValue + ";");
+
+        } else {
+
+            sb.append("\treturn " + this.returnVar.name + ";");
+
+        }
+
+        sb.append("\n\n");
+        sb.append("}\n");
+
+        return sb.toString();
+
     }
 
     /**

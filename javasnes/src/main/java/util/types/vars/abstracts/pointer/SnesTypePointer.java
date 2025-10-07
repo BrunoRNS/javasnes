@@ -16,13 +16,6 @@ public abstract class SnesTypePointer extends SnesType {
     public String type = null;
 
     /**
-     * The default value assigned to the pointer.
-     * This value is used when no explicit value is provided.
-     * It can be null if no default is specified.
-     */
-    public String defaultValue = null;
-
-    /**
      * Returns a constant identifier for the subclasses of SnesTypePointer.
      *
      * This method is an override of the IDENTIFIER method in the SnesType
@@ -47,6 +40,7 @@ public abstract class SnesTypePointer extends SnesType {
      *
      * Example output: int* ptr = NULL; char* buffer;
      */
+    @Override
     public void generateSourceCode() throws IllegalArgumentException {
 
         /**

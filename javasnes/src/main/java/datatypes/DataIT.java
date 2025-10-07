@@ -1,6 +1,5 @@
 package datatypes;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
@@ -23,8 +22,13 @@ public class DataIT extends Data {
      * This field is set to null by default, indicating that it has not been determined yet
      * whether the IT data file is larger than 32KiB.
      * It can be set to true or false based on the size of the IT data file
-     * when the data is loaded or processed. 
+     * when the data is loaded or processed.
+     * 
+     * @deprecated Is deprecated because this verification is a bit useless in context that you need
+     * to compile in soundbank it before putting in the ROM, in the process size may vary, and the
+     * process is manually done, therefore this verification is not needed
     */
+    @Deprecated
     public Boolean isHigherThan32K = null;
 
 
@@ -37,7 +41,11 @@ public class DataIT extends Data {
      * 
      * @param bnkPath The path to the bank file whose size is to be calculated.
      *                This path must not be null or empty.
+     * 
+     * @deprecated This method is deprecated because it is not used anymore. The purpose is to set 
+     * the value of isHigherThan32K, which is a deprecated field.
      */
+    @Deprecated
     public void calculateSize(String bnkPath) {
         
         /*
@@ -49,152 +57,6 @@ public class DataIT extends Data {
          * Check if the size is greater than 32KiB (32768 bytes)
         */
         this.isHigherThan32K = this.size > 32768;
-
-    }
-
-    /**
-     * Verifies that the provided arguments are valid.
-     * 
-     * This method checks if the provided paths are not null or empty.
-     * If any of the paths are invalid, an IllegalArgumentException is thrown
-     * with a message indicating which argument is invalid.
-     * 
-     * @param PVSNESLIB_HOME The home directory of the pvsneslib, which must not be null or empty.
-     * @param itPath The path to the IT data file to be converted, which must not be null or empty.
-     * @param ouputPath The path where the converted SNES bank file will be saved, which must not be null or empty.
-     * @throws IllegalArgumentException If any of the provided paths are null or empty.
-    */
-    private static void verifyArgs(
-
-        final String PVSNESLIB_HOME, 
-
-        String itPath, 
-        String ouputPath
-
-    ) throws IllegalArgumentException {
-        
-        /*
-         * Check if the provided paths are valid
-         * If the paths are null or empty, an IllegalArgumentException is thrown
-         * This is important to ensure that the conversion process has valid input paths
-         * and output paths, preventing potential errors during the conversion process.
-         */
-        if (itPath == null) {
-
-            throw new IllegalArgumentException("IT path cannot be null or empty.");
-
-        }
-        
-        if (itPath.isEmpty()) {
-
-            throw new IllegalArgumentException("IT path cannot be null or empty.");
-            
-        }
-        
-        if (ouputPath == null) {
-            
-            throw new IllegalArgumentException("Output path cannot be null or empty.");
-        
-        }
-        
-        if (ouputPath.isEmpty()) {
-
-            throw new IllegalArgumentException("Output path cannot be null or empty.");
-
-        }
-        
-        if (PVSNESLIB_HOME == null) {
-
-            throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
-
-        }
-        
-        if (PVSNESLIB_HOME.isEmpty()) {
-            
-            throw new IllegalArgumentException("PVSNESLIB_HOME cannot be null or empty.");
-
-        }
-
-    }
-
-    /**
-     * Converts an IT data file to SNES bank format using the smconv command from pvsneslib.
-     *
-     * @param PVSNESLIB_HOME The home directory of the pvsneslib, which must not be null or empty.
-     * @param itPath The path to the IT data file to be converted, which must not be null or empty.
-     * @param ouputPath The path where the converted SNES bank file will be saved, which must not be null or empty.
-     * @throws IOException If an error occurs during the conversion process or if the smconv process fails.
-     * @throws IllegalArgumentException If any of the provided paths are null or empty.
-    */
-    public static void toBnk(
-
-        final String PVSNESLIB_HOME, 
-
-        String itPath, 
-        String ouputPath
-
-    ) throws IOException, IllegalArgumentException {
-
-        /**
-         * Check if the provided paths are valid
-         * If the paths are null or empty, an IllegalArgumentException is thrown
-         * This is important to ensure that the conversion process has valid input paths
-         * and output paths, preventing potential errors during the conversion process.
-         */
-        
-        verifyArgs(PVSNESLIB_HOME, itPath, ouputPath);
-
-        /*
-         * Create a ProcessBuilder to run the smconv command from pvsneslib
-        */
-
-        ProcessBuilder processBuilder = new ProcessBuilder();
-
-        processBuilder.directory();
-
-        processBuilder.command(
-            "smconv"
-            );
-
-        /*
-         * Start the process to convert IT data to SNES bank format
-        */
-        Process process = processBuilder.start();
-
-        /** 
-         * By default, the exit code is set to -1
-         * This will be updated once the process completes
-         */
-        int exitCode = -1;
-        
-        /** 
-         * Wait for the process to complete and get the exit code
-         * This will block until the process finishes, allowing us to check if it was successful
-         * If the process is interrupted, an IOException will be thrown
-         * This is important to ensure that the conversion is completed before proceeding
-         * with any further operations, such as reading the output or checking for errors.
-         */
-         try {
-
-            exitCode = process.waitFor();
-            
-        } catch (InterruptedException e) {
-
-            throw new IOException("Error while converting IT data to SNES bank format.", e);
-
-        }
-
-        /**
-         * Check the exit code of the process
-         * If the exit code is not 0, it indicates that the process failed
-         * An IOException is thrown with a message indicating the failure
-        */
-
-        if (exitCode != 0) {
-
-            throw new IOException("smconv process failed with exit code: " + exitCode);
-
-        }
 
     }
 

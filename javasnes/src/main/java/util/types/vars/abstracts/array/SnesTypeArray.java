@@ -61,6 +61,7 @@ public abstract class SnesTypeArray extends SnesType {
      * - "s16 values[256];"
      * - "char buffer[128];"
      */
+    @Override
     public void generateSourceCode() {
 
         this.sourceCode = String.format("%s %s[%d];", this.type, this.name, this.length);
