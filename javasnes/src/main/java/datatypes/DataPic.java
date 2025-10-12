@@ -14,6 +14,10 @@ import java.nio.file.Paths;
  */
 public class DataPic extends Data {
 
+    {
+        this.requiresEnd = false; // Picture data files do not require an end.
+    }
+
     /**
      * Constructs a DataPic with the specified folder and path.
      * 

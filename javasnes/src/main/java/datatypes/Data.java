@@ -15,6 +15,11 @@ package datatypes;
 public abstract class Data {
 
     /**
+     * Name of Data file to be loaded in C source code.
+     */
+    public String name;
+
+    /**
      * The Path to the data file, that can be Brr, IT, Map, Pic or Pal.
      * The Path is relative to the data directory.
      * For exemple, if the path is "data/brr/sample.brr",
@@ -38,5 +43,13 @@ public abstract class Data {
      */
     public DataFolder folder;
 
-    
+    /**
+     * If it requires a end tag to be added to the end of the data call in data.asm.
+     * For example:
+     *     mysound:
+     *        reads data.brr
+     *     mysoundend: -> end tag
+     */     
+    public boolean requiresEnd;
+
 }

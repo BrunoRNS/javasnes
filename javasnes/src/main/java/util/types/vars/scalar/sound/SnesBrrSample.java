@@ -89,7 +89,7 @@ public class SnesBrrSample extends SnesScalarSound {
      * @param global       whether the sample is global
      * @param defaultValue the default value for the sample
      * 
-     * @deprecated Use {@link #SnesBrrSample(String, boolean, String)}, deprecated because in
+     * @deprecated Use {@link #SnesBrrSample(String, boolean)}, deprecated because in
      * pvsneslib examples, the default value is never used, so you shouldn't use it either.
      */
     @Deprecated

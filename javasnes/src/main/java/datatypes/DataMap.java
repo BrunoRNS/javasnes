@@ -14,6 +14,10 @@ import java.nio.file.Paths;
  */
 public class DataMap extends Data {
 
+    {
+        this.requiresEnd = true;
+    }
+
     /**
      * Constructs a DataMap with the specified folder and path.
      * 

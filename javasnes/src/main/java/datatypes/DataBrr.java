@@ -15,6 +15,13 @@ import java.nio.file.Paths;
 public class DataBrr extends Data {
 
     /**
+     * BRR files always require an end marker.
+     */
+    {
+        this.requiresEnd = true;
+    }
+
+    /**
      * Constructs a DataBrr with the specified folder and path.
      * 
      * @param folder A DataFolder representing the folder where the brr data file is located.

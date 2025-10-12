@@ -6,10 +6,9 @@ import instruction.SnesInstruction;
 import util.types.vars.abstracts.SnesType;
 import util.types.vars.abstracts.pointer.SnesTypePointer;
 import util.types.vars.abstracts.scalar.SnesTypeScalar;
-
 import util.types.vars.scalar.data.SnesVoid;
 
-public class Process {
+public class SnesProcess {
 
     /*
      * The name of the process.
@@ -165,6 +164,7 @@ public class Process {
      * 
      * @return a string representation of the arguments of the process.
      */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     private String getArgsString() {
 
         StringBuilder sb = new StringBuilder();
@@ -279,7 +279,7 @@ public class Process {
      * @param pointerArgs
      * @param sourceCode
      */
-    public Process(
+    public SnesProcess(
         String name, byte returnType,
         List<SnesTypeScalar> args, List<SnesTypePointer> pointerArgs,
         String sourceCode
@@ -326,7 +326,7 @@ public class Process {
      * @param instructions
      * @param returnVar
      */
-    public Process(
+    public SnesProcess(
         String name, byte returnType,
         List<SnesTypeScalar> args, List<SnesTypePointer> pointerArgs,
         List<SnesInstruction> instructions, SnesType returnVar
@@ -371,7 +371,9 @@ public class Process {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.getReturnTypeString() + " " + this.name + "(" + this.getArgsString() + ") {\n");
+        sb.append(this.getReturnTypeString());
+        sb.append(" ").append(this.name).append("(");
+        sb.append(this.getArgsString()).append(") {\n");
 
         for (SnesInstruction instruction : this.instructions) {
 
@@ -385,7 +387,7 @@ public class Process {
 
             }
 
-            sb.append("\t" + instruction.sourceCode);
+            sb.append("\t").append(instruction.sourceCode);
             sb.append("\n");
         
         }
@@ -396,11 +398,11 @@ public class Process {
         
         } else if (this.returnVar.global && this.returnVar.defaultValue != null) {
 
-            sb.append("\treturn " + this.returnVar.defaultValue + ";");
+            sb.append("\treturn ").append(this.returnVar.defaultValue).append(";");
 
         } else {
 
-            sb.append("\treturn " + this.returnVar.name + ";");
+            sb.append("\treturn ").append(this.returnVar.name).append(";");
 
         }
 

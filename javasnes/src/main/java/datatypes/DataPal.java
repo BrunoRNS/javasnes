@@ -14,6 +14,10 @@ import java.nio.file.Paths;
  */
 public class DataPal extends Data {
 
+    {
+        this.requiresEnd = false;
+    }
+
     /**
      * Constructs a DataPal with the specified folder and path.
      * 
