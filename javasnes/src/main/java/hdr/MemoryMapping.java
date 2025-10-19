@@ -1,4 +1,4 @@
-package appconifg;
+package hdr;
 
 import java.io.FileWriter;
 import java.io.IOException;

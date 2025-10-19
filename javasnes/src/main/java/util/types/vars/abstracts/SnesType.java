@@ -43,6 +43,19 @@ public abstract class SnesType extends SnesInstruction {
     public String name = null;
 
     /**
+     * The type of the variable.
+     * This is used when generating the final C source code for the ROM.
+     * 
+     * Types can be:
+     * - scalar types: u8, s8, u16, s16, u32, s32, char, brrsamples, void
+     * - pointer types: u8*, s8*, u16*, s16*, u32*, s32*, char*, brrsamples*, void*
+     * 
+     * It is null by default and must be set by the specific variable type subclass.
+     * If it is not set, an exception will be thrown when generating the C source code.
+     */
+    public String type = null;
+
+    /**
      * The default value of the variable.
      * This is used when generating the final C source code for the ROM.
      * 

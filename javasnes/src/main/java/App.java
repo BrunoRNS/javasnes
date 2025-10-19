@@ -15,30 +15,24 @@ public class App {
     }
 
     public String generateLogo() {
-
+        return null;
     }
 
     public String generateMain() {
-
+        return null;
     }
 
     public String generateData() {
-
+        return null;
     }
 
     public String generateHDR() {
-
-
-    }
-
-    public String getTempDir() {
-
+        return null;
 
     }
 
     public boolean copyToDestination() {
-
-
+        return false;
     }
     
 }

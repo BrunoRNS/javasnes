@@ -9,13 +9,6 @@ import util.types.vars.abstracts.SnesType;
 public abstract class SnesTypePointer extends SnesType {
 
     /**
-     * The type of the SNES pointer, represented as a String.
-     * This field can be used to specify the data type or category associated with the pointer.
-     * It may be null if the type is not specified.
-     */
-    public String type = null;
-
-    /**
      * Returns a constant identifier for the subclasses of SnesTypePointer.
      *
      * This method is an override of the IDENTIFIER method in the SnesType

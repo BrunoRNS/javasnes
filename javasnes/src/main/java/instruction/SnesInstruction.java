@@ -25,13 +25,5 @@ public abstract class SnesInstruction {
      * If it is not set, an exception will be thrown when generating the C source code.
      */
     public String sourceCode = null;
-
-    /**
-     * If the instruction is a global declaration, this field must be set to true.
-     * If it is false, it is a local declaration. If it is null, it is not specified.
-     * This is used when generating the final C source code for the ROM.
-     * It must be set by the specific instruction subclass or subclass' instance if applicable.
-     */
-    public Boolean global = null;
     
 }

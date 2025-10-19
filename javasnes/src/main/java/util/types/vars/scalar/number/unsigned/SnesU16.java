@@ -4,7 +4,7 @@ import util.types.vars.abstracts.scalar.number.unsigned.SnesScalarUnsignedNumber
 
 /**
  * SnesU16 class to represent U16 values in SNES development context.
- * It extends SnesScalarUnsignedNumber and add more validation methods and some constructors.
+ * It extends SnesScalarUnsignedNumber.
  * It defines BITS_COUNT to 16 and MAX_VALUE to 65.535.
  */
 public class SnesU16 extends SnesScalarUnsignedNumber {
@@ -22,102 +22,26 @@ public class SnesU16 extends SnesScalarUnsignedNumber {
     }
 
     /**
-     * Constructs a SnesU16 with the specified name, type, and global flag.
-     *
-     * @param name   the name of the unsigned int of 16 bits
-     * @param global whether the number is global
+     * Constructor for SnesU16 with name only.
+     * @param name name of the variable
      */
-    public SnesU16(
-
-        String name,
-        boolean global
-        
-    ) {
+    public SnesU16(String name) {
 
         this.name = name;
-        this.global = global;
-
-        try {
-
-            this.validate();
-            
-        } catch (IllegalArgumentException e) {
-
-            throw new IllegalArgumentException(
-                "Invalid argument sent to SnesU16 class: " + e.getMessage()
-            );
-
-        }
-
         this.generateSourceCode();
 
     }
 
     /**
-     * Constructs a SnesU16 with the specified name, global flag, and default value.
-     *
-     * @param name         the name of the unsigned int of 16 bits
-     * @param global       whether the number is global
-     * @param defaultValue the default value for the number
+     * Constructor for SnesU16 with name and default value.
+     * @param name name of the variable
+     * @param defaultValue default value of the variable
      */
-    public SnesU16(
-
-        String name,
-        boolean global,
-        String defaultValue
-        
-    ) {
+    public SnesU16(String name, String defaultValue) {
 
         this.name = name;
-        this.global = global;
         this.defaultValue = defaultValue;
-
-        try {
-
-            this.validate();
-            
-        } catch (IllegalArgumentException e) {
-
-            throw new IllegalArgumentException(
-                "Invalid argument sent to SnesU16 class: " + e.getMessage()
-            );
-
-        }
-
         this.generateSourceCode();
-
-    }
-
-    /**
-     * Validates the fields of this SnesU16 instance.
-     * <ul>
-     *   <li>Checks that {@code name} is not null and not empty.</li>
-     *   <li>Checks that {@code global} is not null.</li>
-     *   <li>If {@code defaultValue} is present, allows it to be null, but not to be outside MIN and MAX limits.</li>
-     * </ul>
-     * @throws IllegalArgumentException with a descriptive message if any validation fails.
-     */
-    private void validate() throws IllegalArgumentException {
-
-        if (this.name == null) {
-
-            throw new IllegalArgumentException("Name cannot be null");
-
-        }
-
-        if (this.name.isEmpty()) {
-
-            throw new IllegalArgumentException("Name cannot be empty");
-                
-        }
-
-        if (this.global == null) {
-
-            throw new IllegalArgumentException("Global cannot be null");
-
-        }
-
-        this.validateDefaultValue(this.MIN_VALUE, this.MAX_VALUE);
 
     }
     

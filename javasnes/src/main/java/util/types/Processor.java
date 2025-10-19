@@ -14,7 +14,7 @@ public class Processor {
      * along with their arguments. The processes are identified by their names,
      * and the arguments are the ones that were provided when the process was added.
      */
-    public Map<SnesProcess, String[]> processes = new HashMap<>();
+    private Map<SnesProcess, String[]> processes = new HashMap<>();
 
     /**
      * Returns a map of processes to their arguments.

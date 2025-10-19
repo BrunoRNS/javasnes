@@ -396,10 +396,6 @@ public class SnesProcess {
 
             sb.append("\treturn;");
         
-        } else if (this.returnVar.global && this.returnVar.defaultValue != null) {
-
-            sb.append("\treturn ").append(this.returnVar.defaultValue).append(";");
-
         } else {
 
             sb.append("\treturn ").append(this.returnVar.name).append(";");

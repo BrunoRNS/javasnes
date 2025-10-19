@@ -16,23 +16,6 @@ import util.types.vars.abstracts.SnesType;
 public abstract class SnesTypeScalar extends SnesType {
 
     /**
-     * The C type of the scalar variable.
-     * 
-     * It must be a valid C type.
-     * 
-     * Examples:
-     * 
-     * "u8" for unsigned 8-bit integer
-     * "s16" for signed 16-bit integer
-     * "char" for data byte values
-     * "void" for void type
-     * [...]
-     * 
-     * This field must be set by the specific scalar type subclass.
-     */
-    public String type = null;
-
-    /**
      * Returns a constant identifier for the subclasses of SnesTypeScalar.
      * 
      * This method is an override of the IDENTIFIER method in the SnesType class.

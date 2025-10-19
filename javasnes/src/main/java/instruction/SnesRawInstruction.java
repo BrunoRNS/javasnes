@@ -44,10 +44,9 @@ public class SnesRawInstruction extends SnesInstruction {
      * 
      * @throws IllegalArgumentException if the code is null, empty, contains new lines, or if global is null.
      */
-    public SnesRawInstruction(String code, boolean global) throws IllegalArgumentException {
+    public SnesRawInstruction(String code) throws IllegalArgumentException {
 
-        this.sourceCode = code;
-        this.global = global;
+        this.sourceCode = code.trim();
 
         try {
 
@@ -75,12 +74,6 @@ public class SnesRawInstruction extends SnesInstruction {
         if (this.sourceCode == null) {
 
             throw new IllegalArgumentException("SnesRawInstruction must have sourceCode defined.");
-
-        }
-
-        if (this.global == null) {
-
-            throw new IllegalArgumentException("SnesRawInstruction must have global defined.");
 
         }
 

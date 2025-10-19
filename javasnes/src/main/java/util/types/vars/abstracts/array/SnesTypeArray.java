@@ -9,22 +9,6 @@ import util.types.vars.abstracts.SnesType;
 public abstract class SnesTypeArray extends SnesType {
 
     /**
-     * The C type of the array variable.
-     * 
-     * It must be a valid C type.
-     * 
-     * Examples:
-     * 
-     * "u8" for an array of unsigned 8-bit integer
-     * "s16" for an array of signed 16-bit integer
-     * "char" for an array of data byte values
-     * [...]
-     * 
-     * This field must be set by the specific array type subclass.
-     */
-    public String type = null;
-
-    /**
      * The size of the array.
      * 
      * It is fixed, because malloc is not fully implemented in tcc-816 compiler,
@@ -32,7 +16,16 @@ public abstract class SnesTypeArray extends SnesType {
      * 
      * It cannot exceed the SNES random access memory limit, otherwise it will cause malfunction.
      */
-    public Short length = null; 
+    public Short[] length = null; 
+
+    /**
+     * The number of dimensions of the array.
+     * 
+     * Default is 1 for a one-dimensional array.
+     * 
+     * This field can be extended in the future to support multi-dimensional arrays.
+     */
+    public Byte dimensions = 1;
 
     /**
      * Returns a constant identifier for the subclasses of SnesTypeArray.
@@ -60,11 +53,42 @@ public abstract class SnesTypeArray extends SnesType {
      * - "u8 myArray[10];"
      * - "s16 values[256];"
      * - "char buffer[128];"
+     * 
+     * With default value:
+     * - "u8 myArray[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};"
+     * - "s16 values[1] = {0};"
+     * - "char buffer[5] = {'a', 'b', 'c', 'd', 'e'};"
+     * 
+     * With multiple dimensions:
+     * - "u8 matrix[3][4];"
+     * - "s16 tensor[2][2][2];"
+     * 
+     * With multiple dimensions and default value:
+     * - "u8 matrix[2][2] = {{0, 1}, {2, 3}};"
+     * - "s16 tensor[2][2][2] = {{{0, 1}, {2, 3}}, {{4, 5}, {6, 7}}};"
+     * 
      */
     @Override
     public void generateSourceCode() {
 
-        this.sourceCode = String.format("%s %s[%d];", this.type, this.name, this.length);
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%s %s", this.type, this.name));
+
+        for (int i = 0; i < this.dimensions; i++) {
+
+            sb.append(String.format("[%d]", this.length[i]));
+
+        }
+
+        if (this.defaultValue != null && !this.defaultValue.isEmpty()) {
+
+            sb.append(String.format(" = %s", this.defaultValue));
+            
+        }
+
+        sb.append(";");
+
+        this.sourceCode = sb.toString();
 
     }
     

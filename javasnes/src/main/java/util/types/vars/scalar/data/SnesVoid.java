@@ -11,22 +11,19 @@ import util.types.vars.abstracts.scalar.data.SnesScalarVoid;
 public class SnesVoid extends SnesScalarVoid {
 
     {
-
         this.type = "void";
-
     }
 
     /**
      * Default constructor for the SnesVoid class.
      * 
-     * This constructor sets the global flag to true and default value to "void".
+     * This constructor sets the default value to "void".
      * It also sets the sourceCode field to an empty string.
      * 
      * @see SnesScalarVoid
      */
     public SnesVoid() {
 
-        this.global = true;
         this.defaultValue = "void";
         this.sourceCode = "";
 
@@ -35,7 +32,7 @@ public class SnesVoid extends SnesScalarVoid {
     /**
      * Default constructor for the SnesVoid class.
      * 
-     * This constructor sets the global flag to true and default value to "void".
+     * This constructor sets the default value to "void".
      * It also sets the sourceCode field to an empty string.
      * 
      * @see SnesScalarVoid
@@ -48,8 +45,6 @@ public class SnesVoid extends SnesScalarVoid {
     public SnesVoid(String name) {
 
         this.name = name;
-
-        this.global = true;
         this.defaultValue = "void";
         this.sourceCode = "";
 
