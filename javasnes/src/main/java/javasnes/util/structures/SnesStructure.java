@@ -4,16 +4,26 @@ import java.util.Map;
 
 import javasnes.instruction.SnesInstruction;
 
-
+/**
+ * Represents a structure in SNES C source code.
+ * 
+ * This class is abstract and must be extended to create a structure.
+ * The generated source code will depend on the type of structure.
+ * The types of structures are:
+ * 
+ * 0 = Struct
+ * 1 = Function Prototype
+ * 2 = Enum
+ * 3 = Typedef
+ * 4 = Load Extern
+ */
 public abstract class SnesStructure extends SnesInstruction {
 
     /**
      * Type of the structure:
-     * 
-     * -1 = Function Prototype
-     * 
+     *
      * 0 = Struct
-     * 1 = Union
+     * 1 = Function Prototype
      * 2 = Enum
      * 3 = Typedef
      * 4 = Load Extern

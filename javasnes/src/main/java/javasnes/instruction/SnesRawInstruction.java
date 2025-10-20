@@ -1,48 +1,57 @@
 package javasnes.instruction;
 
 /**
- * Represents a raw C source code instruction to be included in the ROM.
+ * Represents a raw C instruction to be inserted into the generated code.
+ * This class allows you to insert arbitrary C code into the instruction list,
+ * preserving the sequence of instructions.
  * 
- * This class allows you to add any raw C source code as an instruction in your ROM,
- * providing flexibility to include code that may not be covered by existing instruction classes.
+ * @example
+ * <pre>
+ * List<SnesInstruction> instructions = new ArrayList<>();
+ * instructions.add(new SnesU8("myVariable", 255));
+ * instructions.add(new SnesRawInstruction("myFunctionCall();"));
+ * instructions.add(new SnesU16("myVariable2", 1024));
+ * </pre>
+ * This will insert the raw C code <pre>myFunctionCall();</pre> into the generated C code.
+ * The sequence of instructions will be preserved.
+ * In this example, the generated C code will look like:
+ * <pre>
+ * u8 myVariable = 255;
+ * myFunctionCall();
+ * u16 myVariable2 = 1024;
+ * </pre>
  * 
- * It extends the SnesInstruction class, inheriting its properties and methods.
- * 
- * Example usage:
- * *     SnesRawInstruction rawInst = new SnesRawInstruction("int myGlobalVar = 0;", true);
- * *     SnesRawInstruction localInst = new SnesRawInstruction("myGlobalVar++;", false);
- * 
- * These instructions can then be added to the appropriate collections in your ROM structure.
- * 
+ * @see SnesInstruction
  */
 public class SnesRawInstruction extends SnesInstruction {
     
     /**
-     * This method constructs a SnesRawInstruction instance with the provided source code and global flag.
+     * Creates a new SnesRawInstruction instance with the source code
+     * of the C instruction, which will be validated.
      * 
-     * Many times, you may want to add raw C source code instructions to your ROM that are not covered by
-     * the existing instruction classes. In such cases, you can use this class to create a raw instruction.
+     * You can use this class to insert raw C code into the instructions list.
      * 
-     * Its a simple wrapper around the SnesInstruction class that allows you to add any C source code, and
-     * give you freedom to use any C code you want, even if there's no specific class for it.
+     * For example:
+     * <pre>
+     * List<SnesInstruction> instructions = new ArrayList<>();
+     * instructions.add(new SnesU8("myVariable", 255));
+     * instructions.add(new SnesRawInstruction("myFunctionCall();"));
+     * instructions.add(new SnesU16("myVariable2", 1024));
+     * </pre>
+     * This will insert the raw C code <pre>myFunctionCall();</pre> into the generated C code.
+     * The sequence of instructions will be preserved.
+     * In this example, the generated C code will look like:
+     * <pre>
+     * u8 myVariable = 255;
+     * myFunctionCall();
+     * u16 myVariable2 = 1024;
+     * </pre>
      * 
-     * The `code` parameter is the C source code you want to add, and the `global` parameter indicates
-     * whether the instruction is a global declaration (true) or a local declaration (false).
+     * The C code provided in the SnesRawInstruction will be inserted as-is, and must
+     * not contain new lines.
      * 
-     * The constructor validates the input to ensure that the source code is not null, not empty, and
-     * does not contain new lines, and that the global flag is not null. If any of these conditions are not met,
-     * an IllegalArgumentException is thrown with a descriptive message.
-     * 
-     * Usage example:
-     * *     SnesRawInstruction rawInst = new SnesRawInstruction("int myGlobalVar = 0;", true);
-     * *     SnesRawInstruction localInst = new SnesRawInstruction("myGlobalVar++;", false);
-     * 
-     * These instructions can then be added to the appropriate collections in your ROM structure.
-     * 
-     * @param code the raw C source code for the instruction.
-     * @param global true if the instruction is a global declaration, false if local.
-     * 
-     * @throws IllegalArgumentException if the code is null, empty, contains new lines, or if global is null.
+     * @param code the raw C code to insert.
+     * @throws IllegalArgumentException if the provided code is invalid.
      */
     public SnesRawInstruction(String code) throws IllegalArgumentException {
 

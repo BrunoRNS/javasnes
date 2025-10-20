@@ -23,8 +23,8 @@ public class AppData {
     {
 
         /**
-         * Here all the banks since 1 until 32 are initialized to null. This is
-         * done to ensure that all banks are available for use. If you need to
+         * Here all the banks since 1 until 32 are initialized to new Stack<>().
+         * This is done to ensure that all banks are available for use. If you need to
          * use a specific bank, you can assign a Data object to it and it will
          * be stored in the corresponding bank.
          */
@@ -38,25 +38,23 @@ public class AppData {
 
     }
 
+
     /**
-     * Registers a Data object in a specified bank at a specified position.
-     *
-     * @param data The Data object to be registered.
-     * @param bank The bank in which the Data object will be registered.
-     * @param position The position in the bank where the Data object will be
-     * registered.
-     *
-     * @throws IllegalArgumentException If the bank is not available, the data
-     * size exceeds 32KiB, the bank is full, or the position is out of bounds.
+     * Registers a Data object in the specified bank at the given position.
+     * 
+     * This method adds the provided Data object to the specified bank at
+     * the given position. If the bank is not available or if the Data
+     * object is null, an IllegalArgumentException is thrown.
+     * 
+     * @param data     the Data object to be registered.
+     * @param bank     the bank number where the Data object will be stored.
+     * @param position the position within the bank to store the Data object.
+     * @throws IllegalArgumentException if the Data object is null or if
+     *                                  the bank is not available.
      */
     public void registerData(Data data, byte bank, int position) throws IllegalArgumentException {
 
-        /**
-         * Check if the data is null, the bank is not available, or the data
-         * size exceeds 32KiB. If any of these conditions are met, an
-         * IllegalArgumentException is thrown. This ensures that the data is
-         * valid and can be registered in the specified bank.
-         */
+        
         if (data == null) {
 
             throw new IllegalArgumentException("Data cannot be null.");
@@ -67,11 +65,6 @@ public class AppData {
 
         }
 
-        /**
-         * If all checks pass, the Data object is registered in the specified
-         * bank at the specified position. This allows the Data object to be
-         * stored and accessed later using the bank and position.
-         */
         this.banks.get(bank).add(data);
 
     }

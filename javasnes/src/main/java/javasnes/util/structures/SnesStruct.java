@@ -35,8 +35,8 @@ public class SnesStruct extends SnesStructure {
      * 
      * <pre>
      * struct name {
-     *     type1 field1,
-     *     type2 field2,
+     *     type1 field1;
+     *     type2 field2;
      *     ...
      * };
      * </pre>

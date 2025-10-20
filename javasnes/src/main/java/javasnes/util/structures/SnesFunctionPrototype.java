@@ -7,7 +7,7 @@ import javasnes.util.types.vars.abstracts.SnesType;
 public class SnesFunctionPrototype extends SnesStructure {
 
     {
-        this.type = -1;
+        this.type = 1;
     }
 
     /**

@@ -1,8 +1,13 @@
 package javasnes.util.types;
 
-import javasnes.instruction.SnesInstruction;
+import javasnes.instruction.SnesAsmInstruction;
 
-public class AsmProcess extends SnesInstruction {
+/**
+ * The ASMprocess class provides a constructor for creating assembly process
+ * based on SnesAsmInstruction. With this class, you can create assembly processes
+ * that will generate assembly files for each process.
+ */
+public class AsmProcess extends SnesAsmInstruction {
     
     /**
      * Source code of the assembly process.
@@ -13,9 +18,7 @@ public class AsmProcess extends SnesInstruction {
      * @param sourceCode
      */
     public AsmProcess(String sourceCode) {
-        
         this.sourceCode = sourceCode;
-
     }
 
 }
