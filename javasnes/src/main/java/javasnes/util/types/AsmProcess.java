@@ -8,6 +8,8 @@ import javasnes.instruction.SnesAsmInstruction;
  * that will generate assembly files for each process.
  */
 public class AsmProcess extends SnesAsmInstruction {
+
+    public String name;
     
     /**
      * Source code of the assembly process.
@@ -15,9 +17,11 @@ public class AsmProcess extends SnesAsmInstruction {
      * Useful for generating assembly code from higher-level constructs.
      * This AsmProcess can then be integrated into the final assembly output.
      * 
+     * @param name
      * @param sourceCode
      */
-    public AsmProcess(String sourceCode) {
+    public AsmProcess(String name, String sourceCode) {
+        this.name = name;
         this.sourceCode = sourceCode;
     }
 

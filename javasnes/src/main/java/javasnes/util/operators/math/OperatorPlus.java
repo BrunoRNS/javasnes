@@ -65,13 +65,13 @@ public class OperatorPlus extends SnesOperator {
     /**
      * Gets the source code for the Plus operator.
      * 
-     * The generated source code is in the format of "value1 + value2".
+     * The generated source code is in the format of "(value1 * value2)".
      * 
      * @return the source code for the Plus operator
      */
     @Override
     public String getSourceCode() {
-        return value1.name + " * " + value2.name;
+        return "(" + this.value1.name + " * " + this.value2.name + ")";
     }
     
 }
