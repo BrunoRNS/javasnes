@@ -145,6 +145,19 @@ public class AppData {
 
             sb.append(".section \".rodata").append(bank).append("\" superfree\n");
 
+            if (bank == 1) {
+
+                sb.append("\nlogoPic:").append("\n");
+                sb.append(".incbin \"res/logo.pic\"").append("\n");
+                sb.append("logoPic_end:").append("\n");
+                sb.append("\n");
+                sb.append("logoPalette:").append("\n");
+                sb.append(".incbin \"res/logo.pal\"").append("\n");
+                sb.append("logoPalette_end:").append("\n");
+                sb.append("\n\n");
+
+            }
+
             for (Data data : this.banks.get(bank)) {
 
                 if (data == null) {

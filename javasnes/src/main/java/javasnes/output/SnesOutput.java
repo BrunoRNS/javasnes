@@ -1,12 +1,13 @@
 package javasnes.output;
 
-public class SnesOutput {
+import javasnes.instruction.SnesRawInstruction;
 
-    /** 
-     * Just an example of a public static final field.
-     * public static final String MODE_1() {
-     *   return "MODE_1";
-     * }
-    */
+public class SnesOutput {
+    
+    public static final SnesRawInstruction consoleDrawText(int x, int y, String text) {
+        return new SnesRawInstruction(
+            "consoleDrawText(" + x + ", " + y + ", \"" + text + "\");"
+        );
+    }
     
 }

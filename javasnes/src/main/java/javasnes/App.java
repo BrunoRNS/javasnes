@@ -58,6 +58,43 @@ public class App {
      * @param makefile
      * @param globalInstructions
      * @param snesMacros
+     * @param destination
+     */
+    public App(
+        AppData appData, Processor processor,
+        List<SnesProcess> snesProcesses, Make makefile,
+        List<SnesInstruction> globalInstructions,
+        List<SnesMacro> snesMacros, String[] dataToCopy,
+        String destination
+    ) {
+
+        String mainSrc = this.generateMain(
+            snesMacros, snesProcesses, globalInstructions, processor
+        );
+
+        this.checkPath(destination);
+
+        this.copyToDestination(destination);
+
+        for (String data : dataToCopy) {
+            this.copyFromPathToDestination(data, destination);
+        }
+
+        this.copyMain(mainSrc, destination);
+        this.generateData(appData, destination);
+        this.generateMakefile(makefile, destination);
+        this.generateHDR(destination);
+
+    }
+
+    /**
+     * Constructs a new App object.
+     * @param appData
+     * @param processor
+     * @param snesProcesses
+     * @param makefile
+     * @param globalInstructions
+     * @param snesMacros
      * @param asmProcesses
      * @param destination
      */
@@ -67,6 +104,41 @@ public class App {
         List<SnesInstruction> globalInstructions,
         List<SnesMacro> snesMacros,
         List<AsmProcess> asmProcesses,
+        String destination
+    ) {
+
+        String mainSrc = this.generateMain(
+            snesMacros, snesProcesses, globalInstructions, processor
+        );
+
+        this.checkPath(destination);
+
+        this.copyToDestination(destination);
+        this.copyMain(mainSrc, destination);
+        this.generateASMProcesses(asmProcesses, destination);
+        this.generateData(appData, destination);
+        this.generateMakefile(makefile, destination);
+        this.generateHDR(destination);
+
+    }
+
+    /**
+     * Constructs a new App object.
+     * @param appData
+     * @param processor
+     * @param snesProcesses
+     * @param makefile
+     * @param globalInstructions
+     * @param snesMacros
+     * @param asmProcesses
+     * @param destination
+     */
+    public App(
+        AppData appData, Processor processor,
+        List<SnesProcess> snesProcesses, Make makefile,
+        List<SnesInstruction> globalInstructions,
+        List<SnesMacro> snesMacros,
+        List<AsmProcess> asmProcesses, String[] dataToCopy,
         String destination
     ) {
 
@@ -355,6 +427,31 @@ public class App {
         
         String separator = System.getProperty("os.name").toLowerCase().contains("win") ? "\\" : "/";
         MemoryMapping mapping = new MemoryMapping(path + separator + "hdr.asm");
+
+    }
+
+    /**
+     * Copies a file from the given path to the given destination.
+     * 
+     * <p>If an IOException occurs during the copying process, an error message is printed
+     * to the standard error stream, and the application exits with a status code of 1.</p>
+     * 
+     * @param path the path to the file to copy
+     * @param destination the path to copy the file to
+     */
+    public final void copyFromPathToDestination(String path, String destination) {
+        
+        try {
+            Files.copy(
+                Paths.get(path),
+                Paths.get(destination)
+            );
+        } catch (IOException e) {
+            System.err.println(
+                "Failed to copy file: " + e.getMessage()
+            );
+            System.exit(-1);
+        }
 
     }
 
