@@ -17,5 +17,7 @@ public abstract class SnesScalarUnsignedNumber extends SnesScalarNumber {
     {
         this.MIN_VALUE = (long) 0;
     }
+
+    public SnesScalarUnsignedNumber() {}
     
 }

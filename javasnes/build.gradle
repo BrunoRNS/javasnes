@@ -1,3 +1,10 @@
+/**
+ * Build configuration for javasnes library
+ * It works with gradle 4 or newer
+ * It copies the output jar file to the snes-examples lib folder
+ * Works with Java 8 or newer
+ */
+
 plugins {
     id 'java'
 }
@@ -5,13 +12,36 @@ plugins {
 group = 'org.javasnes'
 version = '1.0.0'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+if (!hasProperty('java')) {
+    
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-task copyJarToExamples(type: Copy) {
-    dependsOn jar
-    from jar.archivePath
-    into "$rootDir/snes-examples/lib"
+} else {
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+}
+
+if (!jar.hasProperty('archiveFile')) {
+
+    task copyJarToExamples(type: Copy) {
+        dependsOn jar
+        from jar.archivePath
+        into "$rootDir/snes-examples/lib"
+    }
+    
+} else {
+
+    task copyJarToExamples(type: Copy) {
+        dependsOn jar
+        from jar.archiveFile
+        into "$rootDir/snes-examples/lib"
+    }
+
 }
 
 build.finalizedBy(copyJarToExamples)

@@ -71,4 +71,6 @@ public abstract class SnesTypePointer extends SnesType {
 
     }
 
+    public SnesTypePointer() {}
+
 }

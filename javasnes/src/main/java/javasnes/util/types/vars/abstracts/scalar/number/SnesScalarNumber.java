@@ -79,4 +79,6 @@ public abstract class SnesScalarNumber extends SnesTypeScalar {
 
     }
 
+    public SnesScalarNumber() {}
+
 }

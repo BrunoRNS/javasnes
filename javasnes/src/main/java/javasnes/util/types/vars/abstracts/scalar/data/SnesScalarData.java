@@ -57,4 +57,8 @@ int main(void)
  * As it is an abstract class, you cannot use it directly, but you can use the SnesChar class
  * which extends this class, and use this one as interface if you want.
  */
-public abstract class SnesScalarData extends SnesTypeScalar { }
+public abstract class SnesScalarData extends SnesTypeScalar {
+
+    public SnesScalarData() {}
+
+}

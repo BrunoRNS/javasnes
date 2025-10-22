@@ -9,4 +9,8 @@ import javasnes.util.types.vars.abstracts.pointer.number.SnesPointerNumber;
  * unsigned number pointer types in the SNES context.
  * 
  */
-public abstract class SnesPointerUnsignedNumber extends SnesPointerNumber { }
+public abstract class SnesPointerUnsignedNumber extends SnesPointerNumber {
+
+    public SnesPointerUnsignedNumber() {}
+
+}

@@ -11,4 +11,8 @@ import javasnes.util.types.vars.abstracts.pointer.SnesTypePointer;
  * to inherit pointer behavior and should be subclassed to provide concrete implementations.
  * 
  */
-public abstract class SnesPointerSound extends SnesTypePointer { }
+public abstract class SnesPointerSound extends SnesTypePointer {
+
+    public SnesPointerSound() {}
+
+}

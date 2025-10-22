@@ -113,4 +113,8 @@ int main(void)
  *    System.out.println(mySound.sourceCode); // outputs: brrsamples tadasound;
  * 
  */
-public abstract class SnesScalarSound extends SnesTypeScalar { }
+public abstract class SnesScalarSound extends SnesTypeScalar {
+
+    public SnesScalarSound() {}
+
+}

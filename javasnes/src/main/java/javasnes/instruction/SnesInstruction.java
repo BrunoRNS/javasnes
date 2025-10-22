@@ -25,5 +25,7 @@ public abstract class SnesInstruction {
      * If it is not set, an exception will be thrown when generating the C source code.
      */
     public String sourceCode = null;
-    
+
+    public SnesInstruction() {}
+        
 }

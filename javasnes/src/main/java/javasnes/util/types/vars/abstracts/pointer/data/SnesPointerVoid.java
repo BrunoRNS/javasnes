@@ -11,4 +11,8 @@ import javasnes.util.types.vars.abstracts.pointer.SnesTypePointer;
  * 
  * @see SnesTypePointer
  */
-public abstract class SnesPointerVoid extends SnesTypePointer { }
+public abstract class SnesPointerVoid extends SnesTypePointer {
+
+    public SnesPointerVoid() {}
+
+}

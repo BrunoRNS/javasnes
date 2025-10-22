@@ -10,4 +10,8 @@ import javasnes.util.types.vars.abstracts.pointer.number.SnesPointerNumber;
  * but provides a common type for signed pointer numbers.
  * 
  */
-public abstract class SnesPointerSignedNumber extends SnesPointerNumber { }
+public abstract class SnesPointerSignedNumber extends SnesPointerNumber {
+
+    public SnesPointerSignedNumber() {}
+
+}

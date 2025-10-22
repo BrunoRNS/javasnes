@@ -24,4 +24,8 @@ import javasnes.util.types.vars.abstracts.scalar.SnesTypeScalar;
  * Note: Since "void" cannot be used as a variable type, this class is primarily useful
  * for representing function return types in SNES programming contexts.
  */
-public abstract class SnesScalarVoid extends SnesTypeScalar { }
+public abstract class SnesScalarVoid extends SnesTypeScalar {
+
+    public SnesScalarVoid() {}
+
+}

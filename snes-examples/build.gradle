@@ -13,4 +13,14 @@ dependencies {
     implementation name: 'javasnes-1.0.0'
 }
 
-mainClassName = 'Main'
+if (!hasProperty('application')) {
+
+    mainClassName = 'Main'
+
+} else {
+
+    application {
+        mainClass = 'Main'
+    }
+
+}

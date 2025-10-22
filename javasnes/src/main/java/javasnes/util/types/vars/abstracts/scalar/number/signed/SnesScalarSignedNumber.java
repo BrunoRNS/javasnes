@@ -9,4 +9,8 @@ import javasnes.util.types.vars.abstracts.scalar.number.SnesScalarNumber;
  * Subclasses should implement specific signed number representations and behaviors as needed.
  *
  */
-public abstract class SnesScalarSignedNumber extends SnesScalarNumber {  }
+public abstract class SnesScalarSignedNumber extends SnesScalarNumber {
+
+    public SnesScalarSignedNumber() {}
+
+}

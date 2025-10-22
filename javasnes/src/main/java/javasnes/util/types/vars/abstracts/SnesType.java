@@ -81,5 +81,7 @@ public abstract class SnesType extends SnesInstruction {
      * C code for the specific variable type.
      */
     public abstract void generateSourceCode();
+
+    public SnesType() {}
     
 }

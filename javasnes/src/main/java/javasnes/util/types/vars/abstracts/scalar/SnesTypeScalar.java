@@ -79,5 +79,7 @@ public abstract class SnesTypeScalar extends SnesType {
                 this.type + " " + this.name + " = " + this.defaultValue + ";"; // for e.g. u8 myVar = 0;
 
     }
+
+    public SnesTypeScalar() {}
     
 }

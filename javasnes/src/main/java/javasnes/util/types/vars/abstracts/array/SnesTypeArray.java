@@ -91,5 +91,7 @@ public abstract class SnesTypeArray extends SnesType {
         this.sourceCode = sb.toString();
 
     }
+
+    public SnesTypeArray() {}
     
 }

@@ -10,4 +10,8 @@ import javasnes.util.types.vars.abstracts.pointer.SnesTypePointer;
  * Subclasses should implement the details for handling different numeric pointer types.
  * 
  */
-public abstract class SnesPointerNumber extends SnesTypePointer { }
+public abstract class SnesPointerNumber extends SnesTypePointer {
+
+    public SnesPointerNumber() {}
+
+}

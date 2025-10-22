@@ -27,5 +27,7 @@ public abstract class SnesAsmInstruction {
      * This Example is a data.asm file content.
      */
     public String sourceCode;
+
+    public SnesAsmInstruction() {}
     
 }
