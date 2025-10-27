@@ -54,43 +54,42 @@ import java.util.Map;
  * </pre>
  *
  */
-@SuppressWarnings("FieldMayBeFinal")
 public class Make {
     
     /**
      * The content of the header section of the Makefile.
      */
-    private List<String> headerContent;
+    protected List<String> headerContent;
 
     /**
      * The collection of rules in the Makefile.
      */
-    private Map<String, MakeRule> rules;
+    protected Map<String, MakeRule> rules;
 
     /**
      * The list of phony targets in the Makefile.
      */
-    private List<String> phonyTargets;
+    protected List<String> phonyTargets;
 
     /**
      * The collection of variables in the Makefile.
      */
-    private Map<String, String> variables;
+    protected Map<String, String> variables;
 
     /**
      * The path to include in the Makefile.
      */
-    private String includePath;
+    protected String includePath;
 
     /**
      * The name of the ROM being built.
      */
-    private String romName;
+    protected String romName;
     
     /**
      * The name of the soundbank being used.
      */
-    private String soundBank;
+    protected String soundBank;
     
     /**
      * Constructs a new Make instance with default configuration.
@@ -121,44 +120,23 @@ public class Make {
      */
     private void initializeDefaults() {
 
-        headerContent.add("ifeq ($(strip $(PVSNESLIB_HOME)),)");
-        headerContent.add("$(error \"Please create an environment variable PVSNESLIB_HOME by following this guide: https://github.com/alekmaul/pvsneslib/wiki/Installation\")");
-        headerContent.add("endif");
-        headerContent.add("# BEFORE including snes_rules :");
-        headerContent.add("# list in AUDIOFILES all your .it files in the right order. It will build to generate soundbank file");
-        headerContent.add("AUDIODIR := res");
-        headerContent.add("export AUDIOFILES := $(foreach dir, $(AUDIODIR), \\");
-        headerContent.add("\t$(dir)/*.it)");
-        headerContent.add("# then define the path to generate soundbank data. The name can be different but do not forget to update your include in .c file !");
-        
-        addVariable("SOUNDBANK", "soundbank");
-        setInclude("${PVSNESLIB_HOME}/devkitsnes/snes_rules");
-        setRomName("JavasnesGame");
-        addVariable("SMCONVFLAGS", "-s -o $(SOUNDBANK) -V -b 5");
+        this.headerContent.add("ifeq ($(strip $(PVSNESLIB_HOME)),)");
+        this.headerContent.add("$(error \"Please create an environment variable PVSNESLIB_HOME by following this guide: https://github.com/alekmaul/pvsneslib/wiki/Installation\")");
+        this.headerContent.add("endif");
+
+        this.setInclude("${PVSNESLIB_HOME}/devkitsnes/snes_rules");
+        this.setRomName("                     "); // 21 characters length
         
         addPhonyTarget("bitmaps");
         addPhonyTarget("all");
-        
-        addRule(
-            new MakeRule(
-                "musics", 
-                "$(SOUNDBANK).obj", 
-                ""
-            )
-        );
 
         addRule(
             new MakeRule(
                 "all",
-                "musics logo $(ROMNAME).sfc",
+                "bitmaps logo $(ROMNAME).sfc",
                 ""
             )
         );
-
-        addRule(new MakeRule("cleanGfxLogo", "", 
-            "@echo clean logo graphics data",
-            "@rm -f res/*.pic res/*.pal"
-        ));
 
         addRule(
             new MakeRule(
@@ -173,8 +151,7 @@ public class Make {
                 "logo.pic",
                 "res/logo.bmp",
                 "@echo convert font with no tile reduction ... $(notdir $@)",
-                "$(GFXCONV) -s 8 -o 32 -u 16 -p -e 1 -m -R -t bmp -i $<"
-                
+                "$(GFXCONV) -s 8 -o 32 -u 16 -p -e 1 -m -R -t bmp -i $<"      
         ));
 
         addRule(new MakeRule("logo", "logo.pic", ""));
@@ -643,9 +620,9 @@ public class Make {
      * </p>
      */
     public static class MakeRule {
-        private String target;
-        private String prerequisites;
-        private List<String> recipe;
+        protected String target;
+        protected String prerequisites;
+        protected List<String> recipe;
         
         /**
          * Constructs a new Makefile rule.

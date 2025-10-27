@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
 repositories {
@@ -13,14 +12,54 @@ dependencies {
     implementation name: 'javasnes-1.0.0'
 }
 
-if (!hasProperty('application')) {
-
-    mainClassName = 'Main'
-
-} else {
-
-    application {
-        mainClass = 'Main'
+task buildAllJars {
+    dependsOn 'classes'
+    
+    doLast {
+        fileTree(dir: 'src/main/java').include('**/*.java').each { file ->
+            def content = file.text
+            if (content.contains('public static void main(String[] args)')) {
+                try {
+                    def classesDir = sourceSets.main.output.hasProperty('classesDir') ? sourceSets.main.output.classesDir : sourceSets.main.output.classesDirs.first()
+                    def className = file.name - '.java'
+                    def outputDir = "out/${className}"
+                    
+                    new File(outputDir).mkdirs()
+                    
+                    def manifestFile = new File("${buildDir}/tempManifest.mf")
+                    manifestFile.parentFile.mkdirs()
+                    manifestFile.text = "Main-Class: ${className}\n"
+                    
+                    ant.jar(destfile: "${outputDir}/${className}.jar", manifest: manifestFile.absolutePath) {
+                        fileset(dir: classesDir)
+                        
+                        configurations.runtimeClasspath.each { dep ->
+                            if (dep.exists() && dep.name.endsWith('.jar')) {
+                                zipfileset(src: dep.absolutePath) {
+                                    exclude(name: 'META-INF/**')
+                                }
+                            }
+                        }
+                    }
+                    
+                    manifestFile.delete()
+                    
+                    println "${className} -> ${outputDir}/${className}.jar"
+                    
+                } catch (Exception e) {
+                    println "Error in ${file.name}: ${e.message}"
+                    e.printStackTrace()
+                }
+            }
+        }
+        println "JARs generated: out/"
     }
-
 }
+
+task cleanOutput(type: Delete) {
+    delete 'out'
+}
+
+clean.dependsOn cleanOutput
+build.dependsOn buildAllJars
+compileJava.dependsOn rootProject.getTasks().findByPath('javasnes:copyJarToExamples')

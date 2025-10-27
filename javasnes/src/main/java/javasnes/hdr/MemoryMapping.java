@@ -331,6 +331,23 @@ public class MemoryMapping {
      */
     public String version = "$00";
 
+    /**
+     * Creates a new MemoryMapping object with the specified configuration.
+     * 
+     * config should be a Map with the following keys:
+     * 
+     * - "rombanks": The number of ROM banks to use.
+     * - "ID": The ID of the game.
+     * - "name": The <b>21 characters</b> name of the game.
+     * - "cartridgeType": The type of cartridge to use.
+     * - "romsize": The size of the ROM banks in kilobits.
+     * - "sramsize": The size of the SRAM in kilobits.
+     * - "country": The country for which the game was released.
+     * - "licenseeCode": The licensee code for the game.
+     * - "version": The version of the game.
+     * 
+     * @param config A Map of String, String pairs representing the configuration.
+     */
     public MemoryMapping(Map<String, String> config) {
 
         this.setConfig(config);

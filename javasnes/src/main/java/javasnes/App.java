@@ -28,25 +28,78 @@ import javasnes.util.types.SnesProcess;
  * <p><b>Usage Examples:</b></p>
  * <pre>
  * {@code
+ * 
  * // Basic usage with builder pattern
  * App app = new App.Builder()
  *     .setAppData(appData)
  *     .setProcessor(processor)
  *     .setDestination("/path/to/project")
+ *     .setMakefile(makefile)
+ *     .setBoot(boot)
+ *     .setMemoryMapping(hdr)
+ *     .setGlobalInstructions(globalInstructions)
+ *     .setSnesProcesses(snesProcesses)
+ *     .setAsmProcesses(asmProcesses)
+ *     .setSnesMacros(snesMacros)
+ *     .setDataToCopy(dataToCopy)
  *     .build();
  * 
- * // Advanced usage with additional components
+ * // Advanced usage with builder pattern
  * App app = new App.Builder()
  *     .setAppData(appData)
  *     .setProcessor(processor)
  *     .setDestination("/path/to/project")
- *     .addSnesProcess(gameProcess)
- *     .addSnesMacro(customMacro)
- *     .addGlobalInstruction(initInstruction)
- *     .addAsmProcess(assemblyProcess)
- *     .addDataToCopy("/path/to/data/file")
  *     .setMakefile(makefile)
+ *     .setBoot(boot)
+ *     .setMemoryMapping(hdr)
+ *     .setGlobalInstructions(globalInstructions)
+ *     .addGlobalInstruction(new SnesInstruction(...))
+ *     .addGlobalInstructions(new SnesInstruction[] { ... })
+ *     .setSnesProcesses(snesProcesses)
+ *     .addSnesProcess(new SnesProcess(...))
+ *     .addSnesProcesses(new SnesProcess[] { ... })
+ *     .setAsmProcesses(asmProcesses)
+ *     .addAsmProcess(new AsmProcess(...))
+ *     .addAsmProcesses(new AsmProcess[] { ... })
+ *     .setSnesMacros(snesMacros)
+ *     .addSnesMacro(new SnesMacro(...))
+ *     .addSnesMacros(new SnesMacro[] { ... })
+ *     .setDataToCopy(dataToCopy)
+ *     .addDataToCopy("/path/to/data/file")
+ *     .addDataToCopy(new String[] { "/path/to/data/file", "/path/to/other/data/file" })
+ *     .removeDataToCopy("/path/to/data/file")
+ *     .removeDataToCopy(new String[] { "/path/to/data/file", "/path/to/other/data/file" })
+ *     .removeSnesProcess(new SnesProcess(...))
+ *     .removeSnesProcesses(new SnesProcess[] { ... })
+ *     .removeAsmProcess(new AsmProcess(...))
+ *     .removeAsmProcesses(new AsmProcess[] { ... })
+ *     .removeSnesMacro(new SnesMacro(...))
+ *     .removeSnesMacros(new SnesMacro[] { ... })
+ *     .removeGlobalInstruction(new SnesInstruction(...))
+ *     .removeGlobalInstructions(new SnesInstruction[] { ... })
  *     .build();
+ * 
+ * // Using getters
+ * 
+ * App.Builder appBuilder = new App.Builder()
+ * 
+ * appBuilder = appBuilder.setAppData(appData)
+ *     .setProcessor(processor)
+ *     .setDestination("/path/to/project")
+ *     .setMakefile(makefile)
+ *     .setBoot(boot)
+ *     .setMemoryMapping(hdr);
+ * 
+ * // Get the values in the builder
+ * Processor processor = appBuilder.getProcessor();
+ * Destination destination = appBuilder.getDestination();
+ * Makefile makefile = appBuilder.getMakefile();
+ * Boot boot = appBuilder.getBoot();
+ * MemoryMapping hdr = appBuilder.getMemoryMapping();
+ * 
+ * // Finally, build the application
+ * App app = appBuilder.build();
+ * 
  * }
  * </pre>
  */
@@ -107,21 +160,27 @@ public class App {
 
     }
 
-    /**
-     * Executes the complete build process.
-     */
-    private void executeBuildProcess() {
 
-        String mainSrc = this.generateMain();
+    /**
+     * Executes the build process, this method is called by the constructor.
+     * It generates the main C source file content, ensures the destination structure,
+     * copies resources, copies additional data files, generates source files, generates
+     * assembly files, generates the data file, generates the Makefile and generates the
+     * header file.
+     * 
+     * @throws Exception if an error occurs during the build process
+     */
+    private void executeBuildProcess() throws Exception {
 
         this.ensureDestinationStructure();
-        this.copyResources();
         this.copyAdditionalData();
-        this.generateSourceFiles(mainSrc);
+        this.copyResources();
+
+        this.generateSourceFiles(this.generateMain());
         this.generateAssemblyFiles();
+        this.generateHeaderFile();
         this.generateDataFile();
         this.generateMakefile();
-        this.generateHeaderFile();
 
     }
 
@@ -178,7 +237,9 @@ public class App {
      * Creates destination, res, and src directories if they don't exist.
      */
     private void ensureDestinationStructure() {
+
         createDirectoryIfNotExists(this.destination);
+
     }
 
     /**
@@ -216,9 +277,11 @@ public class App {
      */
     private void copyResources() {
 
+        String separator = getFileSeparator();
+
         copyResource(
-            "javasnes_logo.png", 
-            this.destination + "javasnes_logo.png"
+            "javasnes" + separator + "javasnes_logo.bmp", 
+            this.destination + "javasnes_logo.bmp"
         );
     
     }
@@ -235,7 +298,7 @@ public class App {
 
             Files.copy(
                 getClass().getResourceAsStream(resourcePath),
-                Paths.get(destinationPath)
+                Paths.get(destinationPath).toAbsolutePath()
             );
 
         } catch (IOException e) {
@@ -298,7 +361,7 @@ public class App {
      */
     private void generateSourceFiles(String mainSource) {
 
-        writeToFile(mainSource, this.destination, "src", "main.c");
+        writeToFile(mainSource, this.destination, "main.c");
 
     }
 
@@ -309,7 +372,9 @@ public class App {
 
         for (AsmProcess asmProcess : this.asmProcesses) {
 
-            writeToFile(asmProcess.sourceCode, this.destination, asmProcess.name);
+            writeToFile(
+                asmProcess.sourceCode, this.destination, asmProcess.name + ".asm"
+            );
 
         }
 
@@ -366,6 +431,7 @@ public class App {
 
         String separator = getFileSeparator();
         this.hdr.generateHDR(this.destination + separator + "hdr.asm");
+
     }
 
     /**
@@ -411,7 +477,7 @@ public class App {
     }
 
     /**
-     * Builder class for constructing App instances with a fluent interface.
+     * Builder class for the App class.
      */
     public static class Builder {
 
@@ -436,6 +502,17 @@ public class App {
         }
 
         /**
+         * Gets the processor configuration.
+         * 
+         * @return The processor configuration
+         */
+        public Processor getProcessor() {
+
+            return this.processor;
+            
+        }
+
+        /**
          * Sets the destination directory for the build output.
          * 
          * @param destination The destination directory path
@@ -446,6 +523,17 @@ public class App {
             this.destination = destination;
             return this;
 
+        }
+
+        /**
+         * Gets the destination directory for the build output.
+         * 
+         * @return The destination directory path
+         */
+        public String getDestination() {
+
+            return this.destination;
+            
         }
 
         /**
@@ -462,6 +550,17 @@ public class App {
         }
 
         /**
+         * Gets the memory mapping configuration.
+         * 
+         * @return The memory mapping configuration
+         */
+        public MemoryMapping getMemoryMapping() {
+
+            return this.hdr;
+            
+        }
+
+        /**
          * Sets the application data configuration.
          * 
          * @param appData The application data configuration
@@ -472,6 +571,17 @@ public class App {
             this.appData = appData;
             return this;
 
+        }
+
+        /**
+         * Gets the application data configuration.
+         * 
+         * @return The application data configuration
+         */
+        public AppData getAppData() {
+
+            return this.appData;
+            
         }
 
         /**
@@ -488,6 +598,17 @@ public class App {
         }
 
         /**
+         * Gets the Makefile configuration.
+         * 
+         * @return The Makefile configuration
+         */
+        public Make getMakefile() {
+
+            return this.makefile;
+            
+        }
+
+        /**
          * Sets the boot configuration.
          * 
          * @param boot The boot configuration
@@ -498,6 +619,17 @@ public class App {
             this.boot = boot;
             return this;
 
+        }
+
+        /**
+         * Gets the boot configuration.
+         * 
+         * @return The boot configuration
+         */
+        public Boot getBoot() {
+
+            return this.boot;
+            
         }
 
         private List<SnesInstruction> globalInstructions = new ArrayList<>();
@@ -1172,7 +1304,7 @@ public class App {
 
             }
 
-            if (!(this.dataToCopy == null)) {
+            if (this.dataToCopy != null) {
 
                 for (int i = 0; i < this.dataToCopy.size(); i++) {
 
@@ -1198,7 +1330,8 @@ public class App {
                     ) {
 
                         throw new IllegalStateException(
-                            "DataToCopy[" + i + "] '" + this.dataToCopy.get(i) + "' does not exist"
+                            "DataToCopy[" + i + "] '" + this.dataToCopy.get(i) + 
+                            "' does not exist"
                         );
 
                     }

@@ -5,7 +5,19 @@ package javasnes.util.types;
  * 
  * If you need to store raw ASM source code in the AppData object, you can use this class.
  */
-public class RawAppData extends AppData {
+public final class RawAppData extends AppData {
+
+    /**
+     * Creates a new RawAppData object with the given source code.
+     * 
+     * @param sourceCode the ASM source code
+     */
+    public RawAppData(String sourceCode) {
+
+        this.sourceCode = sourceCode;
+        this.generateSourceCode();
+
+    }
 
     /**
      * You should access this field directly.

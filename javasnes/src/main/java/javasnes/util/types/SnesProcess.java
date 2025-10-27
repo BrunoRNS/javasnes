@@ -1,5 +1,6 @@
 package javasnes.util.types;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javasnes.instruction.SnesInstruction;
@@ -287,7 +288,9 @@ public class SnesProcess {
 
         if (name == null) {
 
-            throw new RuntimeException("The name field of the Process class cannot be null.");
+            throw new RuntimeException(
+                "The name field of the Process class cannot be null."
+            );
 
         }
 
@@ -352,6 +355,318 @@ public class SnesProcess {
         this.pointerArgs = pointerArgs;
 
         this.instructions = instructions;
+        this.returnVar = returnVar;
+
+    }
+
+    /**
+     * Constructor for the Process class.
+     * 
+     * This constructor allows you to provide the instructions and pointerArgs fields as
+     * lists, and doesn't require the args field to be initialized.
+     * 
+     * The C source code will be generated from these fields when calling the
+     * getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param pointerArgs
+     * @param instructions
+     * @param returnVar
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        List<SnesTypePointer> pointerArgs,
+        List<SnesInstruction> instructions, SnesType returnVar
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = null;
+        this.pointerArgs = pointerArgs;
+
+        this.instructions = instructions;
+        this.returnVar = returnVar;
+
+    }
+
+    /**
+     * Constructor for the Process class.
+     * 
+     * This constructor allows you to provide the instructions and args fields as lists.
+     * 
+     * This constructor doesn't require the pointerArgs field to be initialized.
+     * 
+     * The C source code will be generated from these fields when calling the 
+     * getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param instructions
+     * @param returnVar
+     * @param args
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        List<SnesInstruction> instructions, SnesType returnVar,
+        List<SnesTypeScalar> args
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = args;
+        this.pointerArgs = null;
+
+        this.instructions = instructions;
+        this.returnVar = returnVar;
+
+    }
+
+    /**
+     * Constructor for the Process class.
+     * 
+     * This constructor allows you to provide the instructions field as list, and does
+     * not require args or pointerArgs field to be initialized.
+     * 
+     * The C source code will be generated from the instructions field when calling 
+     * the getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param instructions
+     * @param returnVar
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        List<SnesInstruction> instructions, SnesType returnVar
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = null;
+        this.pointerArgs = null;
+
+        this.instructions = instructions;
+        this.returnVar = returnVar;
+
+    }
+
+
+    /**
+     * Constructor for the Process class.
+     *
+     * This constructor allows you to provide the instructions, args and pointerArgs
+     * fields as arrays, and the C source code will be generated from these fields when 
+     * calling the getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param args
+     * @param pointerArgs
+     * @param instructions
+     * @param returnVar
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        SnesTypeScalar[] args, SnesTypePointer[] pointerArgs,
+        SnesInstruction[] instructions, SnesType returnVar
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = Arrays.asList(args);
+        this.pointerArgs = Arrays.asList(pointerArgs);
+
+        this.instructions = Arrays.asList(instructions);
+        this.returnVar = returnVar;
+
+    }
+
+    /**
+     * Constructor for the Process class.
+     * 
+     * This constructor allows you to provide the instructions and args fields as arrays,
+     * and does not require the pointerArgs field.
+     * 
+     * The C source code will be generated from these fields when calling the 
+     * getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param args
+     * @param instructions
+     * @param returnVar
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        SnesTypeScalar[] args,
+        SnesInstruction[] instructions, SnesType returnVar
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = Arrays.asList(args);
+        this.pointerArgs = null;
+
+        this.instructions = Arrays.asList(instructions);
+        this.returnVar = returnVar;
+
+    }
+
+    /**
+     * Constructor for the Process class.
+     * 
+     * This constructor allows you to use the instructions and pointerArgs fields 
+     * as arrays, and does not require the args field.
+     * 
+     * The C source code will be generated from these fields when calling the 
+     * getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param pointerArgs
+     * @param instructions
+     * @param returnVar
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        SnesTypePointer[] pointerArgs,
+        SnesInstruction[] instructions, SnesType returnVar
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = null;
+        this.pointerArgs = Arrays.asList(pointerArgs);
+
+        this.instructions = Arrays.asList(instructions);
+        this.returnVar = returnVar;
+
+    }
+
+    /**
+     * Constructor for the Process class.
+     * 
+     * This constructor allows you to use the instructions as an array, and does not
+     * require the args and pointerArgs fields.
+     * 
+     * The C source code will be generated from these fields when calling the 
+     * getSourceCode() method.
+     * 
+     * @param name
+     * @param returnType
+     * @param instructions
+     * @param returnVar
+     */
+    public SnesProcess(
+        String name, byte returnType,
+        SnesInstruction[] instructions, SnesType returnVar
+    ) {
+
+        if (name == null) {
+
+            throw new RuntimeException("The name field of the Process class cannot be null.");
+
+        }
+
+        if (name.equals("main") || name.equals("processor")) {
+
+            throw new RuntimeException("The name field of the Process class cannot be \"main\" or \"processor\".");
+        
+        }
+
+        this.name = name;
+
+        this.returnType = returnType;
+
+        this.args = null;
+        this.pointerArgs = null;
+
+        this.instructions = Arrays.asList(instructions);
         this.returnVar = returnVar;
 
     }

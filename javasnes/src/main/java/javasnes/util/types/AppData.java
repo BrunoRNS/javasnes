@@ -38,23 +38,70 @@ public class AppData {
 
     }
 
+    /**
+     * Constructs an AppData object with a default bank configuration.
+     */
+    public AppData() {
+
+        this.initialize();
+
+    }
 
     /**
-     * Registers a Data object in the specified bank at the given position.
+     * Constructs an AppData object with the given data and banks.
      * 
-     * This method adds the provided Data object to the specified bank at
-     * the given position. If the bank is not available or if the Data
-     * object is null, an IllegalArgumentException is thrown.
-     * 
-     * @param data     the Data object to be registered.
-     * @param bank     the bank number where the Data object will be stored.
-     * @param position the position within the bank to store the Data object.
-     * @throws IllegalArgumentException if the Data object is null or if
-     *                                  the bank is not available.
+     * @param data An array of Data objects
+     * @param banks An array of bank numbers
      */
-    public void registerData(
+    public AppData(Data[] data, byte[] banks) {
 
-        Data data, byte bank, int position
+        if (data != null && banks != null) {
+
+            if (data.length != banks.length) {
+
+                throw new IllegalArgumentException(
+                    "Data and banks arrays must have the same length."
+                );
+
+            }
+
+            for (int i = 0; i < data.length; i++) {
+
+                this.registerData(data[i], banks[i]);
+
+            }
+            
+        }
+
+        this.initialize();
+
+    }
+
+    /**
+     * Initializes the AppData object by generating the default source code.
+     * This method is called by the constructors to ensure that the AppData object
+     * is initialized correctly.
+     */
+    private void initialize() {
+
+        this.generateSourceCode();
+        
+    }
+
+    /**
+     * Registers a Data object with the given bank and position.
+     * 
+     * This method checks if the Data object is not null and if the bank is
+     * available for use. If either of these conditions is not met, an
+     * IllegalArgumentException is thrown.
+     * 
+     * @param data The Data object to register
+     * @param bank The bank to register the Data object with
+     * @throws IllegalArgumentException If the Data object is null or if the bank is not available
+     */
+    public final void registerData(
+
+        Data data, byte bank
 
     ) throws IllegalArgumentException {
 
@@ -176,7 +223,6 @@ public class AppData {
      * @return the ASM source code representation of this AppData object.
      * @throws IllegalArgumentException if a Data object has a null name.
      */
-    @SuppressWarnings("")
     public String generateSourceCode() throws IllegalArgumentException {
         /**
          * For example: 
