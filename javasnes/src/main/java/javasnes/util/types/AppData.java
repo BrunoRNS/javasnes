@@ -18,17 +18,17 @@ public class AppData {
      * Constructs an AppData object with a default bank configuration.
      *
      * This constructor initializes the banks map with empty Data arrays for
-     * banks from 1 to 32 to new Data arrays.
+     * banks from 2 to 32 to new Data arrays.
      */
     {
 
         /**
-         * Here all the banks since 1 until 32 are initialized to new Stack<>().
+         * Here all the banks since 2 until 32 are initialized to new Stack<>().
          * This is done to ensure that all banks are available for use. If you need to
          * use a specific bank, you can assign a Data object to it and it will
          * be stored in the corresponding bank.
          */
-        for (byte i = 1; i <= 32; i++) {
+        for (byte i = 2; i <= 32; i++) {
 
             this.banks.put(i, new Stack<>());
 
@@ -52,9 +52,12 @@ public class AppData {
      * @throws IllegalArgumentException if the Data object is null or if
      *                                  the bank is not available.
      */
-    public void registerData(Data data, byte bank, int position) throws IllegalArgumentException {
+    public void registerData(
 
-        
+        Data data, byte bank, int position
+
+    ) throws IllegalArgumentException {
+
         if (data == null) {
 
             throw new IllegalArgumentException("Data cannot be null.");
@@ -69,7 +72,77 @@ public class AppData {
 
     }
 
-     /**
+    /**
+     * Generates the default configuration for the AppData object.
+     * 
+     * The default configuration includes the following:
+     * 
+     * <pre>
+     * javasnes_patterns:
+     * .incbin "javasnes_logo.pic"
+     * javasnes_patterns_end:
+     * .ends
+     * 
+     * javasnes_map:
+     * .incbin "javasnes_logo.map"
+     * javasnes_map_end:
+     * 
+     * javasnes_palette:
+     * .incbin "javasnes_logo.pal"
+     * javasnes_palette_end:
+     * </pre>
+     * 
+     * @return The default configuration as a String.
+     */
+    public String generateDefaultConfiguration() {
+
+        /**
+         * Default configuration:
+         * 
+         * javasnes_patterns:
+         * .incbin "javasnes_logo.pic"
+         * javasnes_patterns_end:
+         * .ends
+         * 
+         * javasnes_map:
+         * .incbin "javasnes_logo.map"
+         * javasnes_map_end:
+         *
+         * javasnes_palette:
+         * .incbin "javasnes_logo.pal"
+         * javasnes_palette_end:
+         * 
+         * -----------------------------------------------------
+         * C source code:
+         * 
+         * extern char javasnes_patterns, javasnes_patterns_end;
+         * extern char javasnes_palette, javasnes_palette_end;
+         * extern char javasnes_map, javasnes_map_end;
+         * ------------------------------------------------------
+         * 
+         */
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("javasnes_patterns:\n");
+        sb.append(".incbin \"javasnes_logo.pic\"\n");
+        sb.append("javasnes_patterns_end:\n");
+        sb.append(".ends\n");
+        sb.append("\n");
+        sb.append("javasnes_map:\n");
+        sb.append(".incbin \"javasnes_logo.map\"\n");
+        sb.append("javasnes_map_end:\n");
+        sb.append("\n");
+        sb.append("javasnes_palette:\n");
+        sb.append(".incbin \"javasnes_logo.pal\"\n");
+        sb.append("javasnes_palette_end:\n");
+        sb.append("\n");
+
+        return sb.toString();
+
+    }
+
+    /**
      * Generates the C source code representation of this AppData object.
      * 
      * This method constructs the C source code for the AppData object,
@@ -82,9 +155,7 @@ public class AppData {
      * 
      * .section ".rodata1" superfree
      * 
-     * patterns:
-     * .incbin "pvsneslib.pic"
-     * patterns_end:
+     * ...Defaults objects
      * 
      * .ends
      * 
@@ -100,11 +171,6 @@ public class AppData {
      * 
      * .ends
      * 
-     * The map and palette sections are only included if the Data object
-     * is an instance of DataIT. The section .rodata1 is used for the
-     * patterns and .rodata2 is used for the map and palette. The .ends
-     * directive is used to mark the end of a section.
-     * 
      * If a Data object has a null name, an IllegalArgumentException is thrown.
      * 
      * @return the ASM source code representation of this AppData object.
@@ -118,13 +184,19 @@ public class AppData {
 
          .section ".rodata1" superfree
 
+         ...Defaults objects
+
+         .ends
+
+         .section ".rodata2" superfree
+
          patterns:
          .incbin "pvsneslib.pic"
          patterns_end:
 
          .ends
 
-         .section ".rodata2" superfree
+         .section ".rodata3" superfree
          
          map:
          .incbin "pvsneslib.map"
@@ -141,22 +213,16 @@ public class AppData {
 
         sb.append(".include \"hdr.asm\"\n");
 
+        sb.append("\n");
+
+        sb.append(".section \".rodata").append(1).append("\" superfree\n");
+        sb.append(this.generateDefaultConfiguration());
+        sb.append("\n.ends\n");
+        sb.append("\n");
+
         for (Byte bank : this.banks.keySet()) {
 
             sb.append(".section \".rodata").append(bank).append("\" superfree\n");
-
-            if (bank == 1) {
-
-                sb.append("\nlogoPic:").append("\n");
-                sb.append(".incbin \"res/logo.pic\"").append("\n");
-                sb.append("logoPic_end:").append("\n");
-                sb.append("\n");
-                sb.append("logoPalette:").append("\n");
-                sb.append(".incbin \"res/logo.pal\"").append("\n");
-                sb.append("logoPalette_end:").append("\n");
-                sb.append("\n\n");
-
-            }
 
             for (Data data : this.banks.get(bank)) {
 
