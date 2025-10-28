@@ -1,3 +1,18 @@
+/**
+ * Default build configuration for generate JAR files from your code
+ * It works with gradle 4 or newer and Java 8 or newer
+ * It copies the output jar file to the out/ folder
+ * Move your assets to the out folder to be accessible by the JAR file
+ * Use:
+ * 
+ * gradle build
+ * cd out/ClassName # or cd out\ClassName on Windows
+ * java -jar ClassName.jar
+ *
+ * it runs with JRE1.8 normally if you dont have JDK installed
+ * 
+ */
+
 plugins {
     id 'java'
 }
@@ -9,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation name: 'javasnes-1.0.0'
+    implementation name: 'javasnes'
 }
 
 task buildAllJars {
@@ -65,4 +80,3 @@ task cleanOutput(type: Delete) {
 
 clean.dependsOn cleanOutput
 build.dependsOn buildAllJars
-compileJava.dependsOn rootProject.getTasks().findByPath('javasnes:copyJarToExamples')

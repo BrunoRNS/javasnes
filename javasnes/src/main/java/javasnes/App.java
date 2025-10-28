@@ -193,13 +193,24 @@ public class App {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("#include <snes.h>\n\n");
+        sb.append("#include <snes.h>\n");
 
         for (SnesMacro macro : this.snesMacros) {
 
             sb.append(macro.sourceCode).append("\n");
 
         }
+
+        sb.append("\n");
+
+        /**
+         * Default global instructions
+         */
+        sb.append("// auto-generated global instructions\n");
+        sb.append("extern char javasnes_patterns, javasnes_patterns_end;\n");
+        sb.append("extern char javasnes_map, javasnes_map_end;\n");
+        sb.append("extern char javasnes_palette, javasnes_palette_end;\n");
+        sb.append("// end auto-generated global instructions\n");
 
         sb.append("\n");
 
@@ -220,7 +231,13 @@ public class App {
         sb.append(this.processor.generateSourceCode()).append("\n");
 
         sb.append("int main(void) {\n");
-        
+
+        for (String line : this.boot.getSourceCode().split("\n")) {
+            
+            sb.append("\t").append(line).append("\n");
+
+        }
+
         sb.append("\twhile (1) {\n");
         sb.append("\t\tprocessor();\n");
         sb.append("\t\tWaitForVBlank();\n");
@@ -277,11 +294,9 @@ public class App {
      */
     private void copyResources() {
 
-        String separator = getFileSeparator();
-
         copyResource(
-            "javasnes" + separator + "javasnes_logo.bmp", 
-            this.destination + "javasnes_logo.bmp"
+            "javasnes/javasnes_logo.bmp",
+            Paths.get(this.destination).toAbsolutePath().resolve("javasnes_logo.bmp").toString()
         );
     
     }
@@ -297,7 +312,7 @@ public class App {
         try {
 
             Files.copy(
-                getClass().getResourceAsStream(resourcePath),
+                getClass().getClassLoader().getResourceAsStream(resourcePath),
                 Paths.get(destinationPath).toAbsolutePath()
             );
 
@@ -429,8 +444,7 @@ public class App {
      */
     private void generateHeaderFile() {
 
-        String separator = getFileSeparator();
-        this.hdr.generateHDR(this.destination + separator + "hdr.asm");
+        this.hdr.generateHDR(Paths.get(this.destination).resolve("hdr.asm").toString());
 
     }
 
@@ -462,17 +476,6 @@ public class App {
             );
         
         }
-
-    }
-
-    /**
-     * Gets the appropriate file separator for the current operating system.
-     * 
-     * @return The file separator string
-     */
-    private String getFileSeparator() {
-
-        return System.getProperty("os.name").toLowerCase().contains("win") ? "\\" : "/";
 
     }
 

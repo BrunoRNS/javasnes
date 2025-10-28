@@ -149,7 +149,6 @@ public class AppData {
          * javasnes_patterns:
          * .incbin "javasnes_logo.pic"
          * javasnes_patterns_end:
-         * .ends
          * 
          * javasnes_map:
          * .incbin "javasnes_logo.map"
@@ -173,17 +172,18 @@ public class AppData {
 
         sb.append("javasnes_patterns:\n");
         sb.append(".incbin \"javasnes_logo.pic\"\n");
-        sb.append("javasnes_patterns_end:\n");
-        sb.append(".ends\n");
         sb.append("\n");
+        sb.append("javasnes_patterns_end:\n");
+        sb.append("\n\n");
         sb.append("javasnes_map:\n");
         sb.append(".incbin \"javasnes_logo.map\"\n");
-        sb.append("javasnes_map_end:\n");
         sb.append("\n");
+        sb.append("javasnes_map_end:\n");
+        sb.append("\n\n");
         sb.append("javasnes_palette:\n");
         sb.append(".incbin \"javasnes_logo.pal\"\n");
-        sb.append("javasnes_palette_end:\n");
         sb.append("\n");
+        sb.append("javasnes_palette_end:\n");
 
         return sb.toString();
 
@@ -268,6 +268,14 @@ public class AppData {
 
         for (Byte bank : this.banks.keySet()) {
 
+            if (this.banks.get(bank) == null) {
+                continue;
+            }
+
+            if (this.banks.get(bank).isEmpty()) {
+                continue;
+            }
+
             sb.append(".section \".rodata").append(bank).append("\" superfree\n");
 
             for (Data data : this.banks.get(bank)) {
@@ -298,7 +306,7 @@ public class AppData {
 
             }
 
-            sb.append("\n.ends\n");
+            sb.append("\n.ends\n\n");
 
         }
 

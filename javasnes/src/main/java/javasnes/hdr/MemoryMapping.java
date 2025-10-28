@@ -119,10 +119,10 @@ public class MemoryMapping {
 
 
     /**
-     * This field holds the assembly memory mapping configuration as a string, which will be written
-     * in the hdr.asm file. This attribute can be used if you want to use a custom assembly memory 
-     * mapping configuration. If you want to use the static configuration from the App class, do not
-     * set this attribute and leave it as null.
+     * This field holds the assembly memory mapping configuration as a string, which will 
+     * be written in the hdr.asm file. This attribute can be used if you want to use a 
+     * custom assembly memory mapping configuration. If you want to use the static 
+     * configuration from the App class, do not set this attribute and leave it as null.
      */
     public String assemblyMapping = null;
 
@@ -137,34 +137,37 @@ public class MemoryMapping {
 
 
     /**
-     * If false, the memory mapping will use the LoROM structure. If true, it will use the HiROM structure.
-     * The default is false (LoROM), which is the most common memory mapping for SNES games, and is the
-     * most used by the pvsneslib library examples, I highly recommend you to use LoROM unless you have a
-     * specific reason to use HiROM.
+     * If false, the memory mapping will use the LoROM structure. If true, it will use 
+     * the HiROM structure. The default is false (LoROM), which is the most common memory 
+     * mapping for SNES games, and is the most used by the pvsneslib library examples, 
+     * I highly recommend you to use LoROM unless you have a specific reason to use HiROM.
      */
     public boolean HiROM = false;
 
     /**
-     * If false, the memory mapping will use the SlowROM structure. If true, it will use the FastROM structure.
-     * The default is false (SlowROM), which is the most common memory mapping for SNES games, and is the
-     * most used by the pvsneslib library examples, I highly recommend you to use SlowROM unless you have a
-     * specific reason to use FastROM.
+     * If false, the memory mapping will use the SlowROM structure. If true, it will 
+     * use the FastROM structure. The default is false (SlowROM), which is the most 
+     * common memory mapping for SNES games, and is the most used by the pvsneslib 
+     * library examples, I highly recommend you to use SlowROM unless you have a specific 
+     * reason to use FastROM.
      */
     public boolean FastROM = false;
 
     /**
-     * The number of ROM banks to be used in the game. The default in pvsneslib is 8, which is 2 Megabits.
-     * You can set this value to any number between 4 and 32, but keep in mind that the maximum
-     * size of a SNES ROM is 32 Megabits (4 MB), which is 32 banks of 32 KiB each.
+     * The number of ROM banks to be used in the game. The default in pvsneslib is 8,
+     * which is 2 Megabits. You can set this value to any number between 4 and 32, but 
+     * keep in mind that the maximum size of a SNES ROM is 32 Megabits (4 MB), which is 
+     * 128 banks of 32 KiB each.
      * 
      * Note: The number of ROM banks must be a power of 2 (4, 8, 16, 32).
-     * If you set a value that is not a power of 2, the application will throw an exception
-     * when building the project.
+     * If you set a value that is not a power of 2, the application will throw an 
+     * exception when building the project.
      * 
-     * Working with javasnes you should not change 32 banks to any other value because of AppData class
-     * which is configured to work with 32 banks, if you need to use less banks, you must modify the 
-     * AppData class to work with the number of banks you need. Even if you use less banks, I still strongly
-     * recommend you to keep the value as 32 to avoid any type of issues with the AppData class.
+     * Working with javasnes you should not change 32 banks to any other value because
+     * of AppData class which is configured to work with 32 banks, if you need to use 
+     * less banks, you must modify the AppData class to work with the number of banks 
+     * you need. Even if you use less banks, I still strongly recommend you to keep 
+     * the value as 32 to avoid any type of issues with the AppData class.
      */
     public char rombanks = 32;
 
@@ -179,23 +182,26 @@ public class MemoryMapping {
 
 
     /**
-     * The ID field in the SNES ROM header. This field is a 4 character string that identifies the ROM.
-     * The default value is "SNES", which is the standard ID for SNES ROMs. You can just leave it as is.
-     * If you want to change it, make sure to use a 4 character string, otherwise an exception will be thrown.
+     * The ID field in the SNES ROM header. This field is a 4 character string that
+     * identifies the ROM. The default value is "SNES", which is the standard ID for 
+     * SNES ROMs. You can just leave it as is. If you want to change it, make sure to
+     * use a 4 character string, otherwise an exception will be thrown.
      */
     public String ID = "SNES";
 
     /**
-     * The Name field in SNES ROM header. This field is a 21 character string that represents 
-     * the name of the game. Make sure to use spaces for unused bytes of the name. The default value is 
-     * "                     " (21 spaces). You should change it to the name of your game, but make sure
-     * it does not exceed or complete 21 characters, otherwise an exception will be thrown.
+     * The Name field in SNES ROM header. This field is a 21 character string that
+     * represents the name of the game. Make sure to use spaces for unused bytes of
+     * the name. The default value is "                     " (21 spaces).
+     * You should change it to the name of your game, but make sure it does not exceed 
+     * or complete 21 characters, otherwise an exception will be thrown.
      */
     public String name = "                     ";
 
     /**
-     * The Cartridge Type field in the SNES ROM header. This field is a value that indicates the type of
-     * cartridge used by the game. The default value is "$00", which indicates a standard ROM cartridge.
+     * The Cartridge Type field in the SNES ROM header. This field is a value that
+     * indicates the type of cartridge used by the game. The default value is "$00",
+     * which indicates a standard ROM cartridge.
      * Other common values include:
      * - $01: ROM + RAM
      * - $02: ROM + SRAM
@@ -208,50 +214,49 @@ public class MemoryMapping {
      */
     public String cartridgeType = "$00";
 
+    
     /**
-     * The ROM Size field in the SNES ROM header. This field indicates the size of the ROM in megabits.
-     * The value is represented as a hexadecimal value, where each increment represents a doubling of the
-     * size. The default value is "$0C", which corresponds to 32 megabits (4 MiB).
+     * The ROM Size field in the SNES ROM header. This field indicates the size of the 
+     * ROM in megabits. The value is represented as a hexadecimal value, where each 
+     * increment represents a doubling of the size. The default value is "$0A", which 
+     * corresponds to 8 megabits (8 Mb). Common values include:
      * 
-     * Common values include:
+     * - $07: 1 megabit (1 Mb)
+     * - $08: 2 megabits (2 Mb)
+     * - $09: 4 megabit (4 Mb)
+     * - $0A: 8 megabits (8 Mb)
+     * - $0B: 16 megabits (16 Mb)
+     * - $0C: 32 megabits (32 Mb)
      * 
-     * - $08: 2 megabits (256 KiB)
-     * - $09: 4 megabits (512 KiB)
-     * - $0A: 8 megabits (1 MiB)
-     * - $0B: 16 megabits (2 MiB)
-     * - $0C: 32 megabits (4 MiB)
-     * 
-     * If you change the number of ROM banks, make sure to update this field accordingly, if not,
-     * an exception will be thrown when building the project, or the ROM may not work as expected.
-     * For example, if you set the number of ROM banks to 16, you should set this field to "$0B".
-     * You should not change rombanks count to any other value than 32 because of AppData class,
-     * so you shouldn't change this field either.
      */
-    public String romsize = "$0C";
+    public String romsize = "$0A";
 
     /**
-     * The SRAM Size field in the SNES ROM header. This field indicates the size of the SRAM in kilobits.
-     * The value is represented as a hexadecimal value, where each increment represents a doubling of the
-     * size. The default value is "$00", which corresponds to 0 kilobits (no SRAM).
+     * The SRAM Size field in the SNES ROM header. This field indicates the size of the 
+     * SRAM in kilobits. The value is represented as a hexadecimal value, where each 
+     * increment represents a doubling of the size. The default value is "$00",
+     * which corresponds to 0 kilobits (no SRAM).
      * 
      * Common values include:
      * 
      * - $00: 0 kilobits (no SRAM)
-     * - $01: 16 kilobits (2 KiB)
-     * - $02: 32 kilobits (4 KiB)
-     * - $03: 64 kilobits (8 KiB)
-     * - $04: 128 kilobits (16 KiB)
-     * - $05: 256 kilobits (32 KiB)
+     * - $01: 16 kilobits (2 Kib)
+     * - $02: 32 kilobits (4 Kib)
+     * - $03: 64 kilobits (8 Kib)
+     * - $04: 128 kilobits (16 Kib)
+     * - $05: 256 kilobits (32 Kib)
      * 
-     * If your game does not use SRAM, you can leave this field as "$00". If your game uses SRAM,
-     * make sure to set this field to the appropriate value based on the size of the SRAM used by your game.
+     * If your game does not use SRAM, you can leave this field as "$00". If your 
+     * game uses SRAM, make sure to set this field to the appropriate value based on 
+     * the size of the SRAM used by your game.
      */
     public String sramsize = "$00";
 
     /**
-     * The Country field in the SNES ROM header. This field indicates the country for which the game
-     * was released. The value is represented as a hexadecimal value. The default value is "$01",
-     * which corresponds to the United States. Other common values include:
+     * The Country field in the SNES ROM header. This field indicates the country for
+     * which the game was released. The value is represented as a hexadecimal value.
+     * The default value is "$01", which corresponds to the United States.
+     * Other common values include:
      * 
      * - $00: Japan
      * - $01: U.S.
@@ -270,21 +275,24 @@ public class MemoryMapping {
      * 
      * For a complete list of country codes, refer to the SNES documentation.
      * 
-     * You should be careful when changing this field, because it can affect the compatibility NTSC/PAL
-     * of your game. For example, if you set this field to "$02" (Europe) works better with PAL consoles,
-     * but your game may not work properly on NTSC consoles (U.S. and Japan), and vice versa.
+     * You should be careful when changing this field, because it can affect the 
+     * compatibility NTSC/PAL of your game. For example, if you set this field to 
+     * "$02" (Europe) works better with PAL consoles, but your game may not work properly 
+     * on NTSC consoles (U.S. and Japan), and vice versa.
      * 
-     * The modern emulators usually handle this correctly, but the original hardware may not. But it depends
-     * not only on this field, but also on the cartridge you are using and many other factors.
+     * The modern emulators usually handle this correctly, but the original hardware 
+     * may not. But it depends not only on this field, but also on the cartridge you 
+     * are using and many other factors.
      * 
-     * By default, you should leave this field as "$01" (U.S.) unless you have a specific reason to change it.
+     * By default, you should leave this field as "$01" (U.S.) unless you have a 
+     * specific reason to change it.
      */
     public String country = "$01";
 
     /**
-     * The Licensee Code field in the SNES ROM header. This field indicates the licensee of the game.
-     * The value is represented as a hexadecimal value. The default value is "$00", which corresponds
-     * to no specific licensee. Other common values include:
+     * The Licensee Code field in the SNES ROM header. This field indicates the licensee 
+     * of the game. The value is represented as a hexadecimal value. The default value 
+     * is "$00", which corresponds to no specific licensee. Other common values include:
      * 
      * - $01: Nintendo
      * - $08: Capcom
@@ -311,22 +319,24 @@ public class MemoryMapping {
      * 
      * For a complete list of licensee codes, refer to the SNES documentation.
      * 
-     * You can usually leave this field as "$00" unless you have a specific reason to change it.
+     * You can usually leave this field as "$00" unless you have a specific reason 
+     * to change it.
      */
     public String licenseeCode = "$00";
 
     /**
-     * The Version field in the SNES ROM header. This field indicates the version of the game.
-     * The value is represented as a hexadecimal value, where "$00" corresponds to version 1.0,
-     * "$01" to version 1.1, and so on. The default value is "$00".
+     * The Version field in the SNES ROM header. This field indicates the version 
+     * of the game. The value is represented as a hexadecimal value, where "$00" 
+     * corresponds to version 1.0, "$01" to version 1.1, and so on. The default value 
+     * is "$00".
      * 
      * You should update this field if you release a new version of your game.
      * For example, if you release a bug fix or an update, you should increment this value
      * by 1. If you release a major update or a new edition of your game, you might want
      * to increment this value by more than 1.
      * 
-     * However, keep in mind that many emulators and flash cartridges do not check this field,
-     * so changing it may not have any practical effect on the game's behavior.
+     * However, keep in mind that many emulators and flash cartridges do not check 
+     * this field, so changing it may not have any practical effect on the game's behavior.
      * But it's still a good practice to keep it updated for version tracking purposes.
      */
     public String version = "$00";
@@ -565,28 +575,21 @@ public class MemoryMapping {
         }
 
         /*
-         * ============================================================================================
+         * =============================================================================
          * Check if romsize matches the number of rombanks.
-         * $08 = 4 banks (2 Megabits)
-         * $09 = 8 banks (4 Megabits)
-         * $0A = 16 banks (8 Megabits)
-         * $0B = 32 banks (16 Megabits)
-         * $0C = 64 banks (32 Megabits)
+         * $08 = 8 banks (2 Megabits)
+         * $09 = 16 banks (4 Megabits)
+         * $0A = 32 banks (8 Megabits)
+         * $0B = 64 banks (16 Megabits)
+         * $0C = 128 banks (32 Megabits)
          * 
-         * If romsize is not in the range $08 to $0C, an exception is thrown.
-         * If romsize is valid, the expected number of banks is calculated as:
-         * expectedBanks = 2^(sizeValue - 8)
-         * where sizeValue is the integer value of the hexadecimal part of romsize.
-         * This is because $08 corresponds to 4 banks (2 Megabits), and each increment 
-         * doubles the number of banks.
-         * If the actual number of rombanks does not match the expected number, an exception is thrown.
-         * ============================================================================================
+         * =============================================================================
          */
 
         if (this.romsize.charAt(1) == '0') {
 
             int sizeValue = Integer.parseInt(this.romsize.substring(2), 16);
-            int expectedBanks = 1 << (sizeValue - 8); // Since $08 corresponds to 4 banks (2 Megabits)
+            int expectedBanks = (1 << (sizeValue - 5));
 
             if (this.rombanks != expectedBanks) {
 
@@ -658,12 +661,13 @@ public class MemoryMapping {
 
     /**
      * Generates a String containing the assembly memory mapping configuration
-     * based on the static configuration fields defined in this class. This method constructs
-     * the assembly code as a StringBuilder and assigns it to the assemblyMapping field.
+     * based on the static configuration fields defined in this class. This method
+     * constructs the assembly code as a StringBuilder and assigns it to the
+     * assemblyMapping field.
      * 
      * This method is called in the constructor if the assemblyMapping field is null,
-     * indicating that the user wants to generate the assembly configuration from the static
-     * fields rather than providing a custom assembly configuration.
+     * indicating that the user wants to generate the assembly configuration from the 
+     * static fields rather than providing a custom assembly configuration.
      * 
      * The generated assembly code includes definitions for HiROM/LoROM, FastROM/SlowROM,
      * memory map, ROM bank size, number of ROM banks, and the SNES ROM header with
@@ -761,10 +765,12 @@ public class MemoryMapping {
      * 
      * The method uses a FileWriter and PrintWriter to write the content to the file.
      * 
-     * If an IOException occurs during the file writing process, an error message is printed
-     * to the standard error stream, and the application exits with a status code of 1.
+     * If an IOException occurs during the file writing process, an error message is 
+     * printed to the standard error stream, and the application exits with a status code
+     * of 1.
      * 
-     * @param filepath The path to the file where the memory mapping configuration will be written.
+     * @param filepath The path to the file where the memory mapping configuration will 
+     * be written.
      */
     public void generateHDR(String filepath) {
         

@@ -716,9 +716,8 @@ public class SnesProcess {
             sb.append("\treturn ").append(this.returnVar.name).append(";");
 
         }
-
-        sb.append("\n\n");
-        sb.append("}\n");
+        
+        sb.append("\n}\n");
 
         return sb.toString();
 

@@ -141,18 +141,17 @@ public class Boot {
     );
 
     /**
-     * ======================
-     * VRAM COMMANDS
-     * ======================
-     */
-
-    /**
      * Clears the VRAM.
-     * It avoids any VRAM corruption before editing it.
      */
     public SnesBootCommand dmaClearVram = new SnesBootCommand(
         "dmaClearVram", null
     );
+
+    /**
+     * ======================
+     * VRAM COMMANDS
+     * ======================
+     */
 
     /**
      * Initializes the tileset for the background.
@@ -200,9 +199,35 @@ public class Boot {
         "WaitForVBlank", null
     );
 
-    public SnesBootCommand setMode;
+    /**
+     * Set the mode for the background.
+     * 
+     * - NAME: colors for each bg
+     * - MODE      : BG0  BG1  BG2  BG3
+     * 
+     * - "BG_MODE0": 004  04   04   04
+     * - "BG_MODE1": 016  16   04   --
+     * - "BG_MODE3": 256  16   --   --
+     * - "BG_MODE5": 016  04   --   --
+     * 
+     * Default: "BG_MODE1"
+     */
+    public SnesBootCommand setMode = new SnesBootCommand(
+        "setMode", new String[] { "BG_MODE1", "0" }
+    );
+
+    /**
+     * Turn the screen on.
+     */
     public SnesBootCommand setScreenOn = new SnesBootCommand(
         "setScreenOn", null
+    );
+
+    /**
+     * Turn the screen off.
+     */
+    public SnesBootCommand setScreenOff = new SnesBootCommand(
+        "setScreenOff", null
     );
 
     /**
@@ -428,80 +453,65 @@ public class Boot {
         Map<String, Map<String, String[]>> commands
     ) {
 
-        if (commands.get("preSPCLoadCommands") != null) {
+        this.preSPCLoadCommands = this.generateFromMap(
+            "preSPCLoadCommands", commands
+        );
+        this.betweenSPCVRAMLoadCommands = this.generateFromMap(
+            "betweenSPCVRAMLoadCommands", commands
+        );
+        this.postVRAMLoadCommands = this.generateFromMap(
+            "postVRAMLoadCommands", commands
+        );
+        this.postBootCommands = this.generateFromMap(
+            "postBootCommands", commands
+        );
+        this.postLogoCommands = this.generateFromMap(
+            "postLogoCommands", commands
+        );
+        
+    }
 
-            this.preSPCLoadCommands = new SnesBootCommand[
-                commands.get("preSPCLoadCommands").size()
-            ];
-
-            for (int i = 0; i < this.preSPCLoadCommands.length; i++) {
-                this.preSPCLoadCommands[i] = new SnesBootCommand(
-                    String.valueOf(commands.keySet().toArray()[i]),
-                    commands.get("preSPCLoadCommands").get(String.valueOf(i))
-                );
-            }
-            
+    /**
+     * Generates an array of SnesBootCommand from a map of boot sequence commands.
+     * 
+     * The Map should follow the following structure:
+     * 
+     * key: String => commandType
+     * value: Map<String, String[]> => { commandName: commandArguments }
+     * 
+     * If the commandType is not found in the map, the function returns null.
+     * 
+     * @param commandType the type of commands to generate from the map
+     * @param commands the map of boot sequence commands
+     * @return an array of SnesBootCommand or null if the commandType is not found 
+     * in the map
+     */
+    private SnesBootCommand[] generateFromMap(
+        String commandType,
+        Map<String, Map<String, String[]>> commands
+    ) {
+        
+        if (commands.getOrDefault(commandType, null) == null) {
+            return null;
         }
 
-        if (commands.get("betweenSPCVRAMLoadCommands") != null) {
+        SnesBootCommand[] commandsArray = new SnesBootCommand[
+            commands.get(commandType).size()
+        ];
 
-            this.betweenSPCVRAMLoadCommands = new SnesBootCommand[
-                commands.get("betweenSPCVRAMLoadCommands").size()
-            ];
+        for (int i = 0; i < commandsArray.length; i++) {
 
-            for (int i = 0; i < this.betweenSPCVRAMLoadCommands.length; i++) {
-                this.betweenSPCVRAMLoadCommands[i] = new SnesBootCommand(
-                    String.valueOf(commands.keySet().toArray()[i]),
-                    commands.get("betweenSPCVRAMLoadCommands").get(String.valueOf(i))
-                );
-            }
-            
+            commandsArray[i] = new SnesBootCommand(
+                String.valueOf(commands.get(commandType).keySet().toArray()[i]),
+
+                commands.get(commandType).get(
+                    String.valueOf(commands.get(commandType).keySet().toArray()[i])
+                )
+            );
+
         }
 
-        if (commands.get("postVRAMLoadCommands") != null) {
-
-            this.postVRAMLoadCommands = new SnesBootCommand[
-                commands.get("postVRAMLoadCommands").size()
-            ];
-
-            for (int i = 0; i < this.postVRAMLoadCommands.length; i++) {
-                this.postVRAMLoadCommands[i] = new SnesBootCommand(
-                    String.valueOf(commands.keySet().toArray()[i]),
-                    commands.get("postVRAMLoadCommands").get(String.valueOf(i))
-                );
-            }
-            
-        }
-
-        if (commands.get("postBootCommands") != null) {
-
-            this.postBootCommands = new SnesBootCommand[
-                commands.get("postBootCommands").size()
-            ];
-
-            for (int i = 0; i < this.postBootCommands.length; i++) {
-                this.postBootCommands[i] = new SnesBootCommand(
-                    String.valueOf(commands.keySet().toArray()[i]),
-                    commands.get("postBootCommands").get(String.valueOf(i))
-                );
-            }
-            
-        }
-
-        if (commands.get("postLogoCommands") != null) {
-
-            this.postLogoCommands = new SnesBootCommand[
-                commands.get("postLogoCommands").size()
-            ];
-
-            for (int i = 0; i < this.postLogoCommands.length; i++) {
-                this.postLogoCommands[i] = new SnesBootCommand(
-                    String.valueOf(commands.keySet().toArray()[i]),
-                    commands.get("postLogoCommands").get(String.valueOf(i))
-                );
-            }
-            
-        }
+        return commandsArray;
         
     }
 
@@ -569,7 +579,6 @@ public class Boot {
      * preSPCLoadCommands
      * spcBoot
      * betweenSPCVRAMLoadCommands
-     * dmaClearVram
      * bgInitTileSet
      * bgInitMapSet
      * postVRAMLoadCommands
@@ -579,6 +588,7 @@ public class Boot {
      * waitForVBlank
      * for loop (showLogo)
      *     waitForVBlank
+     * dmaClearVram
      * postLogoCommands
      * 
      * @return the source code representation of the boot configuration
@@ -594,7 +604,7 @@ public class Boot {
         }
 
         sb.append("\n");
-        sb.append(this.spcBoot.getCommand());
+        sb.append(this.spcBoot.getCommand()).append('\n');
         sb.append("\n");
 
         if (this.betweenSPCVRAMLoadCommands != null) {
@@ -604,9 +614,8 @@ public class Boot {
         }
 
         sb.append("\n");
-        sb.append(this.dmaClearVram.getCommand());
-        sb.append(this.bgInitTileSet.getCommand());
-        sb.append(this.bgInitMapSet.getCommand());
+        sb.append(this.bgInitTileSet.getCommand()).append('\n');
+        sb.append(this.bgInitMapSet.getCommand()).append('\n');
         sb.append("\n");
 
         if (this.postVRAMLoadCommands != null) {
@@ -616,7 +625,7 @@ public class Boot {
         }
 
         sb.append("\n");
-        sb.append(this.setMode.getCommand());
+        sb.append(this.setMode.getCommand()).append('\n');
 
         for (int i = 0; i < 4; i++) {
 
@@ -628,13 +637,13 @@ public class Boot {
                         String.valueOf(i)
                     }
                 );
-                sb.append(bgSetDisabled.getCommand());
+                sb.append(bgSetDisabled.getCommand()).append('\n');
 
             }
 
         }
 
-        sb.append(this.setScreenOn.getCommand());
+        sb.append(this.setScreenOn.getCommand()).append('\n');
         sb.append("\n");
 
         if (this.postBootCommands != null) {
@@ -644,12 +653,17 @@ public class Boot {
         }
 
         sb.append("\n");
-        sb.append(this.waitForVBlank.getCommand());
+        sb.append(this.waitForVBlank.getCommand()).append('\n');
         sb.append("\n");
 
-        sb.append("for (int i = 0; i < ").append(this.showLogo).append("; i++) {\n");
+        sb.append("u8 i;\n");
+        sb.append("for (i = 0; i < ").append(this.showLogo).append("; i++) {\n");
         sb.append("\t").append(this.waitForVBlank.getCommand()).append("\n");
         sb.append("}");
+
+        sb.append("\n");
+        sb.append(this.dmaClearVram.getCommand()).append('\n');
+        sb.append("\n");
 
         if (this.postLogoCommands != null) {
             for (SnesBootCommand command : this.postLogoCommands) {

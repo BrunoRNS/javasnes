@@ -127,34 +127,39 @@ public class Make {
         this.setInclude("${PVSNESLIB_HOME}/devkitsnes/snes_rules");
         this.setRomName("                     "); // 21 characters length
         
-        addPhonyTarget("bitmaps");
-        addPhonyTarget("all");
+        this.addPhonyTarget("all");
+        this.addPhonyTarget("clean");
+        this.addPhonyTarget("logo");
 
-        addRule(
+        this.addRule(
             new MakeRule(
                 "all",
-                "bitmaps logo $(ROMNAME).sfc",
+                "logo",
                 ""
             )
         );
 
-        addRule(
+        this.addRule(
             new MakeRule(
                 "clean",
-                "cleanBuildRes cleanRom cleanGfx cleanGfxLogo cleanAudio",
+                "cleanBuildRes cleanRom cleanGfx cleanAudio",
                 ""
             )
         );
 
-        addRule(
+        this.addRule(
             new MakeRule(
-                "logo.pic",
-                "res/logo.bmp",
-                "@echo convert font with no tile reduction ... $(notdir $@)",
-                "$(GFXCONV) -s 8 -o 32 -u 16 -p -e 1 -m -R -t bmp -i $<"      
+                "javasnes_logo.pic",
+                "javasnes_logo.bmp",
+                "@echo convert javasnes_logo to map/pic/pal... $(notdir $@)",
+                "$(GFXCONV) -s 8 -o 16 -u 16 -e 0 -p -m -t bmp -i $<"      
         ));
 
-        addRule(new MakeRule("logo", "logo.pic", ""));
+        this.addRule(new MakeRule(
+            "logo",
+            "javasnes_logo.pic javasnes_logo.map javasnes_logo.pal",
+            ""
+        ));
 
     }
     
@@ -167,7 +172,7 @@ public class Make {
      */
     public void addRule(MakeRule rule) throws IllegalArgumentException {
 
-        if (rules.containsKey(rule.getTarget())) {
+        if (this.rules.containsKey(rule.getTarget())) {
 
             throw new IllegalArgumentException(
                 "Rule with target '" + rule.getTarget() + "' already exists"
@@ -175,7 +180,7 @@ public class Make {
         
         }
 
-        rules.put(rule.getTarget(), rule);
+        this.rules.put(rule.getTarget(), rule);
 
     }
     
@@ -187,7 +192,7 @@ public class Make {
      */
     public MakeRule getRule(String target) {
 
-        return rules.get(target);
+        return this.rules.get(target);
 
     }
     
@@ -199,7 +204,7 @@ public class Make {
      */
     public void setRule(MakeRule rule) throws IllegalArgumentException {
 
-        if (!rules.containsKey(rule.getTarget())) {
+        if (!this.rules.containsKey(rule.getTarget())) {
 
             throw new IllegalArgumentException(
                 "Rule with target '" + rule.getTarget() + "' does not exist"
@@ -207,7 +212,7 @@ public class Make {
         
         }
 
-        rules.put(rule.getTarget(), rule);
+        this.rules.put(rule.getTarget(), rule);
 
     }
     
@@ -220,7 +225,7 @@ public class Make {
      */
     public boolean removeRule(String target) {
 
-        return rules.remove(target) != null;
+        return this.rules.remove(target) != null;
 
     }
     
@@ -232,7 +237,7 @@ public class Make {
      */
     public void addPhonyTarget(String target) throws IllegalArgumentException {
 
-        if (phonyTargets.contains(target)) {
+        if (this.phonyTargets.contains(target)) {
 
             throw new IllegalArgumentException(
                 "Phony target '" + target + "' already exists"
@@ -240,7 +245,7 @@ public class Make {
         
         }
 
-        phonyTargets.add(target);
+        this.phonyTargets.add(target);
 
     }
     
@@ -251,7 +256,7 @@ public class Make {
      */
     public List<String> getPhonyTargets() {
 
-        return new ArrayList<>(phonyTargets);
+        return new ArrayList<>(this.phonyTargets);
 
     }
     
@@ -268,7 +273,7 @@ public class Make {
 
     ) throws IllegalArgumentException {
 
-        if (!phonyTargets.contains(oldTarget)) {
+        if (!this.phonyTargets.contains(oldTarget)) {
 
             throw new IllegalArgumentException(
                 "Phony target '" + oldTarget + "' does not exist"
@@ -276,7 +281,7 @@ public class Make {
         
         }
 
-        if (phonyTargets.contains(newTarget) && !oldTarget.equals(newTarget)) {
+        if (this.phonyTargets.contains(newTarget) && !oldTarget.equals(newTarget)) {
 
             throw new IllegalArgumentException(
                 "Phony target '" + newTarget + "' already exists"
@@ -284,8 +289,8 @@ public class Make {
         
         }
         
-        int index = phonyTargets.indexOf(oldTarget);
-        phonyTargets.set(index, newTarget);
+        int index = this.phonyTargets.indexOf(oldTarget);
+        this.phonyTargets.set(index, newTarget);
 
     }
     
@@ -297,7 +302,7 @@ public class Make {
      */
     public boolean removePhonyTarget(String target) {
 
-        return phonyTargets.remove(target);
+        return this.phonyTargets.remove(target);
 
     }
     
@@ -310,13 +315,13 @@ public class Make {
      */
     public void addVariable(String name, String value) throws IllegalArgumentException {
 
-        if (variables.containsKey(name)) {
+        if (this.variables.containsKey(name)) {
             throw new IllegalArgumentException(
                 "Variable '" + name + "' already exists"
             );
         }
 
-        variables.put(name, value);
+        this.variables.put(name, value);
 
     }
     
@@ -328,7 +333,7 @@ public class Make {
      */
     public String getVariable(String name) {
 
-        return variables.get(name);
+        return this.variables.get(name);
 
     }
     
@@ -341,7 +346,7 @@ public class Make {
      */
     public void setVariable(String name, String value) throws IllegalArgumentException {
 
-        if (!variables.containsKey(name)) {
+        if (!this.variables.containsKey(name)) {
 
             throw new IllegalArgumentException(
                 "Variable '" + name + "' does not exist"
@@ -349,7 +354,7 @@ public class Make {
 
         }
 
-        variables.put(name, value);
+        this.variables.put(name, value);
 
     }
     
@@ -361,7 +366,7 @@ public class Make {
      */
     public boolean removeVariable(String name) {
 
-        return variables.remove(name) != null;
+        return this.variables.remove(name) != null;
 
     }
     
@@ -372,7 +377,7 @@ public class Make {
      */
     public void addHeaderLine(String line) {
 
-        headerContent.add(line);
+        this.headerContent.add(line);
 
     }
     
@@ -385,7 +390,7 @@ public class Make {
      */
     public String getHeaderLine(int index) throws IndexOutOfBoundsException {
 
-        if (index < 0 || index >= headerContent.size()) {
+        if (index < 0 || index >= this.headerContent.size()) {
 
             throw new IndexOutOfBoundsException(
                 "Header line index " + index + " is out of bounds"
@@ -393,7 +398,7 @@ public class Make {
 
         }
 
-        return headerContent.get(index);
+        return this.headerContent.get(index);
 
     }
     
@@ -404,7 +409,7 @@ public class Make {
      */
     public List<String> getHeaderContent() {
 
-        return new ArrayList<>(headerContent);
+        return new ArrayList<>(this.headerContent);
 
     }
     
@@ -417,7 +422,7 @@ public class Make {
      */
     public void setHeaderLine(int index, String line) throws IndexOutOfBoundsException {
 
-        if (index < 0 || index >= headerContent.size()) {
+        if (index < 0 || index >= this.headerContent.size()) {
 
             throw new IndexOutOfBoundsException(
                 "Header line index " + index + " is out of bounds"
@@ -425,7 +430,7 @@ public class Make {
         
         }
 
-        headerContent.set(index, line);
+        this.headerContent.set(index, line);
 
     }
     
@@ -438,7 +443,7 @@ public class Make {
      */
     public String removeHeaderLine(int index) throws IndexOutOfBoundsException {
 
-        if (index < 0 || index >= headerContent.size()) {
+        if (index < 0 || index >= this.headerContent.size()) {
 
             throw new IndexOutOfBoundsException(
                 "Header line index " + index + " is out of bounds"
@@ -446,7 +451,7 @@ public class Make {
         
         }
 
-        return headerContent.remove(index);
+        return this.headerContent.remove(index);
 
     }
     
@@ -481,7 +486,7 @@ public class Make {
 
         this.romName = romName;
 
-        if (variables.containsKey("ROMNAME")) {
+        if (this.variables.containsKey("ROMNAME")) {
 
             setVariable("ROMNAME", romName);
 
@@ -500,7 +505,7 @@ public class Make {
      */
     public String getRomName() {
 
-        return romName;
+        return this.romName;
 
     }
     
@@ -513,7 +518,7 @@ public class Make {
 
         this.soundBank = soundBank;
 
-        if (variables.containsKey("SOUNDBANK")) {
+        if (this.variables.containsKey("SOUNDBANK")) {
 
             setVariable("SOUNDBANK", soundBank);
 
@@ -532,7 +537,7 @@ public class Make {
      */
     public String getSoundBank() {
 
-        return soundBank;
+        return this.soundBank;
 
     }
     
@@ -552,28 +557,28 @@ public class Make {
         makefileContent.addAll(headerContent);
         makefileContent.add("");
         
-        if (soundBank != null && !variables.containsKey("SOUNDBANK")) {
+        if (this.soundBank != null && !this.variables.containsKey("SOUNDBANK")) {
 
-            makefileContent.add("export SOUNDBANK := " + soundBank);
+            makefileContent.add("export SOUNDBANK := " + this.soundBank);
 
         }
         
-        if (includePath != null) {
+        if (this.includePath != null) {
 
-            makefileContent.add("include " + includePath);
+            makefileContent.add("include " + this.includePath);
             makefileContent.add("");
 
         }
         
-        if (!phonyTargets.isEmpty()) {
+        if (!this.phonyTargets.isEmpty()) {
 
-            makefileContent.add(".PHONY: " + String.join(" ", phonyTargets));
+            makefileContent.add(".PHONY: " + String.join(" ", this.phonyTargets));
 
         }
         
-        if (!variables.isEmpty()) {
+        if (!this.variables.isEmpty()) {
 
-            for (Map.Entry<String, String> entry : variables.entrySet()) {
+            for (Map.Entry<String, String> entry : this.variables.entrySet()) {
 
                 if (
                     entry.getKey().equals("ROMNAME") || 
@@ -597,7 +602,7 @@ public class Make {
 
         }
         
-        for (MakeRule rule : rules.values()) {
+        for (MakeRule rule : this.rules.values()) {
 
             makefileContent.addAll(rule.toMakefileLines());
             makefileContent.add("");
@@ -647,7 +652,7 @@ public class Make {
          */
         public String getTarget() {
 
-            return target;
+            return this.target;
 
         }
         
@@ -669,7 +674,7 @@ public class Make {
          */
         public String getPrerequisites() {
 
-            return prerequisites;
+            return this.prerequisites;
 
         }
         
@@ -691,7 +696,7 @@ public class Make {
          */
         public List<String> getRecipe() {
 
-            return new ArrayList<>(recipe);
+            return new ArrayList<>(this.recipe);
 
         }
         
@@ -702,7 +707,7 @@ public class Make {
          */
         public void addRecipeLine(String line) {
 
-            recipe.add(line);
+            this.recipe.add(line);
 
         }
         
@@ -715,7 +720,7 @@ public class Make {
          */
         public String getRecipeLine(int index) throws IndexOutOfBoundsException {
 
-            if (index < 0 || index >= recipe.size()) {
+            if (index < 0 || index >= this.recipe.size()) {
 
                 throw new IndexOutOfBoundsException(
                     "Recipe line index " + index + " is out of bounds"
@@ -723,7 +728,7 @@ public class Make {
 
             }
 
-            return recipe.get(index);
+            return this.recipe.get(index);
 
         }
         
@@ -740,7 +745,7 @@ public class Make {
 
         ) throws IndexOutOfBoundsException {
 
-            if (index < 0 || index >= recipe.size()) {
+            if (index < 0 || index >= this.recipe.size()) {
 
                 throw new IndexOutOfBoundsException(
                     "Recipe line index " + index + " is out of bounds"
@@ -748,7 +753,7 @@ public class Make {
             
             }
 
-            recipe.set(index, line);
+            this.recipe.set(index, line);
 
         }
         
@@ -761,7 +766,7 @@ public class Make {
          */
         public String removeRecipeLine(int index) throws IndexOutOfBoundsException {
 
-            if (index < 0 || index >= recipe.size()) {
+            if (index < 0 || index >= this.recipe.size()) {
 
                 throw new IndexOutOfBoundsException(
                     "Recipe line index " + index + " is out of bounds"
@@ -769,7 +774,7 @@ public class Make {
 
             }
 
-            return recipe.remove(index);
+            return this.recipe.remove(index);
 
         }
         
@@ -782,17 +787,17 @@ public class Make {
 
             List<String> lines = new ArrayList<>();
             
-            if (prerequisites == null || prerequisites.isEmpty()) {
+            if (this.prerequisites == null || this.prerequisites.isEmpty()) {
 
                 lines.add(target + ":");
 
             } else {
 
-                lines.add(target + ": " + prerequisites);
+                lines.add(target + ": " + this.prerequisites);
 
             }
             
-            for (String recipeLine : recipe) {
+            for (String recipeLine : this.recipe) {
 
                 if (!recipeLine.isEmpty()) {
                     lines.add("\t" + recipeLine);

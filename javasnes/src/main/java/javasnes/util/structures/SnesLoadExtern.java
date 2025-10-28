@@ -73,7 +73,7 @@ public class SnesLoadExtern extends SnesStructure {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("extern ").append(this.snesType.type);
+        sb.append("extern ").append(this.snesType.type).append(' ');
 
         HashSet<String> fieldNames = new HashSet<>(this.fields.keySet());
 
