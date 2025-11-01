@@ -1,47 +1,148 @@
-/**
- * Build configuration for javasnes library
- * It works with gradle 4 or newer
- * It copies the output jar file to the snes-examples lib folder
- * Works with Java 8 or newer
- */
-
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
-group = 'org.javasnes'
-version = '1.0.0'
+group = 'javasnes'
+version = '1.0-rolling-' + new Date().format('yyyyMMdd.HHmmss')
 
 if (!hasProperty('java')) {
-    
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
 } else {
-
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
 }
 
 if (!jar.hasProperty('archiveFile')) {
-
     task copyJarToExamples(type: Copy) {
         dependsOn jar
         from jar.archivePath
         into "$rootDir/snes-examples/lib"
+        rename { String fileName ->
+            'framework-local.jar'
+        }
+        doLast {
+            println "JAR moved to snes-examples/lib/framework-local.jar"
+        }
     }
-    
 } else {
-
     task copyJarToExamples(type: Copy) {
         dependsOn jar
         from jar.archiveFile
         into "$rootDir/snes-examples/lib"
+        rename { String fileName ->
+            'framework-local.jar'
+        }
+        doLast {
+            println "JAR moved to snes-examples/lib/framework-local.jar"
+        }
     }
+}
+
+task publishToMavenRepo {
+    dependsOn jar
+    
+    doLast {
+        def mavenRepoDir = file("${projectDir}/../maven/javasnes/framework/${version}")
+        mavenRepoDir.mkdirs()
+        
+        def sourceJar = jar.archiveFile.get().asFile
+        def targetJar = new File(mavenRepoDir, "framework-${version}.jar")
+        
+        println "Copying JAR: ${sourceJar.name} -> ${targetJar.name}"
+        targetJar.bytes = sourceJar.bytes
+
+        def pomFile = new File(mavenRepoDir, "framework-${version}.pom")
+        pomFile.text = """<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javasnes</groupId>
+  <artifactId>framework</artifactId>
+  <version>${version}</version>
+  <name>JavaSNES Framework</name>
+  <description>SNES development framework for Java - Rolling Release</description>
+  <url>https://github.com/BrunoRNS/javasnes</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License v3.0</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Bruno RNS</name>
+    </developer>
+    <developer>
+      <name>Luciano CS</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/BrunoRNS/javasnes.git</connection>
+    <url>https://github.com/BrunoRNS/javasnes</url>
+  </scm>
+</project>"""
+        
+        generateChecksums(targetJar)
+        generateChecksums(pomFile)
+        
+        updateMavenMetadata(mavenRepoDir.parentFile)
+        
+        println "JavaSNES Framework published in: ${mavenRepoDir}"
+        println "JAR: framework-${version}.jar"
+        println "POM: framework-${version}.pom"
+        println "URL: https://brunorns.github.io/javasnes/maven/"
+    }
+}
+
+def generateChecksums(File file) {
+
+    def md5 = java.security.MessageDigest.getInstance("MD5").digest(file.bytes)
+    def md5File = new File(file.parent, "${file.name}.md5")
+    md5File.text = md5.encodeHex().toString()
+    
+    def sha1 = java.security.MessageDigest.getInstance("SHA-1").digest(file.bytes)
+    def sha1File = new File(file.parent, "${file.name}.sha1")
+    sha1File.text = sha1.encodeHex().toString()
 
 }
 
-build.finalizedBy(copyJarToExamples)
+def updateMavenMetadata(File frameworkDir) {
+    def metadataFile = new File(frameworkDir, "maven-metadata.xml")
+    
+    def versions = []
+    if (frameworkDir.exists() && frameworkDir.isDirectory()) {
+        frameworkDir.eachDir { dir ->
+            if (dir.name.startsWith('1.0-rolling-')) {
+                versions << dir.name
+            }
+        }
+    }
+    
+    versions.sort().reverse()
+    
+    def latest = versions ? versions.first() : version
+    def release = versions ? versions.first() : version
+    
+    metadataFile.text = """<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>javasnes</groupId>
+  <artifactId>framework</artifactId>
+  <versioning>
+    <latest>${latest}</latest>
+    <release>${release}</release>
+    <versions>
+      ${versions.collect { "<version>${it}</version>" }.join('\n      ')}
+    </versions>
+    <lastUpdated>${new Date().format('yyyy.MM.dd.HH:mm:ss')}</lastUpdated>
+  </versioning>
+</metadata>"""
+    
+    generateChecksums(metadataFile)
+}
+
+
+build.dependsOn copyJarToExamples
+publish.dependsOn publishToMavenRepo

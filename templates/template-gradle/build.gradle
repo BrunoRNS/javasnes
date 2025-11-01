@@ -17,12 +17,6 @@ plugins {
     id 'java'
 }
 
-repositories {
-    flatDir {
-        dirs 'lib'
-    }
-}
-
 dependencies {
     implementation name: 'javasnes'
 }

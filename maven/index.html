@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>JavaSNES Framework - Maven Repository</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">JavaSNES</div>
+            <div class="subtitle">SNES Development Framework for Java</div>
+            <div class="version-badge">Rolling Release • Always Latest</div>
+        </header>
+
+        <div class="card-grid">
+            <div class="card">
+                <h2><i class="fab fa-gradle"></i> Gradle</h2>
+                <p>Add to your <strong>build.gradle</strong>:</p>
+                
+                <div class="code-block">
+                    <code>repositories {<br>    maven { url 'https://brunorns.github.io/javasnes/maven/' }<br>}<br><br>dependencies {<br>    implementation 'javasnes:framework:1.0-rolling.+'<br>}</code>
+                </div>
+                <button class="copy-btn" onclick="copyCode(this)">Copy Gradle Config</button>
+                
+                <p style="margin-top: 1rem;"><strong>Specific version:</strong></p>
+                <div class="code-block">
+                    <code>implementation 'javasnes:framework:1.0-rolling-xxxxxxxx.xxxxxx'</code>
+                </div>
+                <button class="copy-btn" onclick="copyCode(this)">Copy Specific Version</button>
+            </div>
+
+            <div class="card">
+                <h2><i class="fab fa-maven"></i> Maven</h2>
+                <p>Add to your <strong>pom.xml</strong>:</p>
+                
+                <div class="code-block">
+                    <code>&lt;repositories&gt;<br>  &lt;repository&gt;<br>    &lt;id&gt;javasnes-maven&lt;/id&gt;<br>    &lt;url&gt;https://brunorns.github.io/javasnes/maven/&lt;/url&gt;<br>  &lt;/repository&gt;<br>&lt;/repositories&gt;<br><br>&lt;dependencies&gt;<br>  &lt;dependency&gt;<br>    &lt;groupId&gt;javasnes&lt;/groupId&gt;<br>    &lt;artifactId&gt;framework&lt;/artifactId&gt;<br>    &lt;version&gt;[1.0-rolling,)&lt;/version&gt;<br>  &lt;/dependency&gt;<br>&lt;/dependencies&gt;</code>
+                </div>
+                <button class="copy-btn" onclick="copyCode(this)">Copy Maven Config</button>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                <h3>Rolling Releases</h3>
+                <p>Always get the latest features and fixes automatically</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-code"></i></div>
+                <h3>SNES Native</h3>
+                <p>Framework designed specifically for SNES development</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fab fa-java"></i></div>
+                <h3>Java Powered</h3>
+                <p>Leverage Java ecosystem for SNES game development</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Repository Structure</h2>
+            <div class="code-block">
+                <code>maven/<br>└── javasnes/<br>    └── framework/<br>        ├── maven-metadata.xml<br>        ├── 1.0-rolling-20251101.155311/<br>        │   ├── framework-1.0-rolling-20251101.155311.jar<br>        │   └── framework-1.0-rolling-20251101.155311.pom<br>        └── 1.0-rolling-20251102.093045/<br>            ├── framework-1.0-rolling-20251102.093045.jar<br>            └── framework-1.0-rolling-20251102.093045.pom</code>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p><strong>JavaSNES Framework</strong> - Rolling Release Repository</p>
+            <p class="license">Licensed under GNU GPL v3 • Created by Bruno RNS & Luciano CS</p>
+            <p style="margin-top: 1rem;">
+                <a href="https://github.com/BrunoRNS/javasnes" style="color: var(--secondary); text-decoration: none;">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.previousElementSibling;
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('fade-in');
+            });
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            .fade-in {
+                animation: fadeInUp 0.6s ease-out forwards;
+                opacity: 0;
+            }
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

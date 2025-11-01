@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation name: 'javasnes-1.0.0'
+    implementation name: 'framework-local'
 }
 
 task buildAllJars {
