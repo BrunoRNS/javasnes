@@ -17,8 +17,12 @@ plugins {
     id 'java'
 }
 
+repositories {
+    maven { url 'https://brunorns.github.io/javasnes/maven/' }
+}
+
 dependencies {
-    implementation name: 'javasnes'
+    implementation 'javasnes:framework:1.0-rolling.+'
 }
 
 task buildAllJars {
