@@ -14,7 +14,7 @@ launch.json
 
 # Java files
 *.class
-*.LCKMain.*
+*.LCK*.*
 
 test/
 
