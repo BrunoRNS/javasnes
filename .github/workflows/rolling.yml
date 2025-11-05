@@ -1,0 +1,111 @@
+name: Rolling Release
+
+on:
+  push:
+    branches: [ rolling-release ]
+  pull_request:
+    branches: [ rolling-release ]
+    types: [closed]
+
+jobs:
+  release:
+    if: |
+      github.event_name == 'push' || 
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Get version and tag
+      id: version
+      run: |
+        DATE=$(date -u +'%Y%m%d')
+        
+        COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
+        
+        VERSION="rolling-${DATE}-${COMMIT_SHA_SHORT}"
+        
+        if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+          echo "Tag v$VERSION already exists, skipping release"
+          echo "skip_release=true" >> $GITHUB_OUTPUT
+        else
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "skip_release=false" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "New version: $VERSION"
+        echo "::set-output name=version::$VERSION"
+
+    - name: Generate release notes
+      id: release_notes
+      if: steps.version.outputs.skip_release == 'false'
+      run: |
+        if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0)
+          CHANGES=$(git log --pretty=format:"- %s (%h)" $PREVIOUS_TAG..HEAD)
+          echo "Changes since $PREVIOUS_TAG:"
+          echo "$CHANGES"
+        else
+          CHANGES=$(git log --pretty=format:"- %s (%h)" -n 50)
+          echo "Initial release - recent commits:"
+          echo "$CHANGES"
+        fi
+        
+        RELEASE_BODY=$(cat << EOF
+        ## Rolling Release - ${{ steps.version.outputs.version }}
+
+        **Release Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+        **Commit:** ${{ github.sha }}
+        **Triggered by:** ${{ github.actor }}
+
+        ### Changes:
+        $CHANGES
+
+        ### Automated Information:
+        - Branch: ${{ github.ref }}
+        - Workflow: ${{ github.workflow }}
+        - Runner: ${{ runner.os }}
+
+        ---
+        *This is an automated release from the rolling-release branch*
+        EOF
+        )
+        
+        RELEASE_BODY_ESCAPED=$(echo "$RELEASE_BODY" | sed ':a;N;$!ba;s/\n/\\n/g')
+        echo "release_body=$RELEASE_BODY_ESCAPED" >> $GITHUB_OUTPUT
+
+    - name: Create Git tag
+      if: steps.version.outputs.skip_release == 'false'
+      run: |
+        git tag -a "v${{ steps.version.outputs.version }}" -m "Rolling release ${{ steps.version.outputs.version }}"
+        git push origin "v${{ steps.version.outputs.version }}"
+
+    - name: Create GitHub Release
+      if: steps.version.outputs.skip_release == 'false'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        name: Rolling Release ${{ steps.version.outputs.version }}
+        body: ${{ steps.release_notes.outputs.release_body }}
+        draft: false
+        prerelease: false
+        generate_release_notes: false
+
+    - name: Skip release notice
+      if: steps.version.outputs.skip_release == 'true'
+      run: |
+        echo "Release was skipped because tag v${{ steps.version.outputs.version }} already exists"
