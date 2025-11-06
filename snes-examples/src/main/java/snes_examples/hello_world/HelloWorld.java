@@ -94,7 +94,7 @@ public class HelloWorld {
 
         SnesInstruction[] comandos = new SnesInstruction[1];
 
-        comandos[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!");
+        comandos[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!", null);
 
         return new SnesProcess(
             "printHelloWorld",
