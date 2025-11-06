@@ -18,5 +18,18 @@ public class SnesOutput {
             "consoleDrawText(" + x + ", " + y + ", \"" + text + "\");"
         );
     }
+
+    /**
+     * For example: consoleSetTextCol(RGB15(31,0,0), RGB15(0,0,0));
+     * 
+     * @param color
+     * @param bgColor
+     * @return
+     */
+    public static final SnesRawInstruction consoleSetTextCol(String color, String bgColor) {
+        return new SnesRawInstruction(
+            "consoleSetTextCol(" + color + ", " + bgColor + ");"
+        );
+    }
     
 }
