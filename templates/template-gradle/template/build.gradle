@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'javasnes:framework:1.0-rolling.+'
+    implementation 'javasnes:framework:1.0-rolling-+'
 }
 
 task buildAllJars {

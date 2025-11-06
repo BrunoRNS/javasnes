@@ -81,12 +81,14 @@ jobs:
         - Runner: ${{ runner.os }}
 
         ---
-        *This is an automated release from the rolling-release branch*
+        _This is an automated release from the rolling-release branch_
         EOF
         )
         
-        RELEASE_BODY_ESCAPED=$(echo "$RELEASE_BODY" | sed ':a;N;$!ba;s/\n/\\n/g')
-        echo "release_body=$RELEASE_BODY_ESCAPED" >> $GITHUB_OUTPUT
+        RELEASE_BODY_ESCAPED=$(printf '%s' "$RELEASE_BODY")
+        echo "release_body<<EOF" >> $GITHUB_OUTPUT
+        echo "$RELEASE_BODY_ESCAPED" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Create Git tag
       if: steps.version.outputs.skip_release == 'false'

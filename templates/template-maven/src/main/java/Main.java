@@ -37,7 +37,7 @@ public class Main {
         // as it only uses the default mapping, only change the ROM name
         // it must be a 21 char string
         HashMap<String, String> memMapConfig = new HashMap<>();
-        memMapConfig.put("name", "Javasnes main  ");
+        memMapConfig.put("name", "Javasnes template    ");
         MemoryMapping memMap = Config.generateMemoryMapping(memMapConfig);
         
         main.setMemoryMapping(memMap);
@@ -63,12 +63,12 @@ public class Main {
 
         main.setGlobalInstructions(globalDefs);
 
-        // Define processor method and a process that printmain
-        // The processes are saved in an array, and loaded from printmain method
+        // Define processor method and a process that printHelloWorld
+        // The processes are saved in an array, and loaded from printHelloWorld method
         // Add process to processor
         Processor processor = new Processor();
         SnesProcess[] processes = new SnesProcess[1];
-        processes[0] = printmain();
+        processes[0] = printHelloWorld();
         processor.addProcess(processes[0], null);
         
         main.setProcessor(processor);
@@ -88,15 +88,15 @@ public class Main {
 
     }
 
-    public static SnesProcess printmain() {
+    public static SnesProcess printHelloWorld() {
 
-        SnesInstruction[] comandos = new SnesInstruction[1];
+        SnesInstruction[] comands = new SnesInstruction[1];
 
-        comandos[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!", null);
+        comands[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!", null);
 
         return new SnesProcess(
-            "printmain",
-            (byte) 0, comandos, VOID
+            "print_hello_world",
+            (byte) 0, comands, VOID
         );
 
     }

@@ -3,149 +3,115 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.maven</groupId>
-  <artifactId>template</artifactId>
-  <version>1.0.0</version>
-  <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.maven</groupId>
+    <artifactId>template</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <out.dir>${project.basedir}/out</out.dir>
+    </properties>
 
-    <mainClasses>com.example.AppMain;com.example.OtherMain</mainClasses>
+    <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>javasnes</id>
+            <url>https://brunorns.github.io/javasnes/maven/</url>
+        </repository>
+    </repositories>
 
-    <out.dir>${project.basedir}/out</out.dir>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>brunorns-javasnes</id>
-      <url>https://brunorns.github.io/javasnes/maven/</url>
-    </repository>
-  </repositories>
-
-  <dependencies>
-    <dependency>
-      <groupId>javasnes</groupId>
-      <artifactId>framework</artifactId>
-      <version>1.0-rolling.+</version>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.0</version>
-        <executions>
-        </executions>
-        <configuration>
-          <createDependencyReducedPom>false</createDependencyReducedPom>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>build-multiple-main-jars</id>
-            <phase>package</phase>
-            <configuration>
-              <target>
-                <property name="main.list" value="${mainClasses}"/>
-                <path id="mains.path">
-                  <pathelement path="${main.list}"/>
-                </path>
-
-                <taskdef name="groovy" classname="org.apache.tools.ant.taskdefs.optional.script.ScriptDef" classpathref="maven.plugin.classpath"/>
-                <script language="javascript"><![CDATA[
-                  var mains = project.getProperty("main.list").split(";");
-                  for (var i = 0; i < mains.length; i++) {
-                    var mainClass = mains[i].trim();
-                    if (!mainClass) continue;
-
-                    var classNameOnly = mainClass.substring(mainClass.lastIndexOf('.')+1);
-
-                    project.setProperty("current.mainClass", mainClass);
-                    project.setProperty("current.classNameOnly", classNameOnly);
-                    project.setProperty("current.outputJar", project.getProperty("project.build.directory") + "/" + classNameOnly + "-shaded.jar");
-                    
-                    var exec = project.createTask("exec");
-                    exec.setExecutable("mvn");
-                    exec.createArg().setValue("org.apache.maven.plugins:maven-shade-plugin:3.5.0:shade");
-                    exec.createArg().setValue("-Dshade.mainClass=" + mainClass);
-                    exec.createArg().setValue("-Dshade.outputFilename=" + classNameOnly + "-shaded.jar");
-                    exec.createArg().setValue("-DskipTests=true");
-                    exec.createArg().setValue("-q");
-                    exec.perform();
-
-                    var outDir = project.getProperty("out.dir") + "/" + classNameOnly;
-                    var mkdir = project.createTask("mkdir");
-                    mkdir.setDir(new java.io.File(outDir));
-                    mkdir.perform();
-
-                    var move = project.createTask("move");
-                    var fileset = project.createTask("fileset");
-                    fileset.setDir(new java.io.File(project.getProperty("project.build.directory")));
-                    fileset.setIncludes(classNameOnly + "-shaded.jar");
-                    move.add(fileset);
-                    move.setTodir(new java.io.File(outDir));
-                    move.perform();
-
-                    var src = new java.io.File(outDir + "/" + classNameOnly + "-shaded.jar");
-                    var dst = new java.io.File(outDir + "/" + classNameOnly + ".jar");
-                    if (src.exists()) src.renameTo(dst);
-
-                    project.log("Generated: " + dst.getAbsolutePath());
-                  }
-                ]]></script>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-
-        <dependencies>
-          <dependency>
+    <dependencies>
+        <dependency>
+            <groupId>javasnes</groupId>
+            <artifactId>framework</artifactId>
+            <version>[1.0-rolling-,)</version>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
+            <artifactId>groovy-all</artifactId>
             <version>3.0.18</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
-  </build>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
-  </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>2.1.0</version>
+                <executions>
+                    <execution>
+                        <id>build-jars</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <scripts>
+                                <script><![CDATA[
+                                    def srcDir = new File("src/main/java")
+                                    def outDir = new File("out")
+                                    def classesDir = new File("target/classes")
+                                    
+                                    println "Searching for classes with main method..."
+                                    
+                                    srcDir.eachFileRecurse { file ->
+                                        if (file.name.endsWith('.java') && file.text.contains('public static void main(String[] args)')) {
+                                            def className = file.name - '.java'
+                                            def outputDir = new File("out/" + className)
+                                            outputDir.mkdirs()
+                                            
+                                            println "Creating JAR for: " + className
+                                            
+                                            def jarCommand = [
+                                                "jar", "cfe", 
+                                                "out/" + className + "/" + className + ".jar",
+                                                className,
+                                                "-C", "target/classes", "."
+                                            ]
+                                            
+                                            def process = jarCommand.execute(null, new File("."))
+                                            process.waitFor()
+                                            
+                                            if (process.exitValue() == 0) {
+                                                println className + ".jar created in out/" + className + "/"
+                                            } else {
+                                                println "Error generating JAR for class: " + className
+                                            }
+                                        }
+                                    }
+                                    
+                                    println "JAR successfully generated in: out/"
+                                ]]></script>
+                            </scripts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>out</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
