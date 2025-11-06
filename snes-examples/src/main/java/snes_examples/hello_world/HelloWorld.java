@@ -10,19 +10,19 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javasnes.App;
-import javasnes.boot.Boot;
-import javasnes.data.Data;
-import javasnes.hdr.MemoryMapping;
-import javasnes.instruction.SnesInstruction;
-import javasnes.makefile.Make;
-import javasnes.output.SnesOutput;
-import javasnes.util.structures.SnesLoadExtern;
-import javasnes.util.types.AppData;
-import javasnes.util.types.Processor;
-import javasnes.util.types.SnesProcess;
-import javasnes.util.types.vars.scalar.data.SnesChar;
-import javasnes.util.types.vars.scalar.data.SnesVoid;
+import javasnes.App; // App construct the application
+import javasnes.boot.Boot; // Boot defines the boot sequence of the application
+import javasnes.data.Data; // The Data to be added in AppData class
+import javasnes.hdr.MemoryMapping; // The ROM memory mapping and definitions
+import javasnes.instruction.SnesInstruction; // An abstract class for all instructions in SNES
+import javasnes.makefile.Make; // Generates the makefile, which will build the C code in ROM
+import javasnes.output.SnesOutput; // Output definitions, in this example, only consoleDrawText
+import javasnes.util.structures.SnesLoadExtern; // Load extern definitions, from AppData for example
+import javasnes.util.types.AppData; // The data container, will generate data.asm which collects the data from files
+import javasnes.util.types.Processor; // The processor method, which will execute 60 times per second, and run other processes
+import javasnes.util.types.SnesProcess; // The process class represents the method in C/SNES development
+import javasnes.util.types.vars.scalar.data.SnesChar; // To create Char variables/methods or use its type def
+import javasnes.util.types.vars.scalar.data.SnesVoid; // To create void variables/methods or use its type def
 
 public class HelloWorld {
 
@@ -31,109 +31,109 @@ public class HelloWorld {
 
     public static void main(String[] args) throws Exception {
 
-        App.Builder jogo = new App.Builder();
+        // App.Builder will construct the application, based on other objects
+        // Use .set(ClassName) to add something
+        App.Builder helloWorld = Config.generateApp();
 
-        MemoryMapping mapaMemoriaRom = new MemoryMapping(configuracao());
-        jogo.setMemoryMapping(mapaMemoriaRom);
+        // AppData, which defines the name to export and the data file to load
+        // Data(name, dataFile, needEndTag), bankToPut
+        AppData appData = Config.generateAppData();
+        appData.registerData(new Data("tilfont", "pvsneslibfont.pic", false), (byte) 2);
+        appData.registerData(new Data("palfont", "pvsneslibfont.pal", false), (byte) 2);
 
-        AppData dadosRom = new AppData();
-        dadosRom.registerData(new Data("tilfont", "pvsneslibfont.pic", false), (byte) 2);
-        dadosRom.registerData(new Data("palfont", "pvsneslibfont.pal", false), (byte) 2);
+        helloWorld.setAppData(appData);
 
-        jogo.setAppData(dadosRom);
+        // Create Boot Sequence based on method generateBoot
+        Boot boot = Config.generateBoot();
 
-        Boot sequenciaDeBoot = new Boot(configuracaoDeBoot());
-        jogo.setBoot(sequenciaDeBoot);
+        helloWorld.setBoot(boot);
 
-        SnesInstruction[] definicoesGlobais = new SnesInstruction[1];
-        String[] labelsGlobais = {"tilfont", "palfont"};
+        // Create a global definition that includes tilfont and palfont from AppData
+        // They are loaded as char objects
+        SnesInstruction[] globalDefs = new SnesInstruction[1];
+        String[] loadExtern = {"tilfont", "palfont"};
+        globalDefs[0] = new SnesLoadExtern(loadExtern, CHAR);
 
-        definicoesGlobais[0] = new SnesLoadExtern(labelsGlobais, CHAR);
+        helloWorld.setGlobalInstructions(globalDefs);
 
-        jogo.setGlobalInstructions(definicoesGlobais);
-
-        Processor processador = new Processor();
-
-        SnesProcess[] processos = new SnesProcess[1];
-        processos[0] = imprimirHelloWorld();
-
-        processador.addProcess(processos[0], null);
+        // Define processor method and a process that printHelloWorld
+        // The processes are saved in an array, and loaded from printHelloWorld method
+        // Add process to processor
+        Processor processor = new Processor();
+        SnesProcess[] processes = new SnesProcess[1];
+        processes[0] = printHelloWorld();
+        processor.addProcess(processes[0], null);
         
-        jogo
-            .setProcessor(processador)
-            .setSnesProcesses(processos);
+        helloWorld.setProcessor(processor);
+        helloWorld.setSnesProcesses(processes);
         
-        
-        Path pastaAtual = Paths.get(
-            HelloWorld.class.getProtectionDomain().getCodeSource().getLocation().toURI()
-        ).normalize().toAbsolutePath().getParent();
-
-        Path pastaDados = pastaAtual.resolve("data").resolve("pvsneslibfont.png");
-        Path pastaSaida = pastaAtual.resolve("output");
-        
-        limparDiretorio(pastaSaida);
-        
-        jogo.addDataToCopy(pastaDados.toString());
-        jogo.setDestination(pastaSaida.toString());
-
-        Make makefile = new Make();
+        // Define makefile to build the data from data folder to snes data that can be loaded
+        // in AppData class
+        // The rules used are defined in Config.addMakeRules
+        Make makefile = Config.generateMakefile();
         makefile.setRomName("javasnes_helloworld");
+        Config.addMakeRules(makefile);
 
-        Make.MakeRule fonteDoTexto = new Make.MakeRule(
-            "pvsneslibfont.pic",
-            "pvsneslibfont.png",
-            "$(GFXCONV) -s 8 -o 16 -u 16 -p -e 0 -i $<"
-        );
+        helloWorld.setMakefile(makefile);
 
-        Make.MakeRule bitmaps = new Make.MakeRule(
-            "bitmaps",
-            "pvsneslibfont.pic pvsneslibfont.pal",
-            ""
-        );
-
-        makefile.addRule(fonteDoTexto);
-        makefile.addRule(bitmaps);
-        makefile.addPhonyTarget("bitmaps");
-
-        // nao teve jeito e coloquei o $(ROMNAME).sfc manualmente no final do all no 
-        // makefile, mas em futuras versões poderia ser feito automaticamente
-        makefile.getRule("all").setPrerequisites(
-            makefile.getRule("all").getPrerequisites() + " bitmaps $(ROMNAME).sfc"
-        );
-
-        jogo.setMakefile(makefile);
-
-        jogo.build();
+        // Build application in a snes ROM
+        Config.build(helloWorld);
 
     }
 
-    public static void limparDiretorio(Path diretorio) throws IOException {
+    
+    public static void addMemMap(App.Builder app) {
 
-        if (Files.exists(diretorio)) {
-            
-            Files.walk(diretorio)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        HashMap<String, String> memMapConfig = new HashMap<>();
+        memMapConfig.put("name", "Javasnes HelloWorld  ");
+
+        MemoryMapping memMap = Config.generateMemoryMapping(memMapConfig);
         
-            Files.createDirectories(diretorio);
-
-        }
+        app.setMemoryMapping(memMap);
 
     }
 
-    public static Map<String, String> configuracao() {
+    
+    public static SnesProcess printHelloWorld() {
+
+        SnesInstruction[] comandos = new SnesInstruction[1];
+
+        comandos[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!");
+
+        return new SnesProcess(
+            "printHelloWorld",
+            (byte) 0, comandos, VOID
+        );
+
+    }
+    
+}
+
+class Config {
+
+    public static App.Builder generateApp() {
+        return new App.Builder();
+    }
+
+    public static MemoryMapping generateMemoryMapping(Map<String, String> config) {
+
+        MemoryMapping memMap = new MemoryMapping(config);
+        return memMap;
+
+    }
+
+    public static AppData generateAppData() {
+        return new AppData();
+    }
+
+    public static Boot generateBoot() {
+
+        Boot boot = new Boot(postLogoCommands());
+        return boot;
         
-        Map<String, String> config = new HashMap<>();
-
-        //                            123456789012345678901
-        config.put("name", "Hello World JavaSnes ");
-
-        return config;
-
     }
 
-    public static Map<String, Map<String, String[]>> configuracaoDeBoot() {
+    private static Map<String, Map<String, String[]>> postLogoCommands() {
 
         Map<String, Map<String, String[]>> boot = new HashMap<>();
 
@@ -173,17 +173,67 @@ public class HelloWorld {
 
     }
 
-    public static SnesProcess imprimirHelloWorld() {
+    public static Make generateMakefile() {
 
-        SnesInstruction[] comandos = new SnesInstruction[1];
+        return new Make();
 
-        comandos[0] = SnesOutput.consoleDrawText(5, 10, "Hello World do JavaSnes!");
+    }
 
-        return new SnesProcess(
-            "imprimirHelloWorld",
-            (byte) 0, comandos, VOID
+    public static void addMakeRules(Make makefile) {
+
+        Make.MakeRule textFont = new Make.MakeRule(
+            "pvsneslibfont.pic",
+            "pvsneslibfont.png",
+            "$(GFXCONV) -s 8 -o 16 -u 16 -p -e 0 -i $<"
+        );
+
+        Make.MakeRule bitmaps = new Make.MakeRule(
+            "bitmaps",
+            "pvsneslibfont.pic pvsneslibfont.pal",
+            ""
+        );
+
+        makefile.addRule(textFont);
+        makefile.addRule(bitmaps);
+        makefile.addPhonyTarget("bitmaps");
+
+        makefile.getRule("all").setPrerequisites(
+            makefile.getRule("all").getPrerequisites() + " bitmaps $(ROMNAME).sfc"
         );
 
     }
-    
+
+    public static void build(App.Builder app) throws Exception {
+
+        Path actualPath = Paths.get(
+            HelloWorld.class.getProtectionDomain().getCodeSource().getLocation().toURI()
+        ).normalize().toAbsolutePath().getParent();
+
+        Path dataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");
+        Path ouptutPath = actualPath.resolve("output");
+        
+        cleanBuild(ouptutPath);
+        
+        app.addDataToCopy(dataPath.toString());
+        app.setDestination(ouptutPath.toString());
+
+        app.build();
+
+    }
+
+    private static void cleanBuild(Path directory) throws IOException {
+
+        if (Files.exists(directory)) {
+            
+            Files.walk(directory)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        
+            Files.createDirectories(directory);
+
+        }
+
+    }
+
 }
