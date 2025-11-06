@@ -35,6 +35,15 @@ public class HelloWorld {
         // Use .set(ClassName) to add something
         App.Builder helloWorld = Config.generateApp();
 
+        // Define memory mapping of the ROM
+        // as it only uses the default mapping, only change the ROM name
+        // it must be a 21 char string
+        HashMap<String, String> memMapConfig = new HashMap<>();
+        memMapConfig.put("name", "Javasnes HelloWorld  ");
+        MemoryMapping memMap = Config.generateMemoryMapping(memMapConfig);
+        
+        helloWorld.setMemoryMapping(memMap);
+
         // AppData, which defines the name to export and the data file to load
         // Data(name, dataFile, needEndTag), bankToPut
         AppData appData = Config.generateAppData();
@@ -81,19 +90,6 @@ public class HelloWorld {
 
     }
 
-    
-    public static void addMemMap(App.Builder app) {
-
-        HashMap<String, String> memMapConfig = new HashMap<>();
-        memMapConfig.put("name", "Javasnes HelloWorld  ");
-
-        MemoryMapping memMap = Config.generateMemoryMapping(memMapConfig);
-        
-        app.setMemoryMapping(memMap);
-
-    }
-
-    
     public static SnesProcess printHelloWorld() {
 
         SnesInstruction[] comandos = new SnesInstruction[1];
