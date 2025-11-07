@@ -1,0 +1,8 @@
+[objects]
+main.obj
+data.obj
+hdr.obj
+/save/TCA-Luciano/sneside-ubuntu-x64/bin/pvsneslib/pvsneslib/lib/LoROM_SlowROM/crt0_snes.obj
+/save/TCA-Luciano/sneside-ubuntu-x64/bin/pvsneslib/pvsneslib/lib/LoROM_SlowROM/libc.obj
+/save/TCA-Luciano/sneside-ubuntu-x64/bin/pvsneslib/pvsneslib/lib/LoROM_SlowROM/libm.obj
+/save/TCA-Luciano/sneside-ubuntu-x64/bin/pvsneslib/pvsneslib/lib/LoROM_SlowROM/libtcc.obj

@@ -16,13 +16,16 @@ import javasnes.data.Data; // The Data to be added in AppData class
 import javasnes.hdr.MemoryMapping; // The ROM memory mapping and definitions
 import javasnes.instruction.SnesInstruction; // An abstract class for all instructions in SNES
 import javasnes.makefile.Make; // Generates the makefile, which will build the C code in ROM
-import javasnes.output.SnesOutput; // Output definitions, in this example, only consoleDrawText
-import javasnes.util.structures.SnesLoadExtern; // Load extern definitions, from AppData for example
-import javasnes.util.types.AppData; // The data container, will generate data.asm which collects the data from files
-import javasnes.util.types.Processor; // The processor method, which will execute 60 times per second, and run other processes
-import javasnes.util.types.SnesProcess; // The process class represents the method in C/SNES development
-import javasnes.util.types.vars.scalar.data.SnesChar; // To create Char variables/methods or use its type def
-import javasnes.util.types.vars.scalar.data.SnesVoid; // To create void variables/methods or use its type def
+import javasnes.output.SnesOutput;
+import javasnes.util.operators.SnesOperator; // Output definitions, in this example, only consoleDrawText
+import javasnes.util.operators.assign.OperatorAssign;
+import javasnes.util.operators.math.OperatorAdd; // Load extern definitions, from AppData for example
+import javasnes.util.structures.SnesLoadExtern; // The data container, will generate data.asm which collects the data from files
+import javasnes.util.types.AppData; // The processor method, which will execute 60 times per second, and run other processes
+import javasnes.util.types.Processor; // The process class represents the method in C/SNES development
+import javasnes.util.types.SnesProcess; // To create Char variables/methods or use its type def
+import javasnes.util.types.vars.scalar.data.SnesChar; // To create void variables/methods or use its type def
+import javasnes.util.types.vars.scalar.data.SnesVoid;
 import javasnes.util.types.vars.scalar.number.unsigned.SnesU8;
 
 public class OperationsExample {
@@ -62,11 +65,80 @@ public class OperationsExample {
 
         operationsExample.setGlobalInstructions(globalDefs);
 
+        // Processos
 
+        Processor processor = new Processor();
+        SnesProcess[] processes = new SnesProcess[1];
 
+        processes[0] = soma();
+        processor.addProcess(processes[0], null);
+
+        operationsExample.setSnesProcesses(processes);
+        operationsExample.setProcessor(processor);
+
+        //Makefile
+
+        Make makefile = Config.generateMakefile();
+        makefile.setRomName("JavaSnes_OperationsExample");
+        Config.addMakeRules(makefile);
+
+        operationsExample.setMakefile(makefile);
+
+        //Buildar o App
+        Config.build(operationsExample);
 
     }
     
+    public static SnesProcess soma() {
+
+        // Criar vetor de comandos
+        SnesInstruction[] comandos = new SnesInstruction[5];
+
+        //Criar variaveis
+        SnesU8 minhaVar1 = new SnesU8("variavel1", "4"); // criar variavel, tipo nome = new tipo("nome da variavel", "ValorDaVariavel(nãoObrigatorio)")
+        SnesU8 minhaVar2 = new SnesU8("variavel2", "4");
+        SnesU8 resultadoSoma = new SnesU8("resultadoDaSoma");
+
+        comandos[0] = minhaVar1;
+        comandos[1] = minhaVar2;
+        comandos[2] = resultadoSoma;
+
+        SnesOperator somar = new OperatorAdd(minhaVar1, minhaVar2);
+        SnesOperator atribuir = new OperatorAssign(resultadoSoma.name, somar.getSourceCode());
+
+        comandos[3] = atribuir;
+
+        comandos[4] = SnesOutput.consoleDrawText(3, 10, "%d + %d = %d", ", variavel1, variavel2, resultadoDaSoma");
+
+
+        SnesProcess processo = new SnesProcess("meuMetodo", (byte) 0, comandos, VOID);  // nome do metodo/processo, tipo de retorno (0 - nada), lista de comandos, retorno (contante VOID/vazio/void)
+        return processo;
+
+        /**
+         * Saida:
+         * 
+         * u8 minhaVar = 15;
+         * 
+         * minhaVar = (minhaVar + 15);
+         * 
+         * ----------------------------
+         * 
+         * SnesU8 minhaVar
+         * 
+         * Operator assign
+         *         |
+         *         |
+         * "minhaVar.name" = "OperatorAdd.getSourceCode()"
+         * 
+         * OperatorAdd (var + outraVar)
+         * pega o .name da var
+         * se minhaVar.nome = "minhaVar"
+         * se outraVar.nome = "15"
+         * 
+         * (minhaVar + 15)
+         */
+
+    }
 
 
 
