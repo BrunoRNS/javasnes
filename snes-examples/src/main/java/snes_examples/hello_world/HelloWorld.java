@@ -92,13 +92,13 @@ public class HelloWorld {
 
     public static SnesProcess printHelloWorld() {
 
-        SnesInstruction[] comandos = new SnesInstruction[1];
+        SnesInstruction[] commands = new SnesInstruction[1];
 
-        comandos[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!", null);
+        commands[0] = SnesOutput.consoleDrawText(3, 10, "Hello World from JavaSnes!", null);
 
         return new SnesProcess(
             "printHelloWorld",
-            (byte) 0, comandos, VOID
+            (byte) 0, commands, VOID
         );
 
     }
