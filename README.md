@@ -4,7 +4,7 @@ javasnes — a rolling-release Java library for building SNES games. Continuousl
 
 ## Current Release Model
 
-**Rolling release** — no fixed versions for most changes; the library is updated frequently with improvements, fixes, and new features. Use the Maven/Gradle coordinates or the wrapper to pin a specific Maven/Gradle run if you need reproducible builds. Expect nightly-ish updates and incremental improvements.
+**Rolling release** — no fixed versions for most changes; the library is updated frequently with improvements, fixes, and new features. Use the Gradle coordinates or the wrapper to pin a specific Gradle run if you need reproducible builds. Expect nightly-ish updates and incremental improvements.
 
 ## Quick Status
 
