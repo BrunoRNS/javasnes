@@ -8,17 +8,70 @@ extern char javasnes_palette, javasnes_palette_end;
 
 extern char tilfont, palfont;
 
-void meuMetodo(void) {
-	u8 variavel1 = 4;
-	u8 variavel2 = 4;
-	u8 resultadoDaSoma;
-	resultadoDaSoma = (variavel1 + variavel2);
-	consoleDrawText(3, 10, "%d + %d = %d", variavel1, variavel2, resultadoDaSoma);
+void addTwoNumbers(void) {
+	u8 num1 = 4;
+	u8 num2 = 5;
+	u8 result;
+	result = (num1 + num2);
+	consoleDrawText(3, 1, "%d + %d = %d", (int) num1, (int) num2, (int) result);
+	return;
+}
+
+void subTwoNumbers(void) {
+	u8 num1 = 6;
+	u8 num2 = 3;
+	u8 result;
+	result = (num1 - num2);
+	consoleDrawText(3, 4, "%d - %d = %d", (int) num1, (int) num2, (int) result);
+	return;
+}
+
+void plusTwoNumbers(void) {
+	u8 num1 = 4;
+	u8 num2 = 5;
+	u8 result;
+	result = (num1 * num2);
+	consoleDrawText(3, 7, "%d * %d = %d", (int) num1, (int) num2, (int) result);
+	return;
+}
+
+void divideTwoNumbers(void) {
+	u8 num1 = 8;
+	u8 num2 = 2;
+	u8 result;
+	result = (num1 / num2);
+	consoleDrawText(3, 10, "%d / %d = %d", (int) num1, (int) num2, (int) result);
+	return;
+}
+
+void modTwoNumbers(void) {
+	u8 num1 = 26;
+	u8 num2 = 5;
+	u8 result;
+	result = (num1 % num2);
+	consoleDrawText(3, 13, "%d %% %d = %d", (int) num1, (int) num2, (int) result);
+	return;
+}
+
+void shiftTwoNumbers(void) {
+	u8 num1 = 4;
+	u8 num2 = 16;
+	u8 result1;
+	u8 result2;
+	result1 = (num1 << 3);
+	result2 = (num2 >> 2);
+	consoleDrawText(3, 16, "%d << 3 = %d", (int) num1, (int) result1);
+	consoleDrawText(3, 19, "%d >> 2 = %d", (int) num2, (int) result2);
 	return;
 }
 
 void processor(void) {
-	meuMetodo();
+	divideTwoNumbers();
+	plusTwoNumbers();
+	subTwoNumbers();
+	modTwoNumbers();
+	shiftTwoNumbers();
+	addTwoNumbers();
 	return;
 }
 

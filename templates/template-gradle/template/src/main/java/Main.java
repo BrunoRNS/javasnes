@@ -223,7 +223,7 @@ class Config {
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
-        
+            
             Files.createDirectories(directory);
 
         }

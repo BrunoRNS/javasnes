@@ -19,7 +19,14 @@ import javasnes.makefile.Make; // Generates the makefile, which will build the C
 import javasnes.output.SnesOutput;
 import javasnes.util.operators.SnesOperator; // Output definitions, in this example, only consoleDrawText
 import javasnes.util.operators.assign.OperatorAssign;
+import javasnes.util.operators.binary.OperatorBinSHL;
+import javasnes.util.operators.binary.OperatorBinSHR;
 import javasnes.util.operators.math.OperatorAdd; // Load extern definitions, from AppData for example
+import javasnes.util.operators.math.OperatorDivision;
+import javasnes.util.operators.math.OperatorMod;
+import javasnes.util.operators.math.OperatorPlus;
+import javasnes.util.operators.math.OperatorSub;
+import javasnes.util.operators.unitary.OperatorCast;
 import javasnes.util.structures.SnesLoadExtern; // The data container, will generate data.asm which collects the data from files
 import javasnes.util.types.AppData; // The processor method, which will execute 60 times per second, and run other processes
 import javasnes.util.types.Processor; // The process class represents the method in C/SNES development
@@ -32,51 +39,56 @@ public class OperationsExample {
 
     final static SnesVoid VOID = new SnesVoid();
     final static SnesChar CHAR = new SnesChar("char");
-    final static SnesU8 INT = new SnesU8("int");
     
     public static void main(String[] args) throws Exception {
 
-        // App Builder(constroi o aplicativo/rom)
         App.Builder operationsExample = Config.generateApp();
 
-        // Memory Map
         HashMap<String, String> memMapConfig = new HashMap<>();
-        memMapConfig.put("name", "TempOperationsExample");
+        memMapConfig.put("name", "OperationsExample    ");
         MemoryMapping memMap = Config.generateMemoryMapping(memMapConfig);
 
         operationsExample.setMemoryMapping(memMap);
 
-        // Importar as Fontes das Letras
         AppData appData = Config.generateAppData();
         appData.registerData(new Data("tilfont", "pvsneslibfont.pic", false), (byte) 2);
         appData.registerData(new Data("palfont", "pvsneslibfont.pal", false), (byte) 2);
 
         operationsExample.setAppData(appData);
 
-        // Iniciar o App
         Boot boot = Config.generateBoot();
 
         operationsExample.setBoot(boot);
 
-        // Ler as Fontes do App Data
         SnesInstruction[] globalDefs = new SnesInstruction[1];
         String[] loadExtern = {"tilfont", "palfont"};
         globalDefs[0] = new SnesLoadExtern(loadExtern, CHAR);
 
         operationsExample.setGlobalInstructions(globalDefs);
 
-        // Processos
-
         Processor processor = new Processor();
-        SnesProcess[] processes = new SnesProcess[1];
+        SnesProcess[] processes = new SnesProcess[6];
 
-        processes[0] = soma();
+        processes[0] = addTwoNumbers();
         processor.addProcess(processes[0], null);
+
+        processes[1] = subTwoNumbers();
+        processor.addProcess(processes[1], null);
+
+        processes[2] = plusTwoNumbers();
+        processor.addProcess(processes[2], null);
+
+        processes[3] = divideTwoNumbers();
+        processor.addProcess(processes[3], null);
+
+        processes[4] = modTwoNumbers();
+        processor.addProcess(processes[4], null);
+
+        processes[5] = shiftTwoNumbers();
+        processor.addProcess(processes[5], null);
 
         operationsExample.setSnesProcesses(processes);
         operationsExample.setProcessor(processor);
-
-        //Makefile
 
         Make makefile = Config.generateMakefile();
         makefile.setRomName("JavaSnes_OperationsExample");
@@ -84,66 +96,258 @@ public class OperationsExample {
 
         operationsExample.setMakefile(makefile);
 
-        //Buildar o App
         Config.build(operationsExample);
 
     }
     
-    public static SnesProcess soma() {
+    public static SnesProcess addTwoNumbers() {
 
-        // Criar vetor de comandos
-        SnesInstruction[] comandos = new SnesInstruction[5];
+        // void type can be used as a placeholder for unregistered types, like int
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
 
-        //Criar variaveis
-        SnesU8 minhaVar1 = new SnesU8("variavel1", "4"); // criar variavel, tipo nome = new tipo("nome da variavel", "ValorDaVariavel(nãoObrigatorio)")
-        SnesU8 minhaVar2 = new SnesU8("variavel2", "4");
-        SnesU8 resultadoSoma = new SnesU8("resultadoDaSoma");
+        SnesInstruction[] comands = new SnesInstruction[5];
 
-        comandos[0] = minhaVar1;
-        comandos[1] = minhaVar2;
-        comandos[2] = resultadoSoma;
+        SnesU8 num1 = new SnesU8("num1", "4");
+        SnesU8 num2 = new SnesU8("num2", "5");
+        SnesU8 result = new SnesU8("result");
 
-        SnesOperator somar = new OperatorAdd(minhaVar1, minhaVar2);
-        SnesOperator atribuir = new OperatorAssign(resultadoSoma.name, somar.getSourceCode());
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result;
 
-        comandos[3] = atribuir;
+        SnesOperator add = new OperatorAdd(num1, num2);
+        SnesOperator assign = new OperatorAssign(result.name, add.getSourceCode());
 
-        comandos[4] = SnesOutput.consoleDrawText(3, 10, "%d + %d = %d", ", variavel1, variavel2, resultadoDaSoma");
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult = new OperatorCast(INT, result);
 
+        comands[3] = assign;
 
-        SnesProcess processo = new SnesProcess("meuMetodo", (byte) 0, comandos, VOID);  // nome do metodo/processo, tipo de retorno (0 - nada), lista de comandos, retorno (contante VOID/vazio/void)
-        return processo;
+        comands[4] = SnesOutput.consoleDrawText(
+            3, 1, "%d + %d = %d", ", " + 
+            castNum1.getSourceCode() +
+            ", " +
+            castNum2.getSourceCode() +
+            ", " +
+            castResult.getSourceCode()
+        );
 
-        /**
-         * Saida:
-         * 
-         * u8 minhaVar = 15;
-         * 
-         * minhaVar = (minhaVar + 15);
-         * 
-         * ----------------------------
-         * 
-         * SnesU8 minhaVar
-         * 
-         * Operator assign
-         *         |
-         *         |
-         * "minhaVar.name" = "OperatorAdd.getSourceCode()"
-         * 
-         * OperatorAdd (var + outraVar)
-         * pega o .name da var
-         * se minhaVar.nome = "minhaVar"
-         * se outraVar.nome = "15"
-         * 
-         * (minhaVar + 15)
-         */
+        SnesProcess process = new SnesProcess("addTwoNumbers", comands, VOID);
+        return process;
+
+    }
+
+    public static SnesProcess subTwoNumbers() {
+
+        // void type can be used as a placeholder for unregistered types, like int
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
+
+        SnesInstruction[] comands = new SnesInstruction[5];
+
+        SnesU8 num1 = new SnesU8("num1", "6");
+        SnesU8 num2 = new SnesU8("num2", "3");
+        SnesU8 result = new SnesU8("result");
+
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result;
+
+        SnesOperator sub = new OperatorSub(num1, num2);
+        SnesOperator assign = new OperatorAssign(result.name, sub.getSourceCode());
+
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult = new OperatorCast(INT, result);
+
+        comands[3] = assign;
+
+        comands[4] = SnesOutput.consoleDrawText(
+            3, 4, "%d - %d = %d", ", " + 
+            castNum1.getSourceCode() +
+            ", " +
+            castNum2.getSourceCode() +
+            ", " +
+            castResult.getSourceCode()
+        );
+
+        SnesProcess process = new SnesProcess("subTwoNumbers", comands, VOID);
+        return process;
+
+    }
+
+    public static SnesProcess plusTwoNumbers() {
+
+        // void type can be used as a placeholder for unregistered types, like int
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
+
+        SnesInstruction[] comands = new SnesInstruction[5];
+
+        SnesU8 num1 = new SnesU8("num1", "4");
+        SnesU8 num2 = new SnesU8("num2", "5");
+        SnesU8 result = new SnesU8("result");
+
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result;
+
+        SnesOperator plus = new OperatorPlus(num1, num2);
+        SnesOperator assign = new OperatorAssign(result.name, plus.getSourceCode());
+
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult = new OperatorCast(INT, result);
+
+        comands[3] = assign;
+
+        comands[4] = SnesOutput.consoleDrawText(
+            3, 7, "%d * %d = %d", ", " + 
+            castNum1.getSourceCode() +
+            ", " +
+            castNum2.getSourceCode() +
+            ", " +
+            castResult.getSourceCode()
+        );
+
+        SnesProcess process = new SnesProcess("plusTwoNumbers", comands, VOID);
+        return process;
+
+    }
+
+    public static SnesProcess divideTwoNumbers() {
+
+        // void type can be used as a placeholder for unregistered types, like int
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
+
+        SnesInstruction[] comands = new SnesInstruction[5];
+
+        SnesU8 num1 = new SnesU8("num1", "8");
+        SnesU8 num2 = new SnesU8("num2", "2");
+        SnesU8 result = new SnesU8("result");
+
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result;
+
+        SnesOperator division = new OperatorDivision(num1, num2);
+        SnesOperator assign = new OperatorAssign(result.name, division.getSourceCode());
+
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult = new OperatorCast(INT, result);
+
+        comands[3] = assign;
+
+        comands[4] = SnesOutput.consoleDrawText(
+            3, 10, "%d / %d = %d", ", " + 
+            castNum1.getSourceCode() +
+            ", " +
+            castNum2.getSourceCode() +
+            ", " +
+            castResult.getSourceCode()
+        );
+
+        SnesProcess process = new SnesProcess("divideTwoNumbers", comands, VOID);
+        return process;
+
+    }
+
+    public static SnesProcess modTwoNumbers() {
+
+        // void type can be used as a placeholder for unregistered types, like int
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
+
+        SnesInstruction[] comands = new SnesInstruction[5];
+
+        SnesU8 num1 = new SnesU8("num1", "26");
+        SnesU8 num2 = new SnesU8("num2", "5");
+        SnesU8 result = new SnesU8("result");
+
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result;
+
+        SnesOperator mod = new OperatorMod(num1, num2);
+        SnesOperator assign = new OperatorAssign(result.name, mod.getSourceCode());
+
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult = new OperatorCast(INT, result);
+
+        comands[3] = assign;
+
+        comands[4] = SnesOutput.consoleDrawText(
+            3, 13, "%d %% %d = %d", ", " + 
+            castNum1.getSourceCode() +
+            ", " +
+            castNum2.getSourceCode() +
+            ", " +
+            castResult.getSourceCode()
+        );
+
+        SnesProcess process = new SnesProcess("modTwoNumbers", comands, VOID);
+        return process;
+
+    }
+
+    public static SnesProcess shiftTwoNumbers() {
+
+        // void type can be used as a placeholder for unregistered types, like int
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
+
+        SnesInstruction[] comands = new SnesInstruction[8];
+
+        SnesU8 num1 = new SnesU8("num1", "4");
+        SnesU8 num2 = new SnesU8("num2", "16");
+        SnesU8 result1 = new SnesU8("result1");
+        SnesU8 result2 = new SnesU8("result2");
+
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result1;
+        comands[3] = result2;
+
+        SnesOperator shl = new OperatorBinSHL(num1, 3);
+        SnesOperator assign1 = new OperatorAssign(result1.name, shl.getSourceCode());
+
+        SnesOperator shr = new OperatorBinSHR(num2, 2);
+        SnesOperator assign2 = new OperatorAssign(result2.name, shr.getSourceCode());
+
+        comands[4] = assign1;
+        comands[5] = assign2;
+
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult1 = new OperatorCast(INT, result1);
+        SnesOperator castResult2 = new OperatorCast(INT, result2);
+
+        comands[6] = SnesOutput.consoleDrawText(
+            3, 16, "%d << 3 = %d", ", " + 
+            castNum1.getSourceCode() +
+            ", " +
+            castResult1.getSourceCode()
+        );
+
+        comands[7] = SnesOutput.consoleDrawText(
+            3, 19, "%d >> 2 = %d", ", " + 
+            castNum2.getSourceCode() +
+            ", " +
+            castResult2.getSourceCode()
+        );
+
+        SnesProcess process = new SnesProcess("shiftTwoNumbers", comands, VOID);
+        return process;
 
     }
 
 
-
 }
-
 
 class Config {
 
