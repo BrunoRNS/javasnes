@@ -1,5 +1,5 @@
 package snes_examples.sprite;
 
-public class InvisibleSpriteExample {
+public class SpriteExample {
     
 }

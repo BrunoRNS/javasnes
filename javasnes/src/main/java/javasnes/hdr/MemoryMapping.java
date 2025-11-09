@@ -679,7 +679,7 @@ public class MemoryMapping {
      * 
      * For more information on memory mapping, refer to the pvsneslib documentation.
      */
-    private void generateASM() {
+    public final void generateASM() {
         
         StringBuilder asm = new StringBuilder();
 
