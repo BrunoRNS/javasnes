@@ -132,7 +132,7 @@ public class HelloWorldExample {
 
         }
 
-        private static Map<String, Map<String, String[]>> postLogoCommands() {
+        public static Map<String, Map<String, String[]>> postLogoCommands() {
 
             Map<String, Map<String, String[]>> boot = new HashMap<>();
 
@@ -220,7 +220,7 @@ public class HelloWorldExample {
 
         }
 
-        private static void cleanBuild(Path directory) throws IOException {
+        public static void cleanBuild(Path directory) throws IOException {
 
             if (Files.exists(directory)) {
 

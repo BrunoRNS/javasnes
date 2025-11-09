@@ -123,31 +123,31 @@ public class PadsCurrentExample {
         List<SnesInstruction> caseL = new ArrayList<>();
         List<SnesInstruction> caseR = new ArrayList<>();
 
-        caseA.addLast(SnesOutput.consoleDrawText(5, 5, "A!     ", null));
-        caseB.addLast(SnesOutput.consoleDrawText(5, 5, "B!     ", null));
-        caseX.addLast(SnesOutput.consoleDrawText(5, 5, "X!     ", null));
-        caseY.addLast(SnesOutput.consoleDrawText(5, 5, "Y!     ", null));
-        caseStart.addLast(SnesOutput.consoleDrawText(5, 5, "Start! ", null));
-        caseSelect.addLast(SnesOutput.consoleDrawText(5, 5, "Select!", null));
-        caseUp.addLast(SnesOutput.consoleDrawText(5, 5, "Up!    ", null));
-        caseDown.addLast(SnesOutput.consoleDrawText(5, 5, "Down!  ", null));
-        caseLeft.addLast(SnesOutput.consoleDrawText(5, 5, "Left!  ", null));
-        caseRight.addLast(SnesOutput.consoleDrawText(5, 5, "Right! ", null));
-        caseL.addLast(SnesOutput.consoleDrawText(5, 5, "L!     ", null));
-        caseR.addLast(SnesOutput.consoleDrawText(5, 5, "R!     ", null));
+        caseA.add(SnesOutput.consoleDrawText(5, 5, "A!     ", null));
+        caseB.add(SnesOutput.consoleDrawText(5, 5, "B!     ", null));
+        caseX.add(SnesOutput.consoleDrawText(5, 5, "X!     ", null));
+        caseY.add(SnesOutput.consoleDrawText(5, 5, "Y!     ", null));
+        caseStart.add(SnesOutput.consoleDrawText(5, 5, "Start! ", null));
+        caseSelect.add(SnesOutput.consoleDrawText(5, 5, "Select!", null));
+        caseUp.add(SnesOutput.consoleDrawText(5, 5, "Up!    ", null));
+        caseDown.add(SnesOutput.consoleDrawText(5, 5, "Down!  ", null));
+        caseLeft.add(SnesOutput.consoleDrawText(5, 5, "Left!  ", null));
+        caseRight.add(SnesOutput.consoleDrawText(5, 5, "Right! ", null));
+        caseL.add(SnesOutput.consoleDrawText(5, 5, "L!     ", null));
+        caseR.add(SnesOutput.consoleDrawText(5, 5, "R!     ", null));
 
-        caseA.addLast(KeyWords.snesBreak);
-        caseB.addLast(KeyWords.snesBreak);
-        caseX.addLast(KeyWords.snesBreak);
-        caseY.addLast(KeyWords.snesBreak);
-        caseStart.addLast(KeyWords.snesBreak);
-        caseSelect.addLast(KeyWords.snesBreak);
-        caseUp.addLast(KeyWords.snesBreak);
-        caseDown.addLast(KeyWords.snesBreak);
-        caseLeft.addLast(KeyWords.snesBreak);
-        caseRight.addLast(KeyWords.snesBreak);
-        caseL.addLast(KeyWords.snesBreak);
-        caseR.addLast(KeyWords.snesBreak);
+        caseA.add(KeyWords.snesBreak);
+        caseB.add(KeyWords.snesBreak);
+        caseX.add(KeyWords.snesBreak);
+        caseY.add(KeyWords.snesBreak);
+        caseStart.add(KeyWords.snesBreak);
+        caseSelect.add(KeyWords.snesBreak);
+        caseUp.add(KeyWords.snesBreak);
+        caseDown.add(KeyWords.snesBreak);
+        caseLeft.add(KeyWords.snesBreak);
+        caseRight.add(KeyWords.snesBreak);
+        caseL.add(KeyWords.snesBreak);
+        caseR.add(KeyWords.snesBreak);
 
         cases.put(SnesInput.keys.KEY_A.sourceCode, caseA);
         cases.put(SnesInput.keys.KEY_B.sourceCode, caseB);
@@ -198,7 +198,7 @@ public class PadsCurrentExample {
 
         }
 
-        private static Map<String, Map<String, String[]>> postLogoCommands() {
+        public static Map<String, Map<String, String[]>> postLogoCommands() {
 
             Map<String, Map<String, String[]>> boot = new HashMap<>();
 
@@ -286,7 +286,7 @@ public class PadsCurrentExample {
 
         }
 
-        private static void cleanBuild(Path directory) throws IOException {
+        public static void cleanBuild(Path directory) throws IOException {
 
             if (Files.exists(directory)) {
 
