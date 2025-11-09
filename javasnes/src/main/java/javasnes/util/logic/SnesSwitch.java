@@ -163,13 +163,27 @@ public class SnesSwitch extends SnesInstruction {
      * including the cases and default case. It checks for missing break
      * statements in each case and the default case, and prints a warning if
      * any are found.
+     * 
+     * @throws IllegalStateException if the cases are null or empty
      */
-    public void generateSourceCode() {
+    public void generateSourceCode() throws IllegalStateException {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("switch (").append(switchVar.name).append(") {\n");
+        sb.append("switch (").append(this.switchVar.name).append(") {\n");
 
-        for (Map.Entry<String, List<SnesInstruction>> entry : cases.entrySet()) {
+        if (this.cases == null) {
+
+            throw new IllegalStateException("Cases are required");
+
+        }
+
+        if (this.cases.isEmpty()) {
+
+            throw new IllegalStateException("At least one case is required");
+
+        }
+
+        for (Map.Entry<String, List<SnesInstruction>> entry : this.cases.entrySet()) {
 
             sb.append("\tcase ").append(entry.getKey()).append(":\n");
 
@@ -191,26 +205,31 @@ public class SnesSwitch extends SnesInstruction {
 
         }
 
-        sb.append("\tdefault:\n");
+        if (this.defaultCase != null) {
 
-        for (SnesInstruction instruction : defaultCase) {
+            sb.append("\tdefault:\n");
 
-            sb.append("\t\t").append(instruction.sourceCode).append("\n");
+            for (SnesInstruction instruction : this.defaultCase) {
 
-        }
+                sb.append("\t\t").append(instruction.sourceCode).append("\n");
 
-        if (
-            !defaultCase.get(
-                defaultCase.size() - 1
-            ).sourceCode.endsWith("break;")
-        ) {
-            System.err.println(
-                "Warning: Missing break statement in default case"
-            );
+            }
+
+            if (
+                !defaultCase.get(
+                    defaultCase.size() - 1
+                ).sourceCode.endsWith("break;")
+            ) {
+                System.err.println(
+                    "Warning: Missing break statement in default case"
+                );
+            }
+
         }
 
         sb.append("}");
         this.sourceCode = sb.toString();
+
     }
     
 }

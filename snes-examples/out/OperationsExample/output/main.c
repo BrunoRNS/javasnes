@@ -65,13 +65,26 @@ void shiftTwoNumbers(void) {
 	return;
 }
 
+void shiftTwoSignedNumbers(void) {
+	s8 num1 = -4;
+	s8 num2 = -16;
+	s8 result1;
+	s8 result2;
+	result1 = (num1 << 3);
+	result2 = (num2 >> 2);
+	consoleDrawText(3, 21, "%d << 3 = %d", (int) num1, (int) result1);
+	consoleDrawText(3, 24, "%d >> 2 = %d", (int) num2, (int) result2);
+	return;
+}
+
 void processor(void) {
-	divideTwoNumbers();
-	plusTwoNumbers();
+	addTwoNumbers();
 	subTwoNumbers();
+	plusTwoNumbers();
+	divideTwoNumbers();
 	modTwoNumbers();
 	shiftTwoNumbers();
-	addTwoNumbers();
+	shiftTwoSignedNumbers();
 	return;
 }
 

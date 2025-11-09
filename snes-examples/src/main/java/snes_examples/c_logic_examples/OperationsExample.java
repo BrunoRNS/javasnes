@@ -10,36 +10,39 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javasnes.App; // App construct the application
-import javasnes.boot.Boot; // Boot defines the boot sequence of the application
-import javasnes.data.Data; // The Data to be added in AppData class
-import javasnes.hdr.MemoryMapping; // The ROM memory mapping and definitions
-import javasnes.instruction.SnesInstruction; // An abstract class for all instructions in SNES
-import javasnes.makefile.Make; // Generates the makefile, which will build the C code in ROM
+import javasnes.App;
+import javasnes.boot.Boot;
+import javasnes.data.Data;
+import javasnes.hdr.MemoryMapping;
+import javasnes.instruction.SnesInstruction;
+import javasnes.makefile.Make;
 import javasnes.output.SnesOutput;
-import javasnes.util.operators.SnesOperator; // Output definitions, in this example, only consoleDrawText
+import javasnes.util.operators.SnesOperator;
 import javasnes.util.operators.assign.OperatorAssign;
+import javasnes.util.operators.binary.OperatorBinSAL;
+import javasnes.util.operators.binary.OperatorBinSAR;
 import javasnes.util.operators.binary.OperatorBinSHL;
 import javasnes.util.operators.binary.OperatorBinSHR;
-import javasnes.util.operators.math.OperatorAdd; // Load extern definitions, from AppData for example
+import javasnes.util.operators.math.OperatorAdd;
 import javasnes.util.operators.math.OperatorDivision;
 import javasnes.util.operators.math.OperatorMod;
 import javasnes.util.operators.math.OperatorPlus;
 import javasnes.util.operators.math.OperatorSub;
 import javasnes.util.operators.unitary.OperatorCast;
-import javasnes.util.structures.SnesLoadExtern; // The data container, will generate data.asm which collects the data from files
-import javasnes.util.types.AppData; // The processor method, which will execute 60 times per second, and run other processes
-import javasnes.util.types.Processor; // The process class represents the method in C/SNES development
-import javasnes.util.types.SnesProcess; // To create Char variables/methods or use its type def
-import javasnes.util.types.vars.scalar.data.SnesChar; // To create void variables/methods or use its type def
+import javasnes.util.structures.SnesLoadExtern;
+import javasnes.util.types.AppData;
+import javasnes.util.types.Processor;
+import javasnes.util.types.SnesProcess;
+import javasnes.util.types.vars.scalar.data.SnesChar;
 import javasnes.util.types.vars.scalar.data.SnesVoid;
+import javasnes.util.types.vars.scalar.number.signed.SnesS8;
 import javasnes.util.types.vars.scalar.number.unsigned.SnesU8;
 
 public class OperationsExample {
 
     final static SnesVoid VOID = new SnesVoid();
     final static SnesChar CHAR = new SnesChar("char");
-    
+
     public static void main(String[] args) throws Exception {
 
         App.Builder operationsExample = Config.generateApp();
@@ -67,7 +70,7 @@ public class OperationsExample {
         operationsExample.setGlobalInstructions(globalDefs);
 
         Processor processor = new Processor();
-        SnesProcess[] processes = new SnesProcess[6];
+        SnesProcess[] processes = new SnesProcess[7];
 
         processes[0] = addTwoNumbers();
         processor.addProcess(processes[0], null);
@@ -87,6 +90,9 @@ public class OperationsExample {
         processes[5] = shiftTwoNumbers();
         processor.addProcess(processes[5], null);
 
+        processes[6] = shiftTwoSignedNumbers();
+        processor.addProcess(processes[6], null);
+
         operationsExample.setSnesProcesses(processes);
         operationsExample.setProcessor(processor);
 
@@ -99,10 +105,16 @@ public class OperationsExample {
         Config.build(operationsExample);
 
     }
-    
+
+    /**
+     * Generates a process that adds two unsigned 8-bit numbers, num1 and num2.
+     * The process stores the result in a variable named result. The process
+     * then prints the values of num1, num2, and result.
+     *
+     * @return a process containing an addition operation
+     */
     public static SnesProcess addTwoNumbers() {
 
-        // void type can be used as a placeholder for unregistered types, like int
         final SnesVoid INT = new SnesVoid();
         INT.type = "int";
 
@@ -126,12 +138,12 @@ public class OperationsExample {
         comands[3] = assign;
 
         comands[4] = SnesOutput.consoleDrawText(
-            3, 1, "%d + %d = %d", ", " + 
-            castNum1.getSourceCode() +
-            ", " +
-            castNum2.getSourceCode() +
-            ", " +
-            castResult.getSourceCode()
+                3, 1, "%d + %d = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult.getSourceCode()
         );
 
         SnesProcess process = new SnesProcess("addTwoNumbers", comands, VOID);
@@ -139,9 +151,16 @@ public class OperationsExample {
 
     }
 
+    /**
+     * Generate a process that takes two unsigned 8-bit numbers, num1 and num2,
+     * and computes the result of num1 - num2. The process stores the result in
+     * a variable named result. The process then prints the values of num1,
+     * num2, and result.
+     *
+     * @return a process containing a subtraction operation
+     */
     public static SnesProcess subTwoNumbers() {
 
-        // void type can be used as a placeholder for unregistered types, like int
         final SnesVoid INT = new SnesVoid();
         INT.type = "int";
 
@@ -165,12 +184,12 @@ public class OperationsExample {
         comands[3] = assign;
 
         comands[4] = SnesOutput.consoleDrawText(
-            3, 4, "%d - %d = %d", ", " + 
-            castNum1.getSourceCode() +
-            ", " +
-            castNum2.getSourceCode() +
-            ", " +
-            castResult.getSourceCode()
+                3, 4, "%d - %d = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult.getSourceCode()
         );
 
         SnesProcess process = new SnesProcess("subTwoNumbers", comands, VOID);
@@ -178,9 +197,16 @@ public class OperationsExample {
 
     }
 
+    /**
+     * Generate a process that takes two unsigned 8-bit numbers, num1 and num2,
+     * and computes the result of num1 + num2. The process stores the result in
+     * a variable named result. The process then prints the values of num1,
+     * num2, and result.
+     *
+     * @return a process containing an addition operation
+     */
     public static SnesProcess plusTwoNumbers() {
 
-        // void type can be used as a placeholder for unregistered types, like int
         final SnesVoid INT = new SnesVoid();
         INT.type = "int";
 
@@ -204,12 +230,12 @@ public class OperationsExample {
         comands[3] = assign;
 
         comands[4] = SnesOutput.consoleDrawText(
-            3, 7, "%d * %d = %d", ", " + 
-            castNum1.getSourceCode() +
-            ", " +
-            castNum2.getSourceCode() +
-            ", " +
-            castResult.getSourceCode()
+                3, 7, "%d * %d = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult.getSourceCode()
         );
 
         SnesProcess process = new SnesProcess("plusTwoNumbers", comands, VOID);
@@ -217,9 +243,15 @@ public class OperationsExample {
 
     }
 
+    /**
+     * Generate a process that contains a division operation. The process
+     * divides num1 by num2 and stores the result in a variable named result.
+     * The process then prints out the values of num1, num2, and result.
+     *
+     * @return a process containing a division operation
+     */
     public static SnesProcess divideTwoNumbers() {
 
-        // void type can be used as a placeholder for unregistered types, like int
         final SnesVoid INT = new SnesVoid();
         INT.type = "int";
 
@@ -243,12 +275,12 @@ public class OperationsExample {
         comands[3] = assign;
 
         comands[4] = SnesOutput.consoleDrawText(
-            3, 10, "%d / %d = %d", ", " + 
-            castNum1.getSourceCode() +
-            ", " +
-            castNum2.getSourceCode() +
-            ", " +
-            castResult.getSourceCode()
+                3, 10, "%d / %d = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult.getSourceCode()
         );
 
         SnesProcess process = new SnesProcess("divideTwoNumbers", comands, VOID);
@@ -256,9 +288,16 @@ public class OperationsExample {
 
     }
 
+    /**
+     * Generate a process that takes two unsigned 8-bit numbers, num1 and num2,
+     * and computes the result of num1 modulo num2. The process stores the
+     * result in a variable named result. The process then prints the values of
+     * num1, num2, and result.
+     *
+     * @return a SnesProcess containing a modulo operation
+     */
     public static SnesProcess modTwoNumbers() {
 
-        // void type can be used as a placeholder for unregistered types, like int
         final SnesVoid INT = new SnesVoid();
         INT.type = "int";
 
@@ -282,12 +321,12 @@ public class OperationsExample {
         comands[3] = assign;
 
         comands[4] = SnesOutput.consoleDrawText(
-            3, 13, "%d %% %d = %d", ", " + 
-            castNum1.getSourceCode() +
-            ", " +
-            castNum2.getSourceCode() +
-            ", " +
-            castResult.getSourceCode()
+                3, 13, "%d %% %d = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult.getSourceCode()
         );
 
         SnesProcess process = new SnesProcess("modTwoNumbers", comands, VOID);
@@ -295,9 +334,17 @@ public class OperationsExample {
 
     }
 
+    /**
+     * This function generates a process that contains two shift operations. The
+     * process shifts num1 left by 3 bits, and num2 right by 2 bits. The results
+     * of the shift operations are stored in result1 and result2 respectively.
+     * The process then prints out the values of num1, result1, num2, and
+     * result2.
+     *
+     * @return a process containing two shift operations
+     */
     public static SnesProcess shiftTwoNumbers() {
 
-        // void type can be used as a placeholder for unregistered types, like int
         final SnesVoid INT = new SnesVoid();
         INT.type = "int";
 
@@ -328,17 +375,17 @@ public class OperationsExample {
         SnesOperator castResult2 = new OperatorCast(INT, result2);
 
         comands[6] = SnesOutput.consoleDrawText(
-            3, 16, "%d << 3 = %d", ", " + 
-            castNum1.getSourceCode() +
-            ", " +
-            castResult1.getSourceCode()
+                3, 16, "%d << 3 = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castResult1.getSourceCode()
         );
 
         comands[7] = SnesOutput.consoleDrawText(
-            3, 19, "%d >> 2 = %d", ", " + 
-            castNum2.getSourceCode() +
-            ", " +
-            castResult2.getSourceCode()
+                3, 19, "%d >> 2 = %d", ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult2.getSourceCode()
         );
 
         SnesProcess process = new SnesProcess("shiftTwoNumbers", comands, VOID);
@@ -346,131 +393,188 @@ public class OperationsExample {
 
     }
 
+    /**
+     * Generate a process that takes two signed 8-bit numbers, num1 and num2,
+     * and shifts them left and right by 3 and 2 bits respectively. The process
+     * stores the results in variables named result1 and result2. The process
+     * then prints out the values of num1, num2, result1, and result2.
+     *
+     * @return a process containing a left shift and a right shift operation
+     */
+    public static SnesProcess shiftTwoSignedNumbers() {
 
-}
+        final SnesVoid INT = new SnesVoid();
+        INT.type = "int";
 
-class Config {
+        SnesInstruction[] comands = new SnesInstruction[8];
 
-    public static App.Builder generateApp() {
-        return new App.Builder();
+        SnesS8 num1 = new SnesS8("num1", "-4");
+        SnesS8 num2 = new SnesS8("num2", "-16");
+        SnesS8 result1 = new SnesS8("result1");
+        SnesS8 result2 = new SnesS8("result2");
+
+        comands[0] = num1;
+        comands[1] = num2;
+        comands[2] = result1;
+        comands[3] = result2;
+
+        SnesOperator sal = new OperatorBinSAL(num1, 3);
+        SnesOperator assign1 = new OperatorAssign(result1.name, sal.getSourceCode());
+
+        SnesOperator sar = new OperatorBinSAR(num2, 2);
+        SnesOperator assign2 = new OperatorAssign(result2.name, sar.getSourceCode());
+
+        comands[4] = assign1;
+        comands[5] = assign2;
+
+        SnesOperator castNum1 = new OperatorCast(INT, num1);
+        SnesOperator castNum2 = new OperatorCast(INT, num2);
+        SnesOperator castResult1 = new OperatorCast(INT, result1);
+        SnesOperator castResult2 = new OperatorCast(INT, result2);
+
+        comands[6] = SnesOutput.consoleDrawText(
+                3, 21, "%d << 3 = %d", ", "
+                + castNum1.getSourceCode()
+                + ", "
+                + castResult1.getSourceCode()
+        );
+
+        comands[7] = SnesOutput.consoleDrawText(
+                3, 24, "%d >> 2 = %d", ", "
+                + castNum2.getSourceCode()
+                + ", "
+                + castResult2.getSourceCode()
+        );
+
+        SnesProcess process = new SnesProcess("shiftTwoSignedNumbers", comands, VOID);
+        return process;
+
     }
 
-    public static MemoryMapping generateMemoryMapping(Map<String, String> config) {
+    private static interface Config {
 
-        MemoryMapping memMap = new MemoryMapping(config);
-        return memMap;
+        public static App.Builder generateApp() {
+            return new App.Builder();
+        }
 
-    }
+        public static MemoryMapping generateMemoryMapping(Map<String, String> config) {
 
-    public static AppData generateAppData() {
-        return new AppData();
-    }
+            MemoryMapping memMap = new MemoryMapping(config);
+            return memMap;
 
-    public static Boot generateBoot() {
+        }
 
-        Boot boot = new Boot(postLogoCommands());
-        return boot;
-        
-    }
+        public static AppData generateAppData() {
+            return new AppData();
+        }
 
-    private static Map<String, Map<String, String[]>> postLogoCommands() {
+        public static Boot generateBoot() {
 
-        Map<String, Map<String, String[]>> boot = new HashMap<>();
+            Boot boot = new Boot(postLogoCommands());
+            return boot;
 
-        boot.put("postLogoCommands", new LinkedHashMap<>());
+        }
 
-        boot.get("postLogoCommands")
-            .put("setScreenOff", null);
+        private static Map<String, Map<String, String[]>> postLogoCommands() {
 
-        boot.get("postLogoCommands")
-            .put("consoleSetTextMapPtr", new String[] { "0x6800" });
+            Map<String, Map<String, String[]>> boot = new HashMap<>();
 
-        boot.get("postLogoCommands")
-            .put("consoleSetTextGfxPtr", new String[] { "0x3000" });
+            boot.put("postLogoCommands", new LinkedHashMap<>());
 
-        boot.get("postLogoCommands")
-            .put("consoleSetTextOffset", new String[] { "0x0100" });
+            boot.get("postLogoCommands")
+                    .put("setScreenOff", null);
 
-        boot.get("postLogoCommands")
-            .put("consoleInitText", new String[] { 
-                "0", "16 * 2", "&tilfont", "&palfont" 
+            boot.get("postLogoCommands")
+                    .put("consoleSetTextMapPtr", new String[]{"0x6800"});
+
+            boot.get("postLogoCommands")
+                    .put("consoleSetTextGfxPtr", new String[]{"0x3000"});
+
+            boot.get("postLogoCommands")
+                    .put("consoleSetTextOffset", new String[]{"0x0100"});
+
+            boot.get("postLogoCommands")
+                    .put("consoleInitText", new String[]{
+                "0", "16 * 2", "&tilfont", "&palfont"
             });
-        
-        boot.get("postLogoCommands")
-            .put("bgSetGfxPtr", new String[] { 
+
+            boot.get("postLogoCommands")
+                    .put("bgSetGfxPtr", new String[]{
                 "0", "0x2000"
             });
-        
-        boot.get("postLogoCommands")
-            .put("bgSetMapPtr", new String[] { 
+
+            boot.get("postLogoCommands")
+                    .put("bgSetMapPtr", new String[]{
                 "0", "0x6800", "SC_32x32"
             });
 
-        boot.get("postLogoCommands")
-            .put("setScreenOn", null);
+            boot.get("postLogoCommands")
+                    .put("setScreenOn", null);
 
-        return boot;
+            return boot;
 
-    }
+        }
 
-    public static Make generateMakefile() {
+        public static Make generateMakefile() {
 
-        return new Make();
+            return new Make();
 
-    }
+        }
 
-    public static void addMakeRules(Make makefile) {
+        public static void addMakeRules(Make makefile) {
 
-        Make.MakeRule textFont = new Make.MakeRule(
-            "pvsneslibfont.pic",
-            "pvsneslibfont.png",
-            "$(GFXCONV) -s 8 -o 16 -u 16 -p -e 0 -i $<"
-        );
+            Make.MakeRule textFont = new Make.MakeRule(
+                    "pvsneslibfont.pic",
+                    "pvsneslibfont.png",
+                    "$(GFXCONV) -s 8 -o 16 -u 16 -p -e 0 -i $<"
+            );
 
-        Make.MakeRule bitmaps = new Make.MakeRule(
-            "bitmaps",
-            "pvsneslibfont.pic pvsneslibfont.pal",
-            ""
-        );
+            Make.MakeRule bitmaps = new Make.MakeRule(
+                    "bitmaps",
+                    "pvsneslibfont.pic pvsneslibfont.pal",
+                    ""
+            );
 
-        makefile.addRule(textFont);
-        makefile.addRule(bitmaps);
-        makefile.addPhonyTarget("bitmaps");
+            makefile.addRule(textFont);
+            makefile.addRule(bitmaps);
+            makefile.addPhonyTarget("bitmaps");
 
-        makefile.getRule("all").setPrerequisites(
-            makefile.getRule("all").getPrerequisites() + " bitmaps $(ROMNAME).sfc"
-        );
+            makefile.getRule("all").setPrerequisites(
+                    makefile.getRule("all").getPrerequisites() + " bitmaps $(ROMNAME).sfc"
+            );
 
-    }
+        }
 
-    public static void build(App.Builder app) throws Exception {
+        public static void build(App.Builder app) throws Exception {
 
-        Path actualPath = Paths.get(
-            OperationsExample.class.getProtectionDomain().getCodeSource().getLocation().toURI()
-        ).normalize().toAbsolutePath().getParent();
+            Path actualPath = Paths.get(
+                    OperationsExample.class.getProtectionDomain().getCodeSource().getLocation().toURI()
+            ).normalize().toAbsolutePath().getParent();
 
-        Path dataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");
-        Path ouptutPath = actualPath.resolve("output");
-        
-        cleanBuild(ouptutPath);
-        
-        app.addDataToCopy(dataPath.toString());
-        app.setDestination(ouptutPath.toString());
+            Path dataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");
+            Path ouptutPath = actualPath.resolve("output");
 
-        app.build();
+            cleanBuild(ouptutPath);
 
-    }
+            app.addDataToCopy(dataPath.toString());
+            app.setDestination(ouptutPath.toString());
 
-    private static void cleanBuild(Path directory) throws IOException {
+            app.build();
 
-        if (Files.exists(directory)) {
-            
-            Files.walk(directory)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-        
-            Files.createDirectories(directory);
+        }
+
+        private static void cleanBuild(Path directory) throws IOException {
+
+            if (Files.exists(directory)) {
+
+                Files.walk(directory)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+
+                Files.createDirectories(directory);
+
+            }
 
         }
 

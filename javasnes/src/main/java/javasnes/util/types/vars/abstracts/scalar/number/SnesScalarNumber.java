@@ -62,7 +62,7 @@ public abstract class SnesScalarNumber extends SnesTypeScalar {
         /**
          * Check if MIN_VALUE is a power of two
          */
-        if (!((this.MIN_VALUE & (this.MIN_VALUE - 1)) == 0)) {
+        if (!((Math.abs(this.MIN_VALUE) & (Math.abs(this.MIN_VALUE) - 1)) == 0)) {
 
             throw new IllegalArgumentException("MIN_VALUE must be a power of two.");
 

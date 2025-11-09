@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javasnes</groupId>
+  <artifactId>framework</artifactId>
+  <version>1.0-rolling-20251109.124801</version>
+  <name>JavaSNES Framework</name>
+  <description>SNES development framework for Java - Rolling Release</description>
+  <url>https://github.com/BrunoRNS/javasnes</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License v3.0</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Bruno RNS</name>
+    </developer>
+    <developer>
+      <name>Luciano CS</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/BrunoRNS/javasnes.git</connection>
+    <url>https://github.com/BrunoRNS/javasnes</url>
+  </scm>
+</project>

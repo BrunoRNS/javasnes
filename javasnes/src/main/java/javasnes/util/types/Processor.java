@@ -1,7 +1,9 @@
 package javasnes.util.types;
 
-import java.util.HashMap;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +16,9 @@ public class Processor {
      * along with their arguments. The processes are identified by their names,
      * and the arguments are the ones that were provided when the process was added.
      */
-    private Map<SnesProcess, String[]> processes = new HashMap<>();
+    private Map<SnesProcess, String[]> processes = new LinkedHashMap<>();
+
+    private Deque<SnesProcess> processesOrder = new LinkedList<>();
 
     /**
      * Returns a map of processes to their arguments.
@@ -29,6 +33,34 @@ public class Processor {
 
         return this.processes;
 
+    }
+
+    /**
+     * A getter for the processesOrder field.
+     * 
+     * This method returns the Deque of SNES processes in the order they were added to the processor.
+     * 
+     * @return the Deque of SNES processes in the order they were added to the processor
+     */
+    public Deque<SnesProcess> getProcessesOrder() {
+
+        return processesOrder;
+
+    }
+
+    /**
+     * Sets the order of SNES processes in the processor.
+     * 
+     * This method sets the order of SNES processes in the processor to the given Deque.
+     * The order of the processes is important because it determines the order of
+     * the generated source code.
+     * 
+     * @param processesOrder the Deque of SNES processes to set as the order of the processor
+     */
+    public void setProcessesOrder(Deque<SnesProcess> processesOrder) {
+
+        this.processesOrder = processesOrder;
+        
     }
 
     /**
@@ -49,6 +81,12 @@ public class Processor {
 
         this.processes = processes;
 
+        for (SnesProcess process : this.processes.keySet()) {
+
+            this.processesOrder.addLast(process);
+
+        }
+
     }
 
     /**
@@ -64,6 +102,8 @@ public class Processor {
 
         this.processes.put(process, args);
 
+        this.processesOrder.addLast(process);
+
     }
 
     /**
@@ -75,11 +115,12 @@ public class Processor {
      */
     public void removeProcess(String processName) {
 
-        for (SnesProcess process : this.processes.keySet()) {
+        for (SnesProcess process : this.processesOrder) {
 
             if (process.name.equals(processName)) {
 
                 this.processes.remove(process);
+                this.processesOrder.remove(process);
 
             }
 
@@ -95,7 +136,7 @@ public class Processor {
      */
     public String[] getProcessArgs(String processName) {
 
-        for (SnesProcess process : this.processes.keySet()) {
+        for (SnesProcess process : this.processesOrder) {
 
             if (process.name.equals(processName)) {
 
@@ -122,7 +163,7 @@ public class Processor {
      */
     public String getProcessSourceCode(String processName) {
 
-        for (SnesProcess process : this.processes.keySet()) {
+        for (SnesProcess process : this.processesOrder) {
 
             if (process.name.equals(processName)) {
 
@@ -155,7 +196,7 @@ public class Processor {
 
         sb.append("void processor(void) {\n");
 
-        for (SnesProcess process : this.processes.keySet()) {
+        for (SnesProcess process : this.processesOrder) {
 
             if (process.sourceCode == null) {
 
