@@ -185,9 +185,150 @@ public class App {
     }
 
     /**
-     * Generates the main C source file content.
+     * Replaces all tabs before the first non-tab character in a given character array with the null character.
      * 
-     * @return The complete main.c source code as a string
+     * This method iterates through a given character array and replaces all tabs with the null character.
+     * After all tabs have been replaced, it converts the character array back into a string and removes all null characters.
+     * Finally, it returns a character array of the resulting string.
+     * 
+     * @param chars The character array to remove tabs from
+     * @return A character array of the resulting string
+     */
+    private char[] removeTabs(char[] chars) {
+        
+        for (char c : chars) {
+
+            if (c == '\t') {
+                c = '\u0000';
+            } else {
+                break;
+            }
+
+        }
+
+        String str = new String(chars).replaceAll("\u0000", "");
+
+        return str.toCharArray();
+
+    }
+
+    /**
+     * Replaces the beginning of a given character array with the specified number of tabs.
+     * 
+     * This method first removes all tabs from the given character array, then inserts the specified
+     * number of tabs at the beginning of the resulting character array.
+     * 
+     * @param chars The character array to reinsert tabs into
+     * @param tabs The number of tabs to reinsert
+     * @return A character array with the specified number of tabs at the beginning
+     */
+    @SuppressWarnings("ManualArrayToCollectionCopy")
+    private char[] fixTabs(char[] chars, int tabs) {
+        
+        char[] cleanCode = this.removeTabs(chars);
+
+        char[] fixedCode = new char[cleanCode.length + tabs];
+
+        for (int i = 0; i < tabs; i++) {
+            fixedCode[i] = '\t';
+        }
+
+        for (int i = 0; i < cleanCode.length; i++) {
+            fixedCode[i + tabs] = cleanCode[i];
+        }
+
+        return fixedCode;
+
+    }
+
+    /**
+     * Counts the number of tabs at the beginning of a given character array.
+     * 
+     * This method iterates through a given character array and counts the number of tabs at the beginning.
+     * Once a non-tab character is encountered, it breaks and returns the count.
+     * 
+     * @param chars The character array to count tabs from
+     * @return The number of tabs at the beginning of the given character array
+     */
+    private int checkTabsCharArray(char[] chars) {
+
+        int tabs = 0;
+
+        for (char c : chars) {
+
+            if (c == '\t') {
+                tabs++;
+            } else {
+                break;
+            }
+
+        }
+
+        return tabs;
+        
+    }
+
+    /**
+     * Checks if the given character array contains an opening brace.
+     * 
+     * This method iterates through a given character array and checks if it contains an opening brace.
+     * If an opening brace is found, it immediately returns true. If no opening brace is found,
+     * it returns false.
+     * 
+     * @param chars The character array to check
+     * @return true if the character array contains an opening brace, false otherwise
+     */
+    private boolean openBraces(char[] chars) {
+        
+        for (char c : chars) {
+
+            if (c == '{') {
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Checks if the given character array contains a closing brace.
+     * 
+     * This method iterates through a given character array and checks if it contains a closing brace.
+     * If a closing brace is found, it immediately returns true. If no closing brace is found,
+     * it returns false.
+     * 
+     * @param chars The character array to check
+     * @return true if the character array contains a closing brace, false otherwise
+     */
+    private boolean closeBraces(char[] chars) {
+        
+        for (char c : chars) {
+
+            if (c == '}') {
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
+
+
+    /**
+     * Generates the source code for the main function.
+     * 
+     * This method generates the source code for the main function, including the
+     * default global instructions, the global instructions defined in the configuration,
+     * the source code for each process defined in the configuration, the source code
+     * for the processor, and the main loop.
+     * 
+     * The generated source code is a string containing the main function, and is returned
+     * as a string.
+     * 
+     * @return the source code for the main function as a string
      */
     private String generateMain() {
 
@@ -245,7 +386,39 @@ public class App {
         sb.append("\treturn 0;\n");
         sb.append("}\n");
 
-        return sb.toString();
+        String[] format = sb.toString().split("\n");
+
+        int requiredTabs = 0;
+
+        for (int i = 0; i < format.length; i++) {
+
+            char[] charArray = format[i].toCharArray();
+
+            if (charArray.length == 0) {
+                continue;
+            }
+
+            if (charArray[0] == '#') {
+                continue;
+            }
+
+            if (closeBraces(charArray)) {
+                requiredTabs--;
+            }
+
+            if (checkTabsCharArray(charArray) != requiredTabs) {
+                charArray = this.fixTabs(charArray, requiredTabs);
+            }
+
+            if (openBraces(charArray)) {
+                requiredTabs++;
+            }
+
+            format[i] = new String(charArray);
+
+        }
+
+        return String.join("\n", format);
 
     }
 

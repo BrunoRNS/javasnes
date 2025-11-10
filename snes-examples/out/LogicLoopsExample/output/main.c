@@ -13,37 +13,37 @@ void ifExample(void) {
 	u8 num1 = 4;
 	u8 num2 = 8;
 	if ((num1 > num2)) {
-	consoleDrawText(3, 3, "%d > %d", (int) num1, (int) num2);
-} else if ((num1 < num2)) {
-	consoleDrawText(3, 3, "%d < %d", (int) num1, (int) num2);
-} else {
-	consoleDrawText(3, 3, "%d == %d", (int) num1, (int) num2);
-}
+			consoleDrawText(3, 3, "%d > %d", (int) num1, (int) num2);
+	} else if ((num1 < num2)) {
+			consoleDrawText(3, 3, "%d < %d", (int) num1, (int) num2);
+	} else {
+			consoleDrawText(3, 3, "%d == %d", (int) num1, (int) num2);
+	}
 	return;
 }
 
 void switchExample(void) {
 	s8 num = -8;
 	switch (num) {
-	case 8:
+			case 8:
 		consoleDrawText(3, 6, "num = 8");
 		break;
-	case -8:
+			case -8:
 		consoleDrawText(3, 6, "num = -8");
 		break;
-	default:
+			default:
 		consoleDrawText(3, 6, "num is not -8 or 8");
 		break;
-}
+	}
 	return;
 }
 
 void whileLoopExample(void) {
 	while ((timer < 200)) {
-	consoleDrawText(3, 9, "timer: %d", (int) timer);
-	timer++;
-	WaitForVBlank();
-}
+			consoleDrawText(3, 9, "timer: %d", (int) timer);
+			timer++;
+			WaitForVBlank();
+	}
 
 	return;
 }

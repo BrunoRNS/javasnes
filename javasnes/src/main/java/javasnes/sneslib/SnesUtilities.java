@@ -2,7 +2,7 @@ package javasnes.sneslib;
 
 import javasnes.instruction.SnesRawInstruction;
 
-public final class PvsneslibConstants {
+public final class SnesUtilities {
     
     /**
      * Returns a SnesRawInstruction that copies the contents of the source string into the 
@@ -16,7 +16,7 @@ public final class PvsneslibConstants {
      */
     public static final SnesRawInstruction consoleCopySram(String src, String dest) {
 
-        return new SnesRawInstruction("consoleCopySram(\"" + src + "\", \"" + dest + "\");");
+        return new SnesRawInstruction("consoleCopySram(" + src + ", " + dest + ")");
         
     }
 
@@ -32,7 +32,7 @@ public final class PvsneslibConstants {
      */    
     public static final SnesRawInstruction consoleLoadSram(String dest, String src) {
 
-        return new SnesRawInstruction("consoleLoadSram(\"" + dest + "\", \"" + src + "\");");
+        return new SnesRawInstruction("consoleLoadSram(" + dest + ", " + src + ")");
 
     }
 
@@ -48,7 +48,7 @@ public final class PvsneslibConstants {
      * String dest = "myString";
      * String format = "This is a string: %s";
      * String arg = "Hello, world!";
-     * SnesRawInstruction instruction = PvsneslibConstants.sprintf(dest, format, arg);
+     * SnesRawInstruction instruction = SnesUtilities.sprintf(dest, format, arg);
      * }
      * </pre>
      * 
@@ -60,7 +60,7 @@ public final class PvsneslibConstants {
     public static final SnesRawInstruction sprintf(String dest, String format, String... args) {
 
         return new SnesRawInstruction(
-            "sprintf(\"" + dest + "\", \"" + format + "\", " + String.join(", ", args) + ");"
+            "sprintf(" + dest + ", \"" + format + "\", " + String.join(", ", args) + ");"
         );
 
     }

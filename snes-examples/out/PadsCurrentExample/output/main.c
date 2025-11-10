@@ -12,43 +12,43 @@ u16 pads = 0;
 void changeTextWithPadPress(void) {
 	pads = padsCurrent(0);
 	switch (pads) {
-	case KEY_A:
+			case KEY_A:
 		consoleDrawText(5, 5, "A!     ");
 		break;
-	case KEY_B:
+			case KEY_B:
 		consoleDrawText(5, 5, "B!     ");
 		break;
-	case KEY_X:
+			case KEY_X:
 		consoleDrawText(5, 5, "X!     ");
 		break;
-	case KEY_Y:
+			case KEY_Y:
 		consoleDrawText(5, 5, "Y!     ");
 		break;
-	case KEY_START:
+			case KEY_START:
 		consoleDrawText(5, 5, "Start! ");
 		break;
-	case KEY_SELECT:
+			case KEY_SELECT:
 		consoleDrawText(5, 5, "Select!");
 		break;
-	case KEY_UP:
+			case KEY_UP:
 		consoleDrawText(5, 5, "Up!    ");
 		break;
-	case KEY_DOWN:
+			case KEY_DOWN:
 		consoleDrawText(5, 5, "Down!  ");
 		break;
-	case KEY_LEFT:
+			case KEY_LEFT:
 		consoleDrawText(5, 5, "Left!  ");
 		break;
-	case KEY_RIGHT:
+			case KEY_RIGHT:
 		consoleDrawText(5, 5, "Right! ");
 		break;
-	case KEY_L:
+			case KEY_L:
 		consoleDrawText(5, 5, "L!     ");
 		break;
-	case KEY_R:
+			case KEY_R:
 		consoleDrawText(5, 5, "R!     ");
 		break;
-}
+	}
 	return;
 }
 

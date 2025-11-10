@@ -20,7 +20,7 @@ import javasnes.input.SnesInput;
 import javasnes.instruction.SnesInstruction;
 import javasnes.makefile.Make;
 import javasnes.output.SnesOutput;
-import javasnes.sneslib.PvsneslibConstants;
+import javasnes.sneslib.SnesUtilities;
 import javasnes.util.logic.SnesElseIf;
 import javasnes.util.logic.SnesIf;
 import javasnes.util.operators.SnesOperator;
@@ -128,7 +128,7 @@ public class SramSaveLoadExample {
         );
         
         SnesOperator assignToValue = new OperatorAssign(
-            loadedValue.name, PvsneslibConstants.consoleCopySram(
+            loadedValue.name, SnesUtilities.consoleCopySram(
                 castLoadedValue.getSourceCode(), "2"
             ).sourceCode
         );
@@ -173,7 +173,7 @@ public class SramSaveLoadExample {
         );
         
         SnesOperator assignToValue = new OperatorAssign(
-            loadedValue.name, PvsneslibConstants.consoleLoadSram(
+            loadedValue.name, SnesUtilities.consoleLoadSram(
                 castLoadedValue.getSourceCode(), "2"
             ).sourceCode
         );
@@ -254,7 +254,7 @@ public class SramSaveLoadExample {
         );
 
         commands[3] = SnesOutput.consoleDrawText(
-            5, 5, "Value: %d        ", castLoadedValue.getSourceCode()
+            5, 5, "Value: %d        ", ", " + castLoadedValue.getSourceCode()
         );
 
         return new SnesProcess("addOrsubValue", (byte) 0, commands);

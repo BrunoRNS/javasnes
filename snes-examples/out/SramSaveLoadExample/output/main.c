@@ -7,21 +7,39 @@ extern char javasnes_palette, javasnes_palette_end;
 // end auto-generated global instructions
 
 extern char tilfont, palfont;
+u16 pads = 0;
+s32 loadedValue = 0;
 
-void showRandomNumber(void) {
-	u16 pad0;
-	pad0 = padsCurrent(0);
-	u8 randomNumber;
-	randomNumber = (rand() & 0x0F);
-	consoleDrawText(1, 5, "Press A to show a random number");
-	if ((pad0 & KEY_A)) {
-			consoleDrawText(6, 8, "Random number: %d     ", (int) randomNumber);
+void saveGame(void) {
+	if ((pads & KEY_B)) {
+			loadedValue = consoleCopySram((u8*) &loadedValue, 2);
 	}
 	return;
 }
 
+void loadGame(void) {
+	if ((pads & KEY_A)) {
+			loadedValue = consoleLoadSram((u8*) &loadedValue, 2);
+	}
+	return;
+}
+
+void addOrsubValue(void) {
+	pads = padsCurrent(0);
+	if ((pads & KEY_UP)) {
+			loadedValue += 1;
+	} else if ((pads & KEY_DOWN)) {
+			loadedValue -= 1;
+	}
+	consoleDrawText(1, 1, "Press Up or Down to add or sub 1");
+	consoleDrawText(5, 5, "Value: %d        ", (int) loadedValue);
+	return;
+}
+
 void processor(void) {
-	showRandomNumber();
+	saveGame();
+	loadGame();
+	addOrsubValue();
 	return;
 }
 
