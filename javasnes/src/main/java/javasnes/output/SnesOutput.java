@@ -1,6 +1,7 @@
 package javasnes.output;
 
 import javasnes.instruction.SnesRawInstruction;
+import javasnes.util.types.vars.abstracts.scalar.SnesTypeScalar;
 
 public class SnesOutput {
     
@@ -17,6 +18,21 @@ public class SnesOutput {
     public static final SnesRawInstruction consoleDrawText(int x, int y, String text, String args) {
         return new SnesRawInstruction(
             "consoleDrawText(" + x + ", " + y + ", \"" + text + "\"" + (args == null ? "" : args) + ");"
+        );
+    }
+
+    /**
+     * Returns a SnesRawInstruction that sets the background color of a given palette entry.
+     * 
+     * @param palleteEntry the palette entry to set the background color for
+     * @param bgColor the background color to set
+     * @return a SnesRawInstruction that sets the background color of the given palette entry
+     */
+    public static final SnesRawInstruction setPalleteColor(
+        String palleteEntry, SnesTypeScalar bgColor
+    ) {
+        return new SnesRawInstruction(
+            "setPalleteColor(" + palleteEntry + ", " + bgColor.name + ");"
         );
     }
     
