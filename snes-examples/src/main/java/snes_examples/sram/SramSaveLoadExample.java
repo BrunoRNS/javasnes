@@ -49,6 +49,8 @@ public class SramSaveLoadExample {
 
         HashMap<String, String> memMapConfig = new HashMap<>();
         memMapConfig.put("name", "SramSaveLoadExample  ");
+        memMapConfig.put("cartridgeType", "$02");
+        memMapConfig.put("sramsize", "$01");
 
         MemoryMapping memMap = Config.generateMemoryMapping(memMapConfig);
 
@@ -109,7 +111,13 @@ public class SramSaveLoadExample {
      */
     public static SnesProcess saveGame() {
 
-        SnesInstruction[] commands = new SnesInstruction[1];
+        SnesInstruction[] commands = new SnesInstruction[2];
+
+        SnesOperator assignPads = new OperatorAssign(
+            "pads", SnesInput.padsCurrent((byte) 0).sourceCode
+        );
+
+        commands[0] = assignPads;
 
         SnesU16 pads = new SnesU16("pads");
         SnesS32 loadedValue = new SnesS32("loadedValue");
@@ -127,10 +135,8 @@ public class SramSaveLoadExample {
             U8POINTER, new SnesS32Pointer((new OperatorMemAdress(loadedValue)).getSourceCode())
         );
         
-        SnesOperator assignToValue = new OperatorAssign(
-            loadedValue.name, SnesUtilities.consoleCopySram(
-                castLoadedValue.getSourceCode(), "2"
-            ).sourceCode
+        SnesInstruction assignToValue = SnesUtilities.consoleCopySram(
+            castLoadedValue.getSourceCode(), "4" // 32 bits = 4 bytes
         );
 
         ifSaveCommands.add(assignToValue);
@@ -139,7 +145,7 @@ public class SramSaveLoadExample {
 
         ifSave.generateSourceCode();
 
-        commands[0] = ifSave;
+        commands[1] = ifSave;
 
         return new SnesProcess("saveGame", (byte) 0, commands);
 
@@ -154,7 +160,13 @@ public class SramSaveLoadExample {
     */
     public static SnesProcess loadGame() {
 
-        SnesInstruction[] commands = new SnesInstruction[1];
+        SnesInstruction[] commands = new SnesInstruction[2];
+
+        SnesOperator assignPads = new OperatorAssign(
+            "pads", SnesInput.padsCurrent((byte) 0).sourceCode
+        );
+
+        commands[0] = assignPads;
 
         SnesU16 pads = new SnesU16("pads");
         SnesS32 loadedValue = new SnesS32("loadedValue");
@@ -172,10 +184,8 @@ public class SramSaveLoadExample {
             U8POINTER, new SnesS32Pointer((new OperatorMemAdress(loadedValue)).getSourceCode())
         );
         
-        SnesOperator assignToValue = new OperatorAssign(
-            loadedValue.name, SnesUtilities.consoleLoadSram(
-                castLoadedValue.getSourceCode(), "2"
-            ).sourceCode
+        SnesInstruction assignToValue = SnesUtilities.consoleLoadSram(
+            castLoadedValue.getSourceCode(), "4" // 32 bits = 4 bytes
         );
 
         ifLoadCommands.add(assignToValue);
@@ -184,7 +194,7 @@ public class SramSaveLoadExample {
 
         ifLoad.generateSourceCode();
 
-        commands[0] = ifLoad;
+        commands[1] = ifLoad;
 
         return new SnesProcess("loadGame", (byte) 0, commands);
 
@@ -201,7 +211,7 @@ public class SramSaveLoadExample {
      */
     public static SnesProcess addOrsubValue() {
 
-        SnesInstruction[] commands = new SnesInstruction[4];
+        SnesInstruction[] commands = new SnesInstruction[5];
 
         SnesOperator assignPads = new OperatorAssign(
             "pads", SnesInput.padsCurrent((byte) 0).sourceCode
@@ -250,11 +260,15 @@ public class SramSaveLoadExample {
         );
 
         commands[2] = SnesOutput.consoleDrawText(
-            1, 1, "Press Up or Down to add or sub 1", null
+            0, 2, "Press Up or Down to add or sub 1", null
         );
 
         commands[3] = SnesOutput.consoleDrawText(
-            5, 5, "Value: %d        ", ", " + castLoadedValue.getSourceCode()
+            0, 4, "Press A to load, B to save value", null
+        );
+
+        commands[4] = SnesOutput.consoleDrawText(
+            4, 8, "Value: %d        ", ", " + castLoadedValue.getSourceCode()
         );
 
         return new SnesProcess("addOrsubValue", (byte) 0, commands);
@@ -321,6 +335,10 @@ public class SramSaveLoadExample {
 
             boot.get("postLogoCommands")
                     .put("setScreenOn", null);
+
+            // Set default value of SRAM to 0
+            boot.get("postLogoCommands")
+                    .put("consoleCopySram", new String[] {"(u8 *) &loadedValue", "4"});
 
             return boot;
 

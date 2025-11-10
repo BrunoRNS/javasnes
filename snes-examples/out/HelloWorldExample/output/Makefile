@@ -5,7 +5,7 @@ endif
 include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
 
 .PHONY: all clean logo bitmaps
-export ROMNAME := javasnes_helloworld
+export ROMNAME := JavaSnes_HelloWorldExample
 
 all: logo bitmaps $(ROMNAME).sfc
 

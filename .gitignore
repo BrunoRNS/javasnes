@@ -19,3 +19,6 @@ launch.json
 test/
 
 changes.txt
+
+# Snes files
+*.srm

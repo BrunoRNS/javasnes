@@ -11,15 +11,17 @@ u16 pads = 0;
 s32 loadedValue = 0;
 
 void saveGame(void) {
+	pads = padsCurrent(0);
 	if ((pads & KEY_B)) {
-			loadedValue = consoleCopySram((u8*) &loadedValue, 2);
+			consoleCopySram((u8*) &loadedValue, 4);
 	}
 	return;
 }
 
 void loadGame(void) {
+	pads = padsCurrent(0);
 	if ((pads & KEY_A)) {
-			loadedValue = consoleLoadSram((u8*) &loadedValue, 2);
+			consoleLoadSram((u8*) &loadedValue, 4);
 	}
 	return;
 }
@@ -31,8 +33,9 @@ void addOrsubValue(void) {
 	} else if ((pads & KEY_DOWN)) {
 			loadedValue -= 1;
 	}
-	consoleDrawText(1, 1, "Press Up or Down to add or sub 1");
-	consoleDrawText(5, 5, "Value: %d        ", (int) loadedValue);
+	consoleDrawText(0, 2, "Press Up or Down to add or sub 1");
+	consoleDrawText(0, 4, "Press A to load, B to save value");
+	consoleDrawText(4, 8, "Value: %d        ", (int) loadedValue);
 	return;
 }
 
@@ -74,6 +77,7 @@ int main(void) {
 	bgSetGfxPtr(0, 0x2000);
 	bgSetMapPtr(0, 0x6800, SC_32x32);
 	setScreenOn();
+	consoleCopySram((u8 *) &loadedValue, 4);
 	while (1) {
 		processor();
 		WaitForVBlank();

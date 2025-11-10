@@ -16,7 +16,7 @@ public final class SnesUtilities {
      */
     public static final SnesRawInstruction consoleCopySram(String src, String dest) {
 
-        return new SnesRawInstruction("consoleCopySram(" + src + ", " + dest + ")");
+        return new SnesRawInstruction("consoleCopySram(" + src + ", " + dest + ");");
         
     }
 
@@ -32,7 +32,7 @@ public final class SnesUtilities {
      */    
     public static final SnesRawInstruction consoleLoadSram(String dest, String src) {
 
-        return new SnesRawInstruction("consoleLoadSram(" + dest + ", " + src + ")");
+        return new SnesRawInstruction("consoleLoadSram(" + dest + ", " + src + ");");
 
     }
 

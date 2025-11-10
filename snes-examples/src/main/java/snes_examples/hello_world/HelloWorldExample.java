@@ -80,7 +80,7 @@ public class HelloWorldExample {
         // in AppData class
         // The rules used are defined in Config.addMakeRules
         Make makefile = Config.generateMakefile();
-        makefile.setRomName("javasnes_helloworld");
+        makefile.setRomName("JavaSnes_HelloWorldExample");
         Config.addMakeRules(makefile);
 
         helloWorld.setMakefile(makefile);
