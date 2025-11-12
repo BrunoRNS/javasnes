@@ -19,17 +19,21 @@ import javasnes.hdr.MemoryMapping;
 import javasnes.input.SnesInput;
 import javasnes.instruction.SnesInstruction;
 import javasnes.makefile.Make;
+import javasnes.output.SnesOutput;
+import javasnes.sneslib.SnesSound;
 import javasnes.util.logic.SnesElse;
 import javasnes.util.logic.SnesIf;
 import javasnes.util.operators.SnesOperator;
 import javasnes.util.operators.assign.OperatorAssign;
 import javasnes.util.operators.binary.OperatorBinAnd;
+import javasnes.util.operators.logical.OperatorEquals;
 import javasnes.util.structures.SnesLoadExtern;
 import javasnes.util.types.AppData;
 import javasnes.util.types.Processor;
 import javasnes.util.types.SnesProcess;
 import javasnes.util.types.vars.scalar.data.SnesChar;
 import javasnes.util.types.vars.scalar.number.unsigned.SnesU16;
+import javasnes.util.types.vars.scalar.number.unsigned.SnesU8;
 import javasnes.util.types.vars.scalar.sound.SnesBrrSample;
 
 public class TadaExample {
@@ -37,7 +41,7 @@ public class TadaExample {
     final static SnesChar CHAR = new SnesChar("char");
 
     public static void main(String[] args) throws Exception {
-        
+
         App.Builder tadaExample = Config.generateApp();
 
         Map<String, String> memMapConfig = new HashMap<>();
@@ -59,8 +63,8 @@ public class TadaExample {
         Boot boot = Config.generateBoot();
         tadaExample.setBoot(boot);
 
-        SnesInstruction[] globalDefs = new SnesInstruction[5];
-        
+        SnesInstruction[] globalDefs = new SnesInstruction[6];
+
         String[] loadExternFont = {"tilfont", "palfont"};
         globalDefs[0] = new SnesLoadExtern(loadExternFont, CHAR);
 
@@ -69,46 +73,103 @@ public class TadaExample {
 
         globalDefs[2] = new SnesBrrSample("tadasound");
         globalDefs[3] = new SnesU16("bgColor", "128");
-        globalDefs[4] = new SnesU16("keyapressed", "0");
+        globalDefs[4] = new SnesU8("keyapressed", "0");
+        globalDefs[5] = new SnesU16("pads", "0");
 
         tadaExample.setGlobalInstructions(globalDefs);
 
         Processor processor = new Processor();
         SnesProcess[] processes = new SnesProcess[1];
 
+        processes[0] = playIfAPressed();
+        processor.addProcess(processes[0], null);
+
+        tadaExample.setSnesProcesses(processes);
+        tadaExample.setProcessor(processor);
+
+        Make makefile = Config.generateMakefile();
+        makefile.setRomName("JavaSnes_TadaExample");
+
+        Config.addMakeRules(makefile);
+
+        tadaExample.setMakefile(makefile);
+
+        Config.build(tadaExample);
+
     }
 
+    /**
+     * A process that plays a sound and changes the background color if the A
+     * key is pressed.
+     *
+     * This process first assigns the current pad state to a variable "pads".
+     * Then, it checks if the A key is pressed by checking the value of the
+     * "keyapressed" variable. If the A key is pressed, it plays a sound and
+     * changes the background color to a color specified by the "bgColor"
+     * variable. If the A key is not pressed, it sets the "keyapressed" variable
+     * to 0.
+     *
+     * @return A process that plays a sound and changes the background color if
+     * the A key is pressed.
+     */
     public static SnesProcess playIfAPressed() {
 
-        SnesInstruction[] commands = new SnesInstruction[2];
+        SnesInstruction[] commands = new SnesInstruction[4];
+
+        commands[0] = SnesOutput.consoleDrawText(5, 10, "Press A to play effect !", null);
 
         SnesU16 pads = new SnesU16("pads");
+        SnesU16 bgColor = new SnesU16("bgColor");
+        SnesU8 keyAPressedVar = new SnesU8("keyapressed");
 
         SnesOperator assignPadsCurrent = new OperatorAssign(
-            "pads", SnesInput.padsCurrent((byte) 0).sourceCode
+                "pads", SnesInput.padsCurrent((byte) 0).sourceCode
         );
 
-        commands[0] = assignPadsCurrent;
+        commands[1] = assignPadsCurrent;
 
         List<SnesInstruction> ifNotPressedCommands = new ArrayList<>();
 
-        ifNotPressedCommands.add(new OperatorAssign("keyapressed", "0"));
+        ifNotPressedCommands.add(new OperatorAssign(keyAPressedVar.name, "0"));
 
         SnesElse ifNotPressed = new SnesElse(
-            ifNotPressedCommands
+                ifNotPressedCommands
         );
 
-        SnesOperator keyAPressed = new OperatorBinAnd(
-           pads, new SnesU16(SnesInput.keys.KEY_A.sourceCode)
-        );
+        SnesOperator varACheck = new OperatorEquals(keyAPressedVar.name, "0");
+
+        List<SnesInstruction> ifAVarCheckCommands = new ArrayList<>();
+
+        ifAVarCheckCommands.add(new OperatorAssign(keyAPressedVar.name, "1"));
+        ifAVarCheckCommands.add(SnesSound.spcPlaySound(0));
+        ifAVarCheckCommands.add(new OperatorAssign(bgColor.name, "16", '+'));
+        ifAVarCheckCommands.add(SnesOutput.setPaletteColor("0x00", bgColor));
 
         SnesIf ifAVarCheck = new SnesIf(
-            
-        )
+                varACheck, ifAVarCheckCommands
+        );
+
+        ifAVarCheck.generateSourceCode();
+
+        SnesOperator keyAPressed = new OperatorBinAnd(
+                pads, new SnesU16(SnesInput.keys.KEY_A.sourceCode)
+        );
 
         List<SnesInstruction> ifPressedCommands = new ArrayList<>();
 
+        ifPressedCommands.add(ifAVarCheck);
 
+        SnesIf ifAPressed = new SnesIf(
+                keyAPressed, ifPressedCommands, ifNotPressed
+        );
+
+        ifAPressed.generateSourceCode();
+
+        commands[2] = ifAPressed;
+
+        commands[3] = SnesSound.spcProcess();
+
+        return new SnesProcess("playIfAPressed", (byte) 0, commands);
 
     }
 
@@ -181,8 +242,8 @@ public class TadaExample {
             // Load BRR file
             boot.get("postLogoCommands")
                     .put("spcSetSoundEntry", new String[]{
-                        "15", "15", "4", "&soundbrr_end - &soundbrr", "&soundbrr", "&tadasound"
-                    });
+                "15", "15", "4", "&soundbrr_end - &soundbrr", "&soundbrr", "&tadasound"
+            });
 
             return boot;
 
@@ -208,12 +269,30 @@ public class TadaExample {
                     ""
             );
 
+            // Add Make Rule to build BRR files
+
+            Make.MakeRule soundbrr = new Make.MakeRule(
+                    "tada.brr",
+                    "tada.wav",
+                    "$(BRCONV) -e $< $@"
+            );
+
+            Make.MakeRule sounds = new Make.MakeRule(
+                    "sounds",
+                    "tada.brr",
+                    ""
+            );
+
             makefile.addRule(textFont);
             makefile.addRule(bitmaps);
+            makefile.addRule(soundbrr);
+            makefile.addRule(sounds);
             makefile.addPhonyTarget("bitmaps");
+            makefile.addPhonyTarget("sounds");
 
+            // Add sounds rule to all rule
             makefile.getRule("all").setPrerequisites(
-                    makefile.getRule("all").getPrerequisites() + " bitmaps $(ROMNAME).sfc"
+                    makefile.getRule("all").getPrerequisites() + " sounds bitmaps $(ROMNAME).sfc"
             );
 
         }
@@ -224,12 +303,18 @@ public class TadaExample {
                     TadaExample.class.getProtectionDomain().getCodeSource().getLocation().toURI()
             ).normalize().toAbsolutePath().getParent();
 
-            Path dataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");
+            Path fontDataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");
+            
+            // Add WAV file to copy to the destination
+            Path soundDataPath = actualPath.resolve("data").resolve("tada.wav");
+
             Path ouptutPath = actualPath.resolve("output");
 
             cleanBuild(ouptutPath);
 
-            app.addDataToCopy(dataPath.toString());
+            app.addDataToCopy(fontDataPath.toString());
+            app.addDataToCopy(soundDataPath.toString());
+
             app.setDestination(ouptutPath.toString());
 
             app.build();
@@ -252,5 +337,5 @@ public class TadaExample {
         }
 
     }
-    
+
 }

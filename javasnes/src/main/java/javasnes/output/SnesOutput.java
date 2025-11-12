@@ -28,11 +28,11 @@ public class SnesOutput {
      * @param bgColor the background color to set
      * @return a SnesRawInstruction that sets the background color of the given palette entry
      */
-    public static final SnesRawInstruction setPalleteColor(
+    public static final SnesRawInstruction setPaletteColor(
         String palleteEntry, SnesTypeScalar bgColor
     ) {
         return new SnesRawInstruction(
-            "setPalleteColor(" + palleteEntry + ", " + bgColor.name + ");"
+            "setPaletteColor(" + palleteEntry + ", " + bgColor.name + ");"
         );
     }
     
