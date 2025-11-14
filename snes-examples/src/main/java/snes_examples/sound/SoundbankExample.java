@@ -63,10 +63,10 @@ public class SoundbankExample {
 
         SnesInstruction[] globalDefs = new SnesInstruction[5];
 
-        String[] loadExternFont = { "tilfont", "palfont" };
+        String[] loadExternFont = {"tilfont", "palfont"};
         globalDefs[0] = new SnesLoadExtern(loadExternFont, CHAR);
 
-        String[] loadExternBank = { "SOUNDBANK__" };
+        String[] loadExternBank = {"SOUNDBANK__"};
         globalDefs[1] = new SnesLoadExtern(loadExternBank, CHAR);
 
         globalDefs[2] = new SnesU16("bgColor", "128");
@@ -109,6 +109,12 @@ public class SoundbankExample {
 
     }
 
+    /**
+     * Returns a SnesProcess that pauses all sound channels if the A key is
+     * pressed.
+     *
+     * @return A process that pauses all sound channels if the A key is pressed.
+     */
     public static SnesProcess pauseMusic() {
 
         SnesInstruction[] commands = new SnesInstruction[1];
@@ -136,6 +142,13 @@ public class SoundbankExample {
 
     }
 
+    /**
+     * Returns a SnesProcess that resumes all sound channels if the B key is
+     * pressed.
+     *
+     * @return A process that resumes all sound channels if the B key is
+     * pressed.
+     */
     public static SnesProcess resumeMusic() {
 
         SnesInstruction[] commands = new SnesInstruction[1];
@@ -163,6 +176,13 @@ public class SoundbankExample {
 
     }
 
+    /**
+     * Returns a SnesProcess that updates the screen by processing sound
+     * messages, waiting for VBlank, incrementing the background color, and
+     * drawing text to the console.
+     *
+     * @return A process that updates the screen as described above.
+     */
     public static SnesProcess updateScreen() {
 
         SnesInstruction[] commands = new SnesInstruction[7];
@@ -176,7 +196,7 @@ public class SoundbankExample {
         commands[3] = SnesOutput.setPaletteColor("0x00", bgColor);
 
         commands[4] = SnesOutput.consoleDrawText(5, 10, "Let's the music play !", null);
-        commands[5] = SnesOutput.consoleDrawText(5, 12, "     A to PAUSE      ", null);
+        commands[5] = SnesOutput.consoleDrawText(5, 12, "    A to PAUSE       ", null);
         commands[6] = SnesOutput.consoleDrawText(5, 13, "    B to RESUME      ", null);
 
         return new SnesProcess("updateScreen", (byte) 0, commands);
@@ -214,10 +234,10 @@ public class SoundbankExample {
             boot.put("betweenSPCVRAMLoadCommands", new LinkedHashMap<>());
 
             boot.get("betweenSPCVRAMLoadCommands")
-                    .put("spcSetBank", new String[] { "&SOUNDBANK__" });
+                    .put("spcSetBank", new String[]{"&SOUNDBANK__"});
 
             boot.get("betweenSPCVRAMLoadCommands")
-                    .put("spcLoad", new String[] { "MOD_POLLEN8" });
+                    .put("spcLoad", new String[]{"MOD_POLLEN8"});
 
             boot.put("postLogoCommands", new LinkedHashMap<>());
 
@@ -225,36 +245,36 @@ public class SoundbankExample {
                     .put("setScreenOff", null);
 
             boot.get("postLogoCommands")
-                    .put("consoleSetTextMapPtr", new String[] { "0x6800" });
+                    .put("consoleSetTextMapPtr", new String[]{"0x6800"});
 
             boot.get("postLogoCommands")
-                    .put("consoleSetTextGfxPtr", new String[] { "0x3000" });
+                    .put("consoleSetTextGfxPtr", new String[]{"0x3000"});
 
             boot.get("postLogoCommands")
-                    .put("consoleSetTextOffset", new String[] { "0x0100" });
+                    .put("consoleSetTextOffset", new String[]{"0x0100"});
 
             boot.get("postLogoCommands")
-                    .put("consoleInitText", new String[] {
-                            "0", "16 * 2", "&tilfont", "&palfont"
-                    });
+                    .put("consoleInitText", new String[]{
+                "0", "16 * 2", "&tilfont", "&palfont"
+            });
 
             boot.get("postLogoCommands")
-                    .put("bgSetGfxPtr", new String[] {
-                            "0", "0x2000"
-                    });
+                    .put("bgSetGfxPtr", new String[]{
+                "0", "0x2000"
+            });
 
             boot.get("postLogoCommands")
-                    .put("bgSetMapPtr", new String[] {
-                            "0", "0x6800", "SC_32x32"
-                    });
+                    .put("bgSetMapPtr", new String[]{
+                "0", "0x6800", "SC_32x32"
+            });
 
             boot.get("postLogoCommands")
                     .put("setScreenOn", null);
 
             boot.get("postLogoCommands")
-                    .put("spcPlay", new String[] {
-                        "0"
-                    });
+                    .put("spcPlay", new String[]{
+                "0"
+            });
 
             return boot;
 
@@ -291,7 +311,7 @@ public class SoundbankExample {
         public static void build(App.Builder app) throws Exception {
 
             Path actualPath = Paths.get(
-                    TadaExample.class.getProtectionDomain().getCodeSource().getLocation().toURI()).normalize()
+                    SoundbankExample.class.getProtectionDomain().getCodeSource().getLocation().toURI()).normalize()
                     .toAbsolutePath().getParent();
 
             Path fontDataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");

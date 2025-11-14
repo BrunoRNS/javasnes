@@ -195,5 +195,105 @@ public final class SnesOutput {
     public static final SnesRawInstruction setMode(String mode, int size) {
         return new SnesRawInstruction("setMode(" + mode + ", " + size + ");");
     }
+
+    /**
+     * Returns a SnesRawInstruction that initializes a background layer with the given
+     * map pointer, map size, size mode, and address.
+     * 
+     * This method initializes a background layer with the given map pointer, map size,
+     * size mode, and address. The map pointer is the memory address of the map data,
+     * the map size is the size of the map data in bytes, the size mode is the size of
+     * the map data in tiles, and the address is the memory address to store the map
+     * data at.
+     * 
+     * @param bgNumber the number of the background layer to initialize
+     * @param mapPtr the memory address of the map data
+     * @param mapSize the size of the map data in bytes
+     * @param sizeMode the size of the map data in tiles
+     * @param address the memory address to store the map data at
+     * @return a SnesRawInstruction that initializes a background layer with the given
+     * map pointer, map size, size mode, and address
+     */
+    public static final SnesRawInstruction bgInitMapSet(
+        int bgNumber, String mapPtr, String mapSize, String sizeMode, String address
+    ) {
+        return new SnesRawInstruction(
+            "bgInitMapSet(" + bgNumber + ", " + mapPtr + ", " + mapSize + ", " + sizeMode + ", " + address + ");"
+        );
+    }
+
+    /**
+     * Returns a SnesRawInstruction that initializes a background layer with the given
+     * tile pointer, palette pointer, palette entry, color mode, and address.
+     * 
+     * This method initializes a background layer with the given tile pointer, palette
+     * pointer, palette entry, color mode, and address. The tile pointer is the memory
+     * address of the tile data, the palette pointer is the memory address of the palette
+     * data, the palette entry is the entry in the palette to use, the color mode is the color
+     * mode to use, and the address is the memory address to store the tile data at.
+     * 
+     * @param bgNumber the number of the background layer to initialize
+     * @param tilePtr the memory address of the tile data
+     * @param palettePtr the memory address of the palette data
+     * @param paletteEntry the palette entry to use
+     * @param tileSize the size of the tile data
+     * @param paletteSize the size of the palette data
+     * @param colorMode the color mode to use
+     * @param address the memory address to store the tile data at
+     * @return a SnesRawInstruction that initializes a background layer with the given
+     * tile pointer, palette pointer, palette entry, color mode, and address
+     */
+    public static final SnesRawInstruction bgInitTileSet(
+        int bgNumber, String tilePtr, String palettePtr, String paletteEntry, String tileSize,
+        String paletteSize, String colorMode, String address
+    ) {
+        return new SnesRawInstruction(
+            "bgInitTileSet(" + bgNumber + ", " + tilePtr + ", " + 
+            palettePtr + ", " + paletteEntry + ", " + tileSize + ", " + 
+            paletteSize + ", " + colorMode + ", " + address + ");"
+        );
+    }
+
+    /**
+     * Returns a SnesRawInstruction that initializes a background layer with the given
+     * tile pointer, palette pointer, palette entry, color mode, and address, but with
+     * LZ77 compression.
+     * 
+     * This method is similar to bgInitTileSet, but it uses LZ77 compression to store the
+     * tile data in a compressed format.
+     * 
+     * @param bgNumber the number of the background layer to initialize
+     * @param tilePtr the memory address of the tile data
+     * @param palettePtr the memory address of the palette data
+     * @param paletteEntry the palette entry to use
+     * @param paletteSize the size of the palette
+     * @param colorMode the color mode to use
+     * @param address the memory address to store the tile data at
+     * @return a SnesRawInstruction that initializes a background layer with the given
+     * tile pointer, palette pointer, palette entry, color mode, and address, but with
+     * LZ77 compression
+     */
+    public static final SnesRawInstruction bgInitTileSetLz(
+        int bgNumber, String tilePtr, String palettePtr, String paletteEntry,
+        String paletteSize, String colorMode, String address
+    ) {
+        return new SnesRawInstruction(
+            "bgInitTileSetLz(" + bgNumber + ", " + tilePtr 
+            + ", " + palettePtr + ", " + paletteEntry + ", " +
+            paletteSize + ", " + colorMode + ", " + address + ");"
+        );
+    }
+
+    /**
+     * Returns a SnesRawInstruction that clears the Video RAM (VRAM).
+     * 
+     * This method clears the contents of the Video RAM (VRAM), which is used by the
+     * SNES to store graphics data.
+     * 
+     * @return a SnesRawInstruction that clears the Video RAM (VRAM)
+     */
+    public static final SnesRawInstruction dmaClearVram() {
+        return new SnesRawInstruction("dmaClearVram();");
+    }
     
 }

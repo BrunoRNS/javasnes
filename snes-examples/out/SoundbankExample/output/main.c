@@ -39,7 +39,7 @@ void updateScreen(void) {
 	bgColor++;
 	setPaletteColor(0x00, bgColor);
 	consoleDrawText(5, 10, "Let's the music play !");
-	consoleDrawText(5, 12, "     A to PAUSE      ");
+	consoleDrawText(5, 12, "    A to PAUSE       ");
 	consoleDrawText(5, 13, "    B to RESUME      ");
 	return;
 }

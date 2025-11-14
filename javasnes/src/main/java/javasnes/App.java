@@ -388,7 +388,7 @@ public class App {
 
         String[] format = sb.toString().split("\n");
 
-        int requiredTabs = 0;
+        byte requiredTabs = 0;
 
         for (int i = 0; i < format.length; i++) {
 
@@ -403,7 +403,9 @@ public class App {
             }
 
             if (closeBraces(charArray)) {
-                requiredTabs--;
+                if (requiredTabs > 0) {
+                    requiredTabs--;
+                }
             }
 
             if (checkTabsCharArray(charArray) != requiredTabs) {
@@ -411,7 +413,9 @@ public class App {
             }
 
             if (openBraces(charArray)) {
-                requiredTabs++;
+                if (requiredTabs < Byte.MAX_VALUE - 1) {
+                    requiredTabs++;
+                }
             }
 
             format[i] = new String(charArray);
