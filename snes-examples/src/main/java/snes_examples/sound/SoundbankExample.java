@@ -92,6 +92,8 @@ public class SoundbankExample {
 
         Make makefile = Config.generateMakefile();
 
+        makefile.setRomName("JavaSnes_SoundbankExample");
+
         makefile.addHeaderLine("AUDIOFILES := pollen8.it");
         makefile.addHeaderLine("export SOUNDBANK := soundbank");
 
@@ -294,8 +296,8 @@ public class SoundbankExample {
 
             Path fontDataPath = actualPath.resolve("data").resolve("pvsneslibfont.png");
 
-            // Add WAV file to copy to the destination
-            Path soundDataPath = actualPath.resolve("data").resolve("tada.wav");
+            // Add IT file to copy to the destination
+            Path soundDataPath = actualPath.resolve("data").resolve("pollen8.it");
 
             Path ouptutPath = actualPath.resolve("output");
 

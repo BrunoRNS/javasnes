@@ -70,8 +70,10 @@ public abstract class SnesMacro extends SnesInstruction {
             throw new IllegalArgumentException("SnesMacro's definition must be in the format \"name value\".");
         }
         if (
-            this.type.equals("#include") && (!this.definition.contains("\"") || 
-            (!this.definition.contains("<") && !this.definition.contains(">")))
+            this.type.equals("#include") && (
+                !this.definition.contains("\"") && 
+                (!this.definition.contains("<") && !this.definition.contains(">"))
+            )
         ) {
             throw new IllegalArgumentException("SnesMacro's definition must be in the format \"<.*.h>\". or \"\".*.h\"\".");
         }
