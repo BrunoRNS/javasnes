@@ -388,9 +388,12 @@ public class App {
 
         String[] format = sb.toString().split("\n");
 
-        byte requiredTabs = 0;
+        byte requiredTabs;
+        byte nextRequiredTabs = 0;
 
         for (int i = 0; i < format.length; i++) {
+
+            requiredTabs = nextRequiredTabs;
 
             char[] charArray = format[i].toCharArray();
 
@@ -402,20 +405,23 @@ public class App {
                 continue;
             }
 
+            if (openBraces(charArray)) {
+                if (requiredTabs < Byte.MAX_VALUE - 1) {
+                    nextRequiredTabs++;
+                }
+            }
+
             if (closeBraces(charArray)) {
                 if (requiredTabs > 0) {
                     requiredTabs--;
+                }
+                if (nextRequiredTabs > 0) {
+                    nextRequiredTabs--;
                 }
             }
 
             if (checkTabsCharArray(charArray) != requiredTabs) {
                 charArray = this.fixTabs(charArray, requiredTabs);
-            }
-
-            if (openBraces(charArray)) {
-                if (requiredTabs < Byte.MAX_VALUE - 1) {
-                    requiredTabs++;
-                }
             }
 
             format[i] = new String(charArray);
