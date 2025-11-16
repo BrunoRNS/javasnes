@@ -3,16 +3,23 @@ package javasnes.util.structures;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javasnes.instruction.SnesInstruction;
 import javasnes.util.types.vars.abstracts.SnesType;
 
 /**
  * Represents an extern load statement in SNES C code.
  */
-public class SnesLoadExtern extends SnesStructure {
+public class SnesLoadExtern extends SnesInstruction {
 
-    {
-        this.type = 4;
-    }
+    /**
+     * Name of the extern statement.
+     */
+    public String name;
+
+    /**
+     * Fields of the extern statement.
+     */
+    public HashMap<String, String> fields;
 
     /**
      * Type of the extern statement.
@@ -68,7 +75,6 @@ public class SnesLoadExtern extends SnesStructure {
      * 
      * <p>Where type is the type of the extern statement, and name1, name2, ... are the names of the fields in the extern statement.</p>
      */
-    @Override
     public final void generateSourceCode() {
 
         StringBuilder sb = new StringBuilder();

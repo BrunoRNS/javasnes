@@ -1,5 +1,6 @@
 package javasnes.util.structures;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +42,8 @@ public class SnesTypedef extends SnesStructure {
      * </pre>
      * @param fields
      */
-    public SnesTypedef(String name, Map<String, String> fields) {
+    public SnesTypedef(String name, Map<String, List<String>> fields) {
+        this.name = name;
         this.fields = fields;
         this.generateSourceCode();
     }
@@ -63,17 +65,46 @@ public class SnesTypedef extends SnesStructure {
      */
     @Override
     public final void generateSourceCode() {
+
+        this.validate();
+
         StringBuilder sb = new StringBuilder();
         sb.append("typedef struct {\n");
 
-        for (Map.Entry<String, String> field : this.fields.entrySet()) {
+        for (Map.Entry<String, List<String>> field : this.fields.entrySet()) {
             sb.append("\t").append(field.getKey());
-            sb.append(" ").append(field.getValue()).append(";\n");
+            sb.append(" ").append(String.join(", ", field.getValue())).append(";\n");
         }
 
         sb.append("} ").append(this.name).append(";\n");
 
         this.sourceCode = sb.toString();
+    }
+
+    /**
+     * Validates the SnesTypedef instance.
+     * 
+     * This method checks that the name and fields are not null, and that the fields are 
+     * not empty.
+     * If any of these conditions are not met, an IllegalArgumentException is thrown with a
+     * descriptive message.
+     * 
+     * @throws IllegalArgumentException if the SnesTypedef is invalid.
+     */
+    private void validate() throws IllegalArgumentException {
+
+        if (this.name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+
+        if (this.fields == null) {
+            throw new IllegalArgumentException("Fields cannot be null");
+        }
+
+        if (this.fields.isEmpty()) {
+            throw new IllegalArgumentException("Fields cannot be empty");
+        }
+        
     }
     
 }

@@ -1,5 +1,6 @@
 package javasnes.util.structures;
 
+import java.util.List;
 import java.util.Map;
 
 public class SnesStruct extends SnesStructure {
@@ -23,7 +24,7 @@ public class SnesStruct extends SnesStructure {
      * </pre>
      * @param fields
      */
-    public SnesStruct(String name, Map<String, String> fields) {
+    public SnesStruct(String name, Map<String, List<String>> fields) {
         this.fields = fields;
         this.generateSourceCode();
     }
@@ -45,17 +46,36 @@ public class SnesStruct extends SnesStructure {
      */
     @Override
     public final void generateSourceCode() {
+
+        this.validate();
+
         StringBuilder sb = new StringBuilder();
         sb.append("struct ").append(this.name).append(" {\n");
 
-        for (Map.Entry<String, String> field : this.fields.entrySet()) {
+        for (Map.Entry<String, List<String>> field : this.fields.entrySet()) {
             sb.append("\t").append(field.getKey());
-            sb.append(" ").append(field.getValue()).append(";\n");
+            sb.append(" ").append(String.join(", ", field.getValue())).append(";\n");
         }
 
         sb.append("};\n");
 
         this.sourceCode = sb.toString();
+    }
+
+    private void validate() throws IllegalArgumentException {
+
+        if (this.name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+
+        if (this.fields == null) {
+            throw new IllegalArgumentException("Fields cannot be null");
+        }
+
+        if (this.fields.isEmpty()) {
+            throw new IllegalArgumentException("Fields cannot be empty");
+        }
+        
     }
     
 }

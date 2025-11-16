@@ -1,5 +1,7 @@
 package javasnes.util.structures;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javasnes.instruction.SnesInstruction;
@@ -23,8 +25,6 @@ public abstract class SnesStructure extends SnesInstruction {
      * Type of the structure:
      *
      * 0 = Struct
-     * 1 = Function Prototype
-     * 2 = Enum
      * 3 = Typedef
      * 4 = Load Extern
      */
@@ -38,7 +38,7 @@ public abstract class SnesStructure extends SnesInstruction {
     /**
      * Fields of the structure.
      */
-    public Map<String, String> fields;
+    public Map<String, List<String>> fields;
 
     /**
      * Sets the value of a field in the structure.
@@ -48,7 +48,11 @@ public abstract class SnesStructure extends SnesInstruction {
      */
     public void setField(String fieldName, Object fieldValue) {
 
-        this.fields.put(fieldName, String.valueOf(fieldValue));
+        if (this.fields.get(fieldName) == null) {
+            this.fields.put(fieldName, new ArrayList<>());
+        }
+
+        this.fields.get(fieldName).add(String.valueOf(fieldValue));
 
     }
 
@@ -69,7 +73,7 @@ public abstract class SnesStructure extends SnesInstruction {
      * @param fieldName name of the field
      * @return value of the field, or null if the field does not exist
      */
-    public String getField(String fieldName) {
+    public List<String> getField(String fieldName) {
 
         return this.fields.get(fieldName);
 

@@ -2,14 +2,15 @@ package javasnes.util.structures;
 
 import java.util.HashMap;
 
+import javasnes.instruction.SnesInstruction;
+
 /**
  * Represents an enum structure in SNES C code.
  */
-public class SnesEnum extends SnesStructure {
+public class SnesEnum extends SnesInstruction {
 
-    {
-        this.type = 2;
-    }
+    @SuppressWarnings("FieldMayBeFinal")
+    private HashMap<String, String> fields;
 
     /**
      * Creates a new enum with the given name and fields.
@@ -30,7 +31,6 @@ public class SnesEnum extends SnesStructure {
      * @param fieldValue value to set the field to
      * @throws NumberFormatException if the field value is null
      */
-    @Override
     @SuppressWarnings("UnnecessaryTemporaryOnConversionFromString")
     public void setField(String fieldName, Object fieldValue) {
 
@@ -62,7 +62,6 @@ public class SnesEnum extends SnesStructure {
      * 
      * @throws NumberFormatException if any of the field values are null.
      */
-    @Override
     public final void generateSourceCode() throws NumberFormatException {
 
         StringBuilder sb = new StringBuilder();

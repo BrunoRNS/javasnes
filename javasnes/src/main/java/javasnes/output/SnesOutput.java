@@ -21,7 +21,8 @@ public final class SnesOutput {
         int x, int y, String text, String args
     ) {
         return new SnesRawInstruction(
-            "consoleDrawText(" + x + ", " + y + ", \"" + text + "\"" + (args == null ? "" : args) + ");"
+            "consoleDrawText(" + x + ", " + y + ", \"" + text + "\"" +
+            (args == null ? "" : args) + ");"
         );
     }
 
@@ -294,6 +295,255 @@ public final class SnesOutput {
      */
     public static final SnesRawInstruction dmaClearVram() {
         return new SnesRawInstruction("dmaClearVram();");
+    }
+
+    /**
+     * Initializes the OAM (Object Attribute Memory) by setting all the OAM
+     * values to their default values.
+     * 
+     * The OAM is a region of memory that stores information about the sprites
+     * currently being displayed on the screen. This information includes the
+     * sprite's position, size, priority, and other attributes.
+     * 
+     * @return a SnesRawInstruction that initializes the OAM
+     */
+    public static final SnesRawInstruction oamInit() {
+        return new SnesRawInstruction("oamInit();");
+    }
+
+    /**
+     * Returns a SnesRawInstruction that updates the OAM (Object Attribute Memory).
+     * 
+     * This method updates the contents of the OAM, which is used by the SNES to store
+     * information about the sprites currently being displayed on the screen.
+     * 
+     * @return a SnesRawInstruction that updates the OAM
+     */
+    public static final SnesRawInstruction oamUpdate() {
+        return new SnesRawInstruction("oamUpdate();");
+    }
+
+    /**
+     * Returns a SnesRawInstruction that sets the OAM (Object Attribute Memory) values
+     * for the given sprite ID.
+     * 
+     * The OAM is a region of memory that stores information about the sprites
+     * currently being displayed on the screen. This information includes the
+     * sprite's position, size, priority, and other attributes.
+     * 
+     * @param id the ID of the sprite to set the OAM values for
+     * @param xspr the horizontal sprite offset
+     * @param yspr the vertical sprite offset
+     * @param priority the priority of the sprite
+     * @param hflip whether to flip the sprite horizontally
+     * @param vflip whether to flip the sprite vertically
+     * @param gfxoffset the graphics offset of the sprite
+     * @param palleteoffset the palette offset of the sprite
+     * @return a SnesRawInstruction that sets the OAM values for the given sprite ID
+     */
+    public static final SnesRawInstruction oamSet(
+        int id, String xspr, String yspr, String priority, String hflip, String vflip,
+        String gfxoffset, String palleteoffset
+    ) {
+        return new SnesRawInstruction(
+            "oamSet(" + id + ", " + xspr + ", " + yspr + ", " + priority + ", " + 
+            hflip + ", " + vflip + ", " + gfxoffset + ", " + palleteoffset + ");"
+        );
+    }
+
+    /**
+     * Sets the horizontal and vertical sprite offset values for the sprite with the given ID.
+     * 
+     * The horizontal and vertical sprite offset values determine the position of the sprite
+     * on the screen.
+     * 
+     * @param id the ID of the sprite to set the horizontal and vertical sprite offset 
+     * values for
+     * @param xspr the horizontal sprite offset
+     * @param yspr the vertical sprite offset
+     * @return a SnesRawInstruction that sets the horizontal and vertical sprite offset 
+     * values for the given sprite ID
+     */
+    public static final SnesRawInstruction oamSetXY(
+        int id, String xspr, String yspr
+    ) {
+        return new SnesRawInstruction(
+            "oamSetXY(" + id + ", " + xspr + ", " + yspr + ");"
+        );
+    }
+
+    /**
+     * Returns a SnesRawInstruction that gets the horizontal sprite offset for the given 
+     * sprite ID.
+     * 
+     * The horizontal sprite offset determines the x position of the sprite on the screen.
+     * 
+     * @param id the ID of the sprite to get the horizontal sprite offset for
+     * @return a SnesRawInstruction that gets the horizontal sprite offset for the given 
+     * sprite ID
+     */
+    public static final SnesRawInstruction oamGetX(int id) {
+        return new SnesRawInstruction("oamGetX(" + id + ");");
+    }
+
+    /**
+     * Returns a SnesRawInstruction that gets the vertical sprite offset for the given 
+     * sprite ID.
+     * 
+     * The vertical sprite offset determines the y position of the sprite on the screen.
+     * 
+     * @param id the ID of the sprite to get the vertical sprite offset for
+     * @return a SnesRawInstruction that gets the vertical sprite offset for the given 
+     * sprite ID
+     */
+    public static final SnesRawInstruction oamGetY(int id) {
+        return new SnesRawInstruction("oamGetY(" + id + ");");
+    }
+
+    /**
+     * Sets the OAM (Object Attribute Memory) values for the given sprite ID.
+     * 
+     * The OAM is a region of memory that stores information about the sprites
+     * currently being displayed on the screen. This information includes the
+     * sprite's position, size, priority, and other attributes.
+     * 
+     * @param id the ID of the sprite to set the OAM values for
+     * @param size the size of the sprite
+     * @param hide whether to hide the sprite
+     * @return a SnesRawInstruction that sets the OAM values for the given sprite ID
+     */
+    public static final SnesRawInstruction oamSetEx(
+        int id, String size, String hide
+    ) {
+        return new SnesRawInstruction(
+            "oamSetEx(" + id + ", " + size + ", " + hide + ");"
+        );
+    }
+
+    /**
+     * Sets the visibility of the sprite with the given ID.
+     * 
+     * @param id the ID of the sprite to set the visibility for
+     * @param hidden whether the sprite is hidden
+     * @return a SnesRawInstruction that sets the visibility of the sprite
+     */
+    public static final SnesRawInstruction oamSetVisible(
+        int id, String hidden
+    ) {
+        return new SnesRawInstruction(
+            "oamSetVisible(" + id + ", " + hidden + ");"
+        );
+    }
+
+    /**
+     * Sets the horizontal and vertical flip state of the sprite with the given ID.
+     * 
+     * @param id the ID of the sprite to set the flip state for
+     * @param hflip whether to flip the sprite horizontally
+     * @param vflip whether to flip the sprite vertically
+     * @return a SnesRawInstruction that sets the flip state for the given sprite ID
+     */
+    public static final SnesRawInstruction oamFlip(
+        int id, String hflip, String vflip
+    ) {
+        return new SnesRawInstruction(
+            "oamFlip(" + id + ", " + hflip + ", " + vflip + ");"
+        );
+    }
+
+    /**
+     * Sets the graphics offset of the sprite with the given ID.
+     * 
+     * The graphics offset is used to determine which region of the sprite's graphics
+     * data to display on the screen. A positive offset moves the sprite to the right
+     * and down, while a negative offset moves the sprite to the left and up.
+     * 
+     * @param id the ID of the sprite to set the graphics offset for
+     * @param offset the graphics offset to set
+     * @return a SnesRawInstruction that sets the graphics offset for the given sprite ID
+     */
+    public static final SnesRawInstruction oamSetGfxOffset(int id, String offset) {
+        return new SnesRawInstruction(
+            "oamSetGfxOffset(" + id + ", " + offset + ");"
+        );
+    }
+
+    /**
+     * Returns a SnesRawInstruction that clears the OAM (Object Attribute Memory).
+     * 
+     * The OAM is a region of memory that stores information about the sprites
+     * currently being displayed on the screen. This information includes the
+     * sprite's position, size, priority, and other attributes.
+     * 
+     * Calling this function will reset all the OAM values to their default values.
+     * This is useful for initializing the OAM at the beginning of the program.
+     * 
+     * @return a SnesRawInstruction that clears the OAM
+     */
+    public static final SnesRawInstruction oamClear() {
+        return new SnesRawInstruction("oamClear();");
+    }
+
+    /**
+     * Initializes the graphics portion of the OAM (Object Attribute Memory) with the given
+     * tile source, tile size, palette source, palette size, tile palette number, address, and
+     * OAM size.
+     * 
+     * This method initializes the graphics portion of the OAM with the given tile source,
+     * tile size, palette source, palette size, tile palette number, address, and OAM size.
+     * 
+     * The tile source is the memory address of the tile data, the tile size is the size of the
+     * tile data in bytes, the palette source is the memory address of the palette data, the
+     * palette size is the size of the palette data in bytes, the tile palette number is the 
+     * palette
+     * number to use for the tile data, the address is the memory address to store the tile 
+     * data at, and the OAM size is the size of the OAM in bytes.
+     * 
+     * @param tileSource the memory address of the tile data
+     * @param tileSize the size of the tile data in bytes
+     * @param paletteSource the memory address of the palette data
+     * @param paletteSize the size of the palette data in bytes
+     * @param tilePaletteNumber the palette number to use for the tile data
+     * @param address the memory address to store the tile data at
+     * @param oamSize the size of the OAM in bytes
+     * @return a SnesRawInstruction that initializes the graphics portion of the OAM
+     */
+    public static final SnesRawInstruction oamInitGfxSet(
+        String tileSource, String tileSize, String paletteSource, String paletteSize,
+        String tilePaletteNumber, String address, String oamSize
+    ) {
+        return new SnesRawInstruction(
+            "oamInitGfxSet(" + tileSource + ", " + tileSize + ", " + paletteSource + ", " + 
+            paletteSize + ", " + tilePaletteNumber + ", " + address + ", " + oamSize + ");"
+        );
+    }
+
+    /**
+     * Object states in the SNES development context.
+     * 
+     * This class contains constants representing different object states in the SNES
+     * development context.
+     */
+    public static final class ObjState {
+        public static final String OBJ_SMALL = "OBJ_SMALL";
+        public static final String OBJ_LARGE = "OBJ_LARGE";
+        public static final String OBJ_HIDE = "OBJ_HIDE";
+        public static final String OBJ_SHOW = "OBJ_SHOW";
+    }
+
+    /**
+     * Object sizes in the SNES development context.
+     * 
+     * This class contains constants representing different object sizes in the SNES
+     * development context.
+     */
+    public static final class ObjSize {
+        public static final String OBJ_SIZE8_L16 = "OBJ_SIZE8_L16";
+        public static final String OBJ_SIZE8_L32 = "OBJ_SIZE8_L32";
+        public static final String OBJ_SIZE8_L64 = "OBJ_SIZE8_L64";
+        public static final String OBJ_SIZE16_L32 = "OBJ_SIZE16_L32";
+        public static final String OBJ_SIZE16_L64 = "OBJ_SIZE16_L64";
+        public static final String OBJ_SIZE32_L64 = "OBJ_SIZE32_L64";
     }
     
 }
