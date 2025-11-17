@@ -6,10 +6,6 @@ import javasnes.util.types.vars.abstracts.SnesType;
 
 public class SnesFunctionPrototype extends SnesStructure {
 
-    {
-        this.type = 1;
-    }
-
     /**
      * Return type of the function.
      */
@@ -53,12 +49,14 @@ public class SnesFunctionPrototype extends SnesStructure {
      * <p>Example:</p>
      * 
      * <pre>
-     * SnesFunctionPrototype prototype = new SnesFunctionPrototype("myFunction", SnesType.UINT8);
+     * SnesFunctionPrototype prototype = new SnesFunctionPrototype(
+     * "myFunction", SnesType.UINT8);
      * prototype.addParameter("u8 a");
      * prototype.addParameter("char* str");
      * </pre>
      * 
-     * <p>After calling addParameter() twice, the function prototype will have two parameters: "u8 a" and "char* str".</p>
+     * <p>After calling addParameter() twice, the function prototype will have 
+     * two parameters: "u8 a" and "char* str".</p>
      * 
      * @param parameter the parameter to add
      */
@@ -75,13 +73,15 @@ public class SnesFunctionPrototype extends SnesStructure {
      * <p>Example:</p>
      * 
      * <pre>
-     * SnesFunctionPrototype prototype = new SnesFunctionPrototype("myFunction", SnesType.UINT8);
+     * SnesFunctionPrototype prototype = new SnesFunctionPrototype(
+     * "myFunction", SnesType.UINT8);
      * prototype.addParameter("u8 a");
      * prototype.addParameter("char* str");
      * prototype.removeParameter();
      * </pre>
      * 
-     * <p>After calling removeParameter(), the function prototype will have only one parameter, "u8 a".</p>
+     * <p>After calling removeParameter(), the function prototype will have only 
+     * one parameter, "u8 a".</p>
      */
     public void removeParameter() {
         this.parameters.pop();

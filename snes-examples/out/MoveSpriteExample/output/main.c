@@ -9,9 +9,9 @@ extern char javasnes_palette, javasnes_palette_end;
 
 extern char palsprite, palsprite_end, gfxsprite, gfxsprite_end;
 typedef struct {
-	s16 y;
-	u16 anim_frame;
-	u8 flipx;
+	s16 x, y;
+	u16 gfx_frame, anim_frame;
+	u8 state, flipx;
 } Monster;
 
 enum {
@@ -30,9 +30,7 @@ enum {
 
 char sprTiles[9] = {0, 2, 4, 6, 8, 10, 12, 14, 32};
 u16 pad0 = 0;
-Monster monster;
-monster.x = 100;
-monster.y = 100;
+Monster monster = {.x = 100, .y = 100};
 
 void updateSprite(void) {
 	pad0 = padsCurrent(0);
@@ -92,6 +90,12 @@ int main(void) {
 	}
 	dmaClearVram();
 	
+	setScreenOff();
+	bgSetDisable(0);
+	oamInitGfxSet(&gfxsprite, (&gfxsprite_end - &gfxsprite), &palsprite, (&palsprite_end - &palsprite), 0, 0x0000, OBJ_SIZE16_L32);
+	oamSet(0, monster.x, monster.y, 0, 0, 0, 0, 0);
+	oamSetEx(0, OBJ_SMALL, OBJ_SHOW);
+	oamSetVisible(0, OBJ_SHOW);
 	setScreenOn();
 	while (1) {
 		processor();

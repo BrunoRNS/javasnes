@@ -23,24 +23,14 @@ import java.util.Map;
  */
 public class SnesTypedef extends SnesStructure {
 
-    {
-        this.type = 3;
-    }
-
     /**
-     * Creates a new type with the given fields.
+     * Creates a new SnesTypedef instance.
      * 
-     * The fields should be a map of field names to field types.
+     * <p>The fields parameter is a map where the keys are the types of the fields and 
+     * the values are lists of field names of that type.</p>
      * 
-     * Example:
-     * 
-     * <pre>
-     * Map<String, String> fields = new HashMap<>();
-     * fields.put("u8", "field1");
-     * fields.put("s16", "field2");
-     * SnesTypedef myType = new SnesTypedef(fields);
-     * </pre>
-     * @param fields
+     * @param name name of the typedef
+     * @param fields map of fields in the typedef
      */
     public SnesTypedef(String name, Map<String, List<String>> fields) {
         this.name = name;
@@ -61,7 +51,8 @@ public class SnesTypedef extends SnesStructure {
      * } name;
      * </pre>
      * 
-     * <p>Where type1, type2, ... are the types of the fields in the typedef struct, and field1, field2, ... are the names of the fields.</p>
+     * <p>Where type1, type2, ... are the types of the fields in the typedef struct, and
+     * field1, field2, ... are the names of the fields.</p>
      */
     @Override
     public final void generateSourceCode() {

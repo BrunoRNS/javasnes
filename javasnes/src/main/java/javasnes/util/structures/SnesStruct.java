@@ -5,10 +5,6 @@ import java.util.Map;
 
 public class SnesStruct extends SnesStructure {
 
-    {
-        this.type = 0;
-    }
-
     /**
      * Creates a new struct with the given fields.
      * 
@@ -36,13 +32,14 @@ public class SnesStruct extends SnesStructure {
      * 
      * <pre>
      * struct name {
-     *     type1 field1;
-     *     type2 field2;
+     *     type1 field1, field2;
+     *     type2 field3;
      *     ...
      * };
      * </pre>
      * 
-     * <p>Where type1, type2, ... are the types of the fields in the struct, and field1, field2, ... are the names of the fields.</p>
+     * <p>Where type1, type2, ... are the types of the fields in the struct, and field1,
+     * field2 and field3 ... are the names of the fields.</p>
      */
     @Override
     public final void generateSourceCode() {

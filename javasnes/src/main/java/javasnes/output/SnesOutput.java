@@ -469,22 +469,6 @@ public final class SnesOutput {
     }
 
     /**
-     * Returns a SnesRawInstruction that clears the OAM (Object Attribute Memory).
-     * 
-     * The OAM is a region of memory that stores information about the sprites
-     * currently being displayed on the screen. This information includes the
-     * sprite's position, size, priority, and other attributes.
-     * 
-     * Calling this function will reset all the OAM values to their default values.
-     * This is useful for initializing the OAM at the beginning of the program.
-     * 
-     * @return a SnesRawInstruction that clears the OAM
-     */
-    public static final SnesRawInstruction oamClear() {
-        return new SnesRawInstruction("oamClear();");
-    }
-
-    /**
      * Initializes the graphics portion of the OAM (Object Attribute Memory) with the given
      * tile source, tile size, palette source, palette size, tile palette number, address, and
      * OAM size.
@@ -544,6 +528,66 @@ public final class SnesOutput {
         public static final String OBJ_SIZE16_L32 = "OBJ_SIZE16_L32";
         public static final String OBJ_SIZE16_L64 = "OBJ_SIZE16_L64";
         public static final String OBJ_SIZE32_L64 = "OBJ_SIZE32_L64";
+    }
+
+    /**
+     * Updates the map data stored in memory.
+     * 
+     * This method updates the map data stored in memory by updating the map data with
+     * the changes made to the map since the last update.
+     * 
+     * @return a SnesRawInstruction that updates the map data stored in memory
+     */
+    public static final SnesRawInstruction mapUpdate() {
+        return new SnesRawInstruction("mapUpdate();");
+    }
+
+    /**
+     * Loads a map into the SNES memory.
+     * 
+     * This method loads a map into the SNES memory, using the map data stored at the given
+     * memory address, the tile set definition data stored at the given memory address,
+     * and the tile set attribute data stored at the given memory address.
+     * 
+     * @param mapPtr the memory address of the map data
+     * @param tileSetDefPtr the memory address of the tile set definition data
+     * @param tileSetAttPtr the memory address of the tile set attribute data
+     * @return a SnesRawInstruction that loads a map into the SNES memory
+     */
+    public static final SnesRawInstruction mapLoad(
+        String mapPtr, String tileSetDefPtr, String tileSetAttPtr
+    ) {
+        return new SnesRawInstruction(
+            "mapLoad(" + mapPtr + ", " + tileSetDefPtr + ", " + tileSetAttPtr + ");"
+        );
+    }
+
+    /**
+     * Updates the camera position in the map.
+     * 
+     * This method updates the camera position in the map, using the given x and y coordinates.
+     * 
+     * @param xpos the x coordinate of the camera position
+     * @param ypos the y coordinate of the camera position
+     * @return a SnesRawInstruction that updates the camera position in the map
+     */
+    public static final SnesRawInstruction mapUpdateCamera(String xpos, String ypos) {
+        return new SnesRawInstruction(
+            "mapUpdateCamera(" + xpos + ", " + ypos + ");"
+        );
+    }
+
+    /**
+     * Waits for a vertical blank in the map.
+     * 
+     * This method waits for a vertical blank in the map, which is useful for synchronizing
+     * the program with the vertical blank of the screen. This is useful for games and 
+     * animations that need to be rendered at a constant frame rate.
+     * 
+     * @return a SnesRawInstruction that waits for a vertical blank in the map
+     */
+    public static final SnesRawInstruction mapVblank() {
+        return new SnesRawInstruction("mapVblank();");
     }
     
 }

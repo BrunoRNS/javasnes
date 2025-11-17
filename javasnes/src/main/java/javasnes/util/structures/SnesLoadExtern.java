@@ -73,7 +73,8 @@ public class SnesLoadExtern extends SnesInstruction {
      * extern type name1, name2, ...;
      * </pre>
      * 
-     * <p>Where type is the type of the extern statement, and name1, name2, ... are the names of the fields in the extern statement.</p>
+     * <p>Where type is the type of the extern statement, and name1, name2, ... 
+     * are the names of the fields in the extern statement.</p>
      */
     public final void generateSourceCode() {
 

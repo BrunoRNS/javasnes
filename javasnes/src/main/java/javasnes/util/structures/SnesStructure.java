@@ -13,22 +13,13 @@ import javasnes.instruction.SnesInstruction;
  * The generated source code will depend on the type of structure.
  * The types of structures are:
  * 
- * 0 = Struct
- * 1 = Function Prototype
- * 2 = Enum
- * 3 = Typedef
- * 4 = Load Extern
+ * Struct
+ * Function Prototype
+ * Enum
+ * Typedef
+ * Load Extern
  */
 public abstract class SnesStructure extends SnesInstruction {
-
-    /**
-     * Type of the structure:
-     *
-     * 0 = Struct
-     * 3 = Typedef
-     * 4 = Load Extern
-     */
-    public Byte type = null;
 
     /**
      * Name of the structure.

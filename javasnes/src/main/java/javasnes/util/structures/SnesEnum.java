@@ -1,6 +1,6 @@
 package javasnes.util.structures;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javasnes.instruction.SnesInstruction;
 
@@ -10,14 +10,22 @@ import javasnes.instruction.SnesInstruction;
 public class SnesEnum extends SnesInstruction {
 
     @SuppressWarnings("FieldMayBeFinal")
-    private HashMap<String, String> fields;
+    private Map<String, String> fields;
+
+    public String name = null;
 
     /**
      * Creates a new enum with the given name and fields.
      * @param name name of the enum
      * @param fields fields of the enum
      */
-    public SnesEnum(HashMap<String, String> fields) {
+    public SnesEnum(String name, Map<String, String> fields) {
+        this.name = name;
+        this.fields = fields;
+        this.generateSourceCode();
+    }
+
+    public SnesEnum(Map<String, String> fields) {
         this.fields = fields;
         this.generateSourceCode();
     }
@@ -25,7 +33,8 @@ public class SnesEnum extends SnesInstruction {
     /**
      * Sets the value of a field in the enum.
      * 
-     * <p>If the field value is not an integer, a warning message will be printed to the console and the value will not be set.</p>
+     * <p>If the field value is not an integer, a warning message will be printed 
+     * to the console and the value will not be set.</p>
      * 
      * @param fieldName name of the field to set
      * @param fieldValue value to set the field to
@@ -37,7 +46,10 @@ public class SnesEnum extends SnesInstruction {
         try {
             fieldValue = Integer.parseInt(String.valueOf(fieldValue));
         } catch (NumberFormatException e) {
-            System.err.println("Warning: Enum field value must be an integer. Exiting setField without setting value.");
+            System.err.println(
+                "Warning: Enum field value must be an integer." +
+                " Exiting setField without setting value."
+            );
             return;
         }
 
@@ -58,7 +70,8 @@ public class SnesEnum extends SnesInstruction {
      * };
      * </pre>
      * 
-     * <p>Where FieldName1, FieldName2, ... are the names of the fields in the enum, and 1, 2, ... are the values of the fields.</p>
+     * <p>Where FieldName1, FieldName2, ... are the names of the fields in the enum,
+     * and 1, 2, ... are the values of the fields.</p>
      * 
      * @throws NumberFormatException if any of the field values are null.
      */
@@ -66,7 +79,7 @@ public class SnesEnum extends SnesInstruction {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("enum ").append("{\n");
+        sb.append("enum ").append(this.name == null ? "" : (this.name + " ")).append("{\n");
 
         for (String fieldName : this.fields.keySet()) {
 

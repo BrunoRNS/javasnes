@@ -72,7 +72,7 @@ public class MoveSpriteExample {
 
         moveSpriteExample.addSnesMacro(new SnesDefine("FRAMES_PER_ANIMATION 3"));
 
-        SnesInstruction[] globalInstructions = new SnesInstruction[9];
+        SnesInstruction[] globalInstructions = new SnesInstruction[7];
 
         String[] loadExtern = {
             "gfxsprite", "palsprite", "gfxsprite_end", "palsprite_end"
@@ -80,15 +80,17 @@ public class MoveSpriteExample {
 
         globalInstructions[0] = new SnesLoadExtern(loadExtern, CHAR);
 
-        /**
-        Map<String, String> typedefFields = new LinkedHashMap<>();
+        Map<String, List<String>> typedefFields = new LinkedHashMap<>();
 
-        typedefFields.put("s16", "x");
-        typedefFields.put("s16", "y");
-        typedefFields.put("u16", "gfx_frame");
-        typedefFields.put("u16", "anim_frame");
-        typedefFields.put("u8", "state");
-        typedefFields.put("u8", "flipx");
+        typedefFields.put(
+                "s16", new ArrayList<>() {{add("x"); add("y");}}
+        );
+        typedefFields.put(
+                "u16", new ArrayList<>() {{add("gfx_frame"); add("anim_frame");}}
+        );
+        typedefFields.put(
+                "u8", new ArrayList<>() {{add("state"); add("flipx");}}
+        );
 
         SnesTypedef monster = new SnesTypedef(
                 "Monster",
@@ -97,7 +99,6 @@ public class MoveSpriteExample {
 
         globalInstructions[1] = monster;
 
-        */
         HashMap<String, String> enumFields1 = new HashMap<>();
 
         enumFields1.put("W_DOWN", "0");
@@ -130,10 +131,9 @@ public class MoveSpriteExample {
 
         globalInstructions[4] = sprTiles;
         globalInstructions[5] = new SnesU16("pad0", "0");
-        globalInstructions[6] = new Monster("monster");
-
-        globalInstructions[7] = new OperatorObj("monster", "x", "100");
-        globalInstructions[8] = new OperatorObj("monster", "y", "100");
+        globalInstructions[6] = new Monster(
+                "monster", "{.x = 100, .y = 100}"
+        );
 
         moveSpriteExample.setGlobalInstructions(globalInstructions);
 
@@ -296,7 +296,48 @@ public class MoveSpriteExample {
 
             boot.put("postLogoCommands", new LinkedHashMap<>());
 
-            
+            boot.get("postLogoCommands")
+                    .put("setScreenOff", null);
+
+            boot.get("postLogoCommands")
+                    .put("bgSetDisable", new String[] {"0"});
+        
+            boot.get("postLogoCommands")
+                    .put("oamInitGfxSet", new String[] {
+                        "&gfxsprite",
+                        "(&gfxsprite_end - &gfxsprite)",
+                        "&palsprite",
+                        "(&palsprite_end - &palsprite)",
+                        "0",
+                        "0x0000",
+                        SnesOutput.ObjSize.OBJ_SIZE16_L32
+                    });
+
+            boot.get("postLogoCommands")
+                    .put("oamSet", new String[] {
+                        "0",
+                        "monster.x",
+                        "monster.y",
+                        "0",
+                        "0",
+                        "0",
+                        "0",
+                        "0"
+                    });
+
+            boot.get("postLogoCommands")
+                    .put("oamSetEx", new String[] {
+                        "0",
+                        SnesOutput.ObjState.OBJ_SMALL,
+                        SnesOutput.ObjState.OBJ_SHOW
+                    });
+
+            boot.get("postLogoCommands")
+                    .put("oamSetVisible", new String[] {
+                        "0",
+                        SnesOutput.ObjState.OBJ_SHOW
+                    });
+
             boot.get("postLogoCommands")
                     .put("setScreenOn", null);
 
