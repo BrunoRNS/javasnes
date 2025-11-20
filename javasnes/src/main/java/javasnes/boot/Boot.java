@@ -37,7 +37,7 @@ public class Boot {
      * It has a command name and an array of arguments and a method to get the 
      * command as a string with its arguments enclosed in parentheses.
      */
-    public class SnesBootCommand {
+    public static class SnesBootCommand {
 
         public String command;
         public String[] arguments;
