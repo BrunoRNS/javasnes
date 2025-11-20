@@ -589,5 +589,11 @@ public final class SnesOutput {
     public static final SnesRawInstruction mapVblank() {
         return new SnesRawInstruction("mapVblank();");
     }
+
+    public static final SnesRawInstruction bgSetScroll(int id, String x, String y) {
+        return new SnesRawInstruction(
+            "bgSetScroll(" + id + ", " + x + ", " + y + ");"
+        );
+    }
     
 }
