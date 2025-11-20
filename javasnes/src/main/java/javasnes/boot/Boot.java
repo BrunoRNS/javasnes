@@ -2,6 +2,8 @@ package javasnes.boot;
 
 import java.util.Map;
 
+import javasnes.instruction.SnesInstruction;
+
 /**
  *
  * Default boot configuration source code
@@ -35,7 +37,7 @@ public class Boot {
      * It has a command name and an array of arguments and a method to get the 
      * command as a string with its arguments enclosed in parentheses.
      */
-    protected class SnesBootCommand {
+    public class SnesBootCommand {
 
         public String command;
         public String[] arguments;
@@ -49,6 +51,68 @@ public class Boot {
         public SnesBootCommand(String command, String[] arguments) {
             this.command = command;
             this.arguments = arguments;
+        }
+
+        /**
+         * Constructs a new SnesBootCommand object from a SnesInstruction object.
+         * 
+         * It extracts the command name and arguments from the source code of the
+         * SnesInstruction object.
+         * 
+         * For example, if the source code is "dmaCopy(0x02000000, 0x02000000, 0x2000);",
+         * the command name will be "dmaCopy" and the arguments will be
+         * ["0x02000000", "0x02000000", "0x2000"].
+         *
+         * 
+         * @param instruction the SnesInstruction object to construct the 
+         * SnesBootCommand from
+         */
+        public SnesBootCommand(SnesInstruction instruction) {
+
+            this.validate(instruction);
+
+            this.command = instruction.sourceCode.split("\\(")[0];
+            this.arguments = instruction.sourceCode
+                .substring(
+                    this.command.length() + 1,
+                    instruction.sourceCode.length() - 2
+                )
+                .split(", ");
+        }
+
+        /**
+         * Validates the SnesInstruction instance.
+         * 
+         * This method checks that the sourceCode of the SnesInstruction is not null,
+         * not empty, and does not contain new lines.
+         * If any of these conditions are not met, an IllegalArgumentException is thrown 
+         * with a descriptive message.
+         * 
+         * @param instruction the SnesInstruction to validate
+         * @throws IllegalArgumentException if the SnesInstruction is invalid
+         */
+        public final void validate(
+            SnesInstruction instruction
+        ) throws IllegalArgumentException {
+
+            if (instruction.sourceCode == null) {
+                throw new IllegalArgumentException(
+                    "SnesInstruction source code is null"
+                );
+            }
+
+            if (instruction.sourceCode.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "SnesInstruction source code is empty"
+                );
+            }
+
+            if (instruction.sourceCode.contains("\n")) {
+                throw new IllegalArgumentException(
+                    "SnesInstruction source code contains new lines"
+                );
+            }
+
         }
 
         /**
