@@ -92,6 +92,24 @@ public final class SnesOutput {
     }
 
     /**
+     * Returns a SnesRawInstruction that enables a background layer.
+     * 
+     * The background layer is specified by its index, which is an integer
+     * between 0 and 3. A value of 0 corresponds to the first background layer,
+     * a value of 1 corresponds to the second background layer, and so on.
+     * 
+     * Enabling a background layer allows it to be rendered to the screen.
+     * This is useful for games and animations that need to have a dynamic
+     * background that changes over time.
+     * 
+     * @param bgIndex the index of the background layer to enable
+     * @return a SnesRawInstruction that enables the background layer
+     */
+    public static final SnesRawInstruction bgSetEnable(int bgIndex) {
+        return new SnesRawInstruction("bgSetEnable(" + bgIndex + ");");
+    }
+
+    /**
      * Returns a SnesRawInstruction that sets the graphics pointer for the background layer 
      * with the given index.
      * 
@@ -528,6 +546,32 @@ public final class SnesOutput {
         public static final String OBJ_SIZE16_L32 = "OBJ_SIZE16_L32";
         public static final String OBJ_SIZE16_L64 = "OBJ_SIZE16_L64";
         public static final String OBJ_SIZE32_L64 = "OBJ_SIZE32_L64";
+    }
+
+    public static final class TileSize {
+        public static final String SC32X32 = "SC_32x32";
+        public static final String SC64X32 = "SC_64x32";
+        public static final String SC32X64 = "SC_32x64";
+        public static final String SC64X64 = "SC_64x64";
+    }
+
+    public static final class BgMode {
+        public static final String BG_MODE0 = "BG_MODE0";
+        public static final String BG_MODE1 = "BG_MODE1";
+        public static final String BG_MODE2 = "BG_MODE2";
+        public static final String BG_MODE3 = "BG_MODE3";
+        public static final String BG_MODE4 = "BG_MODE4";
+        public static final String BG_MODE5 = "BG_MODE5";
+        public static final String BG_MODE6 = "BG_MODE6";
+        public static final String BG_MODE7 = "BG_MODE7";
+    }
+
+    public static final class BgColor {
+        public static final String BG_4COLORS0 = "BG_4COLORS0";
+        public static final String BG_4COLORS = "BG_4COLORS";
+        public static final String BG_16COLORS = "BG_16COLORS";
+        public static final String BG_256COLORS = "BG_256COLORS";
+        public static final String BG3_MODE1_PRIORITY_HIGH = "BG3_MODE1_PRIORITY_HIGH";
     }
 
     /**
