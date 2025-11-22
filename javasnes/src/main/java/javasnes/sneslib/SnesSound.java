@@ -109,7 +109,7 @@ public final class SnesSound {
      * @return a SnesRawInstruction that calls spcSetSoundEntry()
      */
     public static final SnesRawInstruction spcSetSoundEntry(
-        int vol, int panning, int pitch, int length, String sampleAddr, String brrSampleAddr
+        int vol, int panning, int pitch, String length, String sampleAddr, String brrSampleAddr
     ) {
         return new SnesRawInstruction(
             "spcSetSoundEntry(" + vol + ", " + panning + ", " + pitch + ", " + length + ", " + sampleAddr + ", " + brrSampleAddr + ");"
