@@ -2,6 +2,16 @@
 
 javasnes — a rolling-release Java library for building SNES games. Continuously updated and evolving, this project aims to make SNES development in Java fast, modular, and CI-friendly. Works smoothly with SNES-IDE to compile the generated C code and ship playable ROMs.
 
+## Academic Context & Ongoing Development
+
+JavaSNES was originally developed as the core engine and technical infrastructure for a High School Capstone Project (TCA - _Trabalho de Conclusão do Ciclo A_) at the Federal Institute of Paraná (IFPR Campus Cascavel), serving as the framework for the reference application [Pinkwall](https://github.com/LucianoCSiqueira/pinkwall).
+
+Following the initial academic evaluation, the project transitioned into an active open-source initiative. It continues under continuous development as an academic contribution focused on Java-based Super Nintendo (SNES) software architecture, emulator integration, and homebrew development.
+
+* **TCA Documentation Homepage:** [tca-docs](https://github.com/LucianoCSiqueira/tca-docs) (Central repository containing software engineering specifications, requirements, and system design)
+* **Reference Application:** [Pinkwall](https://github.com/LucianoCSiqueira/pinkwall)
+* **Institution:** Instituto Federal do Paraná (IFPR) — Campus Cascavel
+
 ## Current Release Model
 
 **Rolling release** — no fixed versions for most changes; the library is updated frequently with improvements, fixes, and new features. Use the Gradle coordinates or the wrapper to pin a specific Gradle run if you need reproducible builds. Expect nightly-ish updates and incremental improvements.
